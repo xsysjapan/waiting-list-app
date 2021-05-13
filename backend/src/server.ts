@@ -26,6 +26,9 @@ if (process.env.NODE_ENV === 'production' || config.NODE_ENV === 'production') {
   app.use(helmet());
 }
 
+// enable static files
+app.use(express.static('public'));
+
 /************************************************************************************
  *                               Register all routes
  ***********************************************************************************/
