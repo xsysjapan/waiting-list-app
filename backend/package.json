@@ -4,7 +4,8 @@
   "description": "wait-list-app initialised with create-express-typescript-application.",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
+    "copy-package-json": "node -e \"require('fs').copyFileSync('./package-runtime.json', './build/package.json')\"",
+    "build": "tsc && npm run copy-package-json",
     "start": "node ./build/src/index.js",
     "dev": "ts-node ./src/index.ts",
     "dev:nodemon": "nodemon -w src -e ts,json -x ts-node ./src/index.ts",

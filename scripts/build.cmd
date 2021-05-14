@@ -5,7 +5,6 @@ pushd %~dp0\..
 call scripts\clean.cmd
 
 mkdir dist
-mkdir dist\node_modules
 mkdir dist\public
 mkdir dist\public\backoffice
 
@@ -15,7 +14,6 @@ call npm install
 call npm run build
 popd
 xcopy /S backend\build dist
-xcopy /S backend\node_modules dist\node_modules
 
 rem build frontend
 pushd frontend
@@ -30,6 +28,11 @@ call npm install
 call npm run build
 popd
 xcopy /S backoffice\build dist\public\backoffice
+
+rem npm install build
+pushd dist
+call npm install
+popd
 
 popd
 endlocal

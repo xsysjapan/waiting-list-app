@@ -1,0 +1,20 @@
+{
+  "name": "wait-list-app",
+  "version": "0.0.1",
+  "description": "wait-list-app initialised with create-express-typescript-application.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "keywords": [
+    "express"
+  ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "helmet": "^4.6.0",
+    "morgan": "^1.10.0"
+  }
+}
