@@ -2,9 +2,8 @@
 setlocal
 pushd %~dp0\..
 
-if exist dist (
-    rmdir /s /q dist
-)
+call scripts\clean.cmd
+
 mkdir dist
 mkdir dist\node_modules
 mkdir dist\public
