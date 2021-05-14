@@ -1,10 +1,16 @@
 import * as React from "react";
+import NavMenu from "./NavMenu";  
 
 export type LayoutProps = React.PropsWithChildren<{}>;
 
 export const Layout = (props: LayoutProps) => {
   const { children } = props;
-  return <div>{children}</div>;
+  return (
+    <div>
+      <NavMenu />
+      {children}
+    </div>
+  );
 };
 
 export default Layout;

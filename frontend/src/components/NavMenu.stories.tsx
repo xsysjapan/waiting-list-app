@@ -1,17 +1,14 @@
 import { Story, Meta } from "@storybook/react";
 import { MemoryRouter } from "react-router";
-import { Layout, LayoutProps } from "./Layout";
+import { NavMenu, NavMenuProps } from "./NavMenu";
 
 export default {
-  component: Layout,
-  title: "components/Layout",
-  parameters: {
-    layout: "fullscreen",
-  },
+  component: NavMenu,
+  title: "components/NavMenu",
   decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta;
 
-const Template: Story<LayoutProps> = (args) => <Layout {...args} />;
+const Template: Story<NavMenuProps> = (args) => <NavMenu {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
