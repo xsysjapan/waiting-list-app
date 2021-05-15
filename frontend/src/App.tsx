@@ -4,6 +4,7 @@ import {
   Redirect,
   Route,
   RouteProps,
+  RouterProps,
   Switch,
 } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -17,7 +18,22 @@ const Guard = (props: GuardProps) => {
   return (
     <Route
       {...routeProps}
-      component={user ? component : () => <Redirect to="/login" />}
+      component={
+        user
+          ? component
+          : (props: RouterProps) => {
+              const href = props.history.createHref(props.history.location);
+              return (
+                <Redirect
+                  to={
+                    !href || href === "/"
+                      ? "/login"
+                      : "/login?returnUrl=" + href
+                  }
+                />
+              );
+            }
+      }
     />
   );
 };
