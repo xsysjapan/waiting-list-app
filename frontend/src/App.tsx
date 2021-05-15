@@ -47,7 +47,10 @@ const App = () => {
         <Route
           path="/login"
           component={(props: any) => (
-            <LoginPage {...props} onUserLogin={(user) => setUser(user)} />
+            <LoginPage
+              {...props}
+              onLogin={(values) => setUser({ username: values.username })}
+            />
           )}
         />
       </Switch>

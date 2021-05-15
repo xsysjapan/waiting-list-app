@@ -1,15 +1,18 @@
 import * as React from "react";
+import { LoginFormValues } from "../models";
 import Layout from "../components/Layout";
-import { User } from "../models";
+import LoginForm from "../components/LoginForm";
 
 export type LoginPageProps = {
-  onUserLogin: (user: User) => void;
+  onLogin: (user: LoginFormValues) => void;
 };
 
 export const LoginPage = (props: LoginPageProps) => {
+  const { onLogin } = props;
   return (
     <Layout>
       <h1>ログイン</h1>
+      <LoginForm onSubmit={onLogin} />
     </Layout>
   );
 };

@@ -1,5 +1,5 @@
 import * as React from "react";
-import NavMenu from "./NavMenu";  
+import NavMenu from "./NavMenu";
 
 export type LayoutProps = React.PropsWithChildren<{}>;
 
@@ -8,7 +8,7 @@ export const Layout = (props: LayoutProps) => {
   return (
     <div>
       <NavMenu />
-      {children}
+      <div className="container-fluid">{children}</div>
     </div>
   );
 };
