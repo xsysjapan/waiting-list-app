@@ -3,17 +3,18 @@
 
 ## ビルド方法
 
-**For Windows**
+以下を実行すると、各プロジェクトをビルドして `build` フォルダに最終の成果物を配置します。
 
 ```cmd
-scripts\build.cmd
+npm run build
 ```
 
+`build` フォルダをターゲットにデプロイして使用します。
 
 ## 実行方法
 
-**For Windows**
+`npm run build` 後に以下を実行すると、`build` フォルダ内のプロジェクトに対して `npm install` して `npm start` します。
 
 ```cmd
-scripts\run.cmd
+npm run start
 ```
