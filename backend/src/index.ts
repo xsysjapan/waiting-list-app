@@ -40,7 +40,7 @@ createConnection()
 
     // insert new users for test
     const adminUsers = await connection.manager.find(User, {
-      where: "username == 'admin'",
+      username: "admin",
     });
     if (adminUsers.length == 0) {
       await connection.manager.save(
