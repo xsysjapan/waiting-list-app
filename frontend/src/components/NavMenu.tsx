@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export type NavMenuProps = {};
 
-export const NavMenu = (props: NavMenuProps) => {
+export const NavMenu = (_: NavMenuProps) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">

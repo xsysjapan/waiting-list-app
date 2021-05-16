@@ -11,6 +11,3 @@ export default {
 const Template: Story<NavMenuProps> = (args) => <NavMenu {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-  children: "children",
-};

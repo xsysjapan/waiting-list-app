@@ -14,6 +14,3 @@ export default {
 const Template: Story<HomePageProps> = (args) => <HomePage {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-  children: "children",
-};
