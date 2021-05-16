@@ -39,6 +39,7 @@ export const LoginForm = (props: LoginFormProps) => {
           name="username"
           id="username"
           autoComplete="username"
+          data-testid="username"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
         />
@@ -56,6 +57,7 @@ export const LoginForm = (props: LoginFormProps) => {
           name="password"
           id="password"
           autoComplete="current-password"
+          data-testid="password"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
         />
