@@ -8,6 +8,8 @@ import {
 import App from "./App";
 import { createMemoryHistory, LocationState, History } from "history";
 import { MemoryRouter, Router } from "react-router-dom";
+import fetchMock from "jest-fetch-mock";
+import { Session } from "./models";
 
 function renderAppWithRouter<T = LocationState>(history?: History<T>) {
   if (history) {
@@ -26,6 +28,9 @@ function renderAppWithRouter<T = LocationState>(history?: History<T>) {
 }
 
 describe("App", () => {
+  beforeEach(() => {
+    fetchMock.resetMocks();
+  });
   test("should renders login screen given not logged in", () => {
     renderAppWithRouter();
     const title = screen.getByText(/ログイン/i, {
@@ -43,6 +48,17 @@ describe("App", () => {
     expect(title).toBeInTheDocument();
   });
   test("should renders home page given logged in", async () => {
+    fetchMock.mockResponseOnce(() => {
+      return Promise.resolve({
+        status: 200,
+      });
+    });
+    fetchMock.mockResponseOnce(() => {
+      return Promise.resolve({
+        status: 200,
+        body: JSON.stringify({ username: "admin", name: "管理者" } as Session),
+      });
+    });
     renderAppWithRouter();
     const username = screen.getByTestId("username");
     const password = screen.getByTestId("password");
@@ -51,10 +67,12 @@ describe("App", () => {
     });
     act(() => {
       fireEvent.change(username, { target: { value: "admin" } });
+      fireEvent.blur(username);
     });
     expect(username).toHaveProperty("value", "admin");
     act(() => {
       fireEvent.change(password, { target: { value: "P@ssw0rd" } });
+      fireEvent.blur(password);
     });
     expect(password).toHaveProperty("value", "P@ssw0rd");
     act(() => {
