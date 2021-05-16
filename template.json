@@ -20,7 +20,7 @@
       "Description": "WaitingListDb database admin account password",
       "MinLength": "8",
       "MaxLength": "41",
-      "AllowedPattern": "[a-zA-Z0-9@]*",
+      "AllowedPattern": "[a-zA-Z0-9]*",
       "ConstraintDescription": "must contain only alphanumeric characters."
     }
   },
@@ -199,7 +199,6 @@
         }
       }
     },
-
     "WaitingListAppConfigurationTemplate": {
       "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
       "Properties": {
@@ -207,6 +206,11 @@
         "Description": "Default Configuration Version 1.0",
         "SolutionStackName": "64bit Amazon Linux 2 v5.3.2 running Node.js 14",
         "OptionSettings": [
+          {
+            "Namespace": "aws:elasticbeanstalk:environment",
+            "OptionName": "LoadBalancerType",
+            "Value": "application"
+          },
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
             "OptionName": "TYPEORM_CONNECTION",
@@ -317,7 +321,7 @@
         "Engine": "MySQL",
         "DBName": "WaitingListDb",
         "MasterUsername": { "Ref": "DBUser" },
-        "DBInstanceClass": "db.t2.small",
+        "DBInstanceClass": "db.t2.micro",
         "AllocatedStorage": "5",
         "MasterUserPassword": { "Ref": "DBPassword" },
         "VPCSecurityGroups": {
