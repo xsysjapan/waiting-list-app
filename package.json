@@ -14,6 +14,7 @@
     "copy:all": "npm run copy:backend && npm run copy:frontend",
     "build": "npm run install:all && npm run build:all && npm run copy:all",
     "start": "cd build && npm install && npm start",
+    "dev": "npx concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
