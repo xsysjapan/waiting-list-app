@@ -35,7 +35,7 @@ export const LoginForm = (props: LoginFormProps) => {
           className={
             "form-control " + (formik.errors.username ? "is-invalid" : "")
           }
-          type="email"
+          type="text"
           name="username"
           id="username"
           autoComplete="username"

@@ -28,7 +28,7 @@ const Guard = (props: GuardProps) => {
                   to={
                     !href || href === "/"
                       ? "/login"
-                      : "/login?returnUrl=" + href
+                      : "/login?returnUrl=" + encodeURIComponent(href)
                   }
                 />
               );
@@ -46,12 +46,17 @@ const App = () => {
         <Guard user={user} path="/" exact component={HomePage} />
         <Route
           path="/login"
-          component={(props: any) => (
-            <LoginPage
-              {...props}
-              onLogin={(values) => setUser({ username: values.username })}
-            />
-          )}
+          component={(props: RouterProps) => {
+            if (user) {
+              const search = props.history.location.search;
+              const returnUrl = search
+                ? new URLSearchParams(decodeURIComponent(search)).get("returnUrl")
+                : "";
+              return <Redirect to={returnUrl || "/"} />;
+            } else {
+              return <LoginPage {...props} onLoginSuccess={setUser} />;
+            }
+          }}
         />
       </Switch>
     </BrowserRouter>
