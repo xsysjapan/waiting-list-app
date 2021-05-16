@@ -7,7 +7,7 @@
     "DBUser": {
       "NoEcho": "true",
       "Type": "String",
-      "Description": "Test database admin account name",
+      "Description": "WaitingListDb database admin account name",
       "MinLength": "1",
       "MaxLength": "16",
       "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
@@ -17,10 +17,10 @@
     "DBPassword": {
       "NoEcho": "true",
       "Type": "String",
-      "Description": "Test database admin account password",
+      "Description": "WaitingListDb database admin account password",
       "MinLength": "8",
       "MaxLength": "41",
-      "AllowedPattern": "[a-zA-Z0-9]*",
+      "AllowedPattern": "[a-zA-Z0-9@]*",
       "ConstraintDescription": "must contain only alphanumeric characters."
     }
   },
@@ -192,7 +192,7 @@
           "S3Bucket": {
             "Fn::Join": [
               "-",
-              ["cloudformation-examples", { "Ref": "AWS::Region" }]
+              ["elasticbeanstalk-samples", { "Ref": "AWS::Region" }]
             ]
           },
           "S3Key": "nodejs-sample.zip"
@@ -209,29 +209,48 @@
         "OptionSettings": [
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "JDBC_CONNECTION_STRING",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  "jdbc:mysql://",
-                  { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Address"] },
-                  ":",
-                  { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Port"] },
-                  "/waitinglistdb"
-                ]
-              ]
-            }
+            "OptionName": "TYPEORM_CONNECTION",
+            "Value": "mysql"
           },
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "PARAM1",
+            "OptionName": "TYPEORM_HOST",
+            "Value": { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Address"] }
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "TYPEORM_PORT",
+            "Value": { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Port"] }
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "TYPEORM_DATABASE",
+            "Value": "WaitingListDb"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "TYPEORM_USERNAME",
             "Value": { "Ref": "DBUser" }
           },
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "PARAM2",
+            "OptionName": "TYPEORM_PASSWORD",
             "Value": { "Ref": "DBPassword" }
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "TYPEORM_SYNCHRONIZE",
+            "Value": "true"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "TYPEORM_LOGGING",
+            "Value": "true"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:application:environment",
+            "OptionName": "TYPEORM_ENTITIES",
+            "Value": "src/entity/**/*.js"
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
@@ -296,7 +315,7 @@
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
         "Engine": "MySQL",
-        "DBName": "beanstalkdb",
+        "DBName": "WaitingListDb",
         "MasterUsername": { "Ref": "DBUser" },
         "DBInstanceClass": "db.t2.small",
         "AllocatedStorage": "5",
