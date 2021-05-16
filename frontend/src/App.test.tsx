@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   act,
   fireEvent,
@@ -7,17 +6,44 @@ import {
   waitFor,
 } from "@testing-library/react";
 import App from "./App";
+import { createMemoryHistory, LocationState, History } from "history";
+import { MemoryRouter, Router } from "react-router-dom";
+
+function renderAppWithRouter<T = LocationState>(history?: History<T>) {
+  if (history) {
+    render(
+      <Router history={history}>
+        <App />
+      </Router>
+    );
+  } else {
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
+  }
+}
 
 describe("App", () => {
   test("should renders login screen given not logged in", () => {
-    render(<App />);
+    renderAppWithRouter();
     const title = screen.getByText(/ログイン/i, {
       selector: "h1",
     });
     expect(title).toBeInTheDocument();
   });
+  test("should renders not found page when accessing not known page", () => {
+    const history = createMemoryHistory();
+    history.push("/unknown");
+    renderAppWithRouter(history);
+    const title = screen.getByText(/404 Not Found/i, {
+      selector: "h1",
+    });
+    expect(title).toBeInTheDocument();
+  });
   test("should renders home page given logged in", async () => {
-    render(<App />);
+    renderAppWithRouter();
     const username = screen.getByTestId("username");
     const password = screen.getByTestId("password");
     const button = screen.getByText("ログイン", {
