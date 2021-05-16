@@ -1,5 +1,8 @@
+.idea/
+.vscode/
 node_modules/
 build/
+tmp/
+temp/
 logs/
-
-src/app/.notes
+database.sqlite
