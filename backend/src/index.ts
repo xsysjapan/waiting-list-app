@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { createConnection } from "typeorm";
 import "reflect-metadata";
+import bcrypt from "bcryptjs";
 
 import app from "./server";
 import config from "../config.json";
@@ -47,6 +48,7 @@ createConnection()
         connection.manager.create(User, {
           username: "admin",
           name: "管理者",
+          password: await bcrypt.hash("P@ssw0rd", 10),
         })
       );
     }
