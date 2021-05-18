@@ -14,25 +14,32 @@ interface ErrorResult {
   message: string;
 }
 
-async function sendGet(baseUrl: string, params?: any) {
+function generateQueryString(params: any) {
+  if (!params) {
+    return "";
+  }
   const p = new URLSearchParams();
-  if (params) {
-    for (const prop of Object.getOwnPropertyNames(params)) {
-      const value = params[prop];
-      if (value) {
-        p.append(prop, String(value));
-      }
+  for (const prop of Object.getOwnPropertyNames(params)) {
+    const value = params[prop];
+    if (value) {
+      p.append(prop, String(value));
     }
   }
-  const search = p.toString();
-  let url: string;
+  return p.toString();
+}
+
+function buildUrl(baseUrl: string, search: string) {
   if (!search) {
-    url = baseUrl;
+    return baseUrl;
   } else if (baseUrl.includes("?")) {
-    url = `${baseUrl}&${search}`;
+    return `${baseUrl}&${search}`;
   } else {
-    url = `${baseUrl}?${search}`;
+    return `${baseUrl}?${search}`;
   }
+}
+
+async function sendGet(baseUrl: string, params?: any) {
+  const url = buildUrl(baseUrl, generateQueryString(params));
   return await fetch(url, {
     method: "GET", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, *cors, same-origin
@@ -49,13 +56,7 @@ async function sendPost(
   contentType: string = "application/x-www-form-urlencoded"
 ) {
   if (contentType === "application/x-www-form-urlencoded") {
-    const p = new URLSearchParams();
-    for (const prop of Object.getOwnPropertyNames(params)) {
-      const value = params[prop];
-      if (value) {
-        p.append(prop, value);
-      }
-    }
+    const queryString = generateQueryString(params);
     return await fetch(url, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -66,7 +67,7 @@ async function sendPost(
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: p.toString(), // 本文のデータ型は "Content-Type" ヘッダーと一致する必要があります
+      body: queryString, // 本文のデータ型は "Content-Type" ヘッダーと一致する必要があります
     });
   } else {
     const p = new FormData();
@@ -92,24 +93,7 @@ async function sendPost(
 }
 
 async function sendDelete(baseUrl: string, params?: any) {
-  const p = new URLSearchParams();
-  if (params) {
-    for (const prop of Object.getOwnPropertyNames(params)) {
-      const value = params[prop];
-      if (value) {
-        p.append(prop, String(value));
-      }
-    }
-  }
-  const search = p.toString();
-  let url: string;
-  if (!search) {
-    url = baseUrl;
-  } else if (baseUrl.includes("?")) {
-    url = `${baseUrl}&${search}`;
-  } else {
-    url = `${baseUrl}?${search}`;
-  }
+  const url = buildUrl(baseUrl, generateQueryString(params));
   return await fetch(url, {
     method: "DELETE", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, *cors, same-origin

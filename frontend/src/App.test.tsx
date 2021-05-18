@@ -9,7 +9,7 @@ import App from "./App";
 import { createMemoryHistory, LocationState, History } from "history";
 import { MemoryRouter, Router } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
-import { Session } from "./models";
+import { SessionResponse } from "./models";
 
 function renderAppWithRouter<T = LocationState>(history?: History<T>) {
   if (history) {
@@ -51,12 +51,18 @@ describe("App", () => {
     fetchMock.mockResponseOnce(() => {
       return Promise.resolve({
         status: 200,
+        body: JSON.stringify({
+          succeeded: true,
+        }),
       });
     });
     fetchMock.mockResponseOnce(() => {
       return Promise.resolve({
         status: 200,
-        body: JSON.stringify({ username: "admin", name: "管理者" } as Session),
+        body: JSON.stringify({
+          succeeded: true,
+          user: { username: "admin", name: "管理者" },
+        } as SessionResponse),
       });
     });
     renderAppWithRouter();

@@ -66,6 +66,7 @@ const Page = (props: { onLoginSuccess: (user: User) => void }) => {
     handleSession().then(
       (result) => result.succeeded && onLoginSuccess(result.user)
     );
+    // eslint-disable-next-line
   }, []);
   return (
     <LoginPage
