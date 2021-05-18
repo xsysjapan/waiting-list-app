@@ -50,6 +50,7 @@ describe("app", () => {
       .post("/api/session")
       .send({ username: "admin", password: "P@ssw0rd" })
       .expect(200)
+      .expect({ succeeded: true })
       .expect((res) => {
         cookies = res.headers["set-cookie"];
       });
@@ -60,5 +61,26 @@ describe("app", () => {
       .expect((res) => {
         expect(res.body.user).not.toBeUndefined();
       });
+  });
+  test("GET /api/session should return 200 and succeeded false if sined out", async () => {
+    let cookies: any;
+    await request(server)
+      .post("/api/session")
+      .send({ username: "admin", password: "P@ssw0rd" })
+      .expect(200)
+      .expect({ succeeded: true })
+      .expect((res) => {
+        cookies = res.headers["set-cookie"];
+      });
+    await request(server)
+      .delete("/api/session")
+      .set("Cookie", cookies)
+      .expect(200)
+      .expect({ succeeded: true });
+    await request(server)
+      .get("/api/session")
+      .set("Cookie", cookies)
+      .expect(200)
+      .expect({ succeeded: false });
   });
 });

@@ -7,34 +7,40 @@ export const router: Router = Router();
 
 // Define your routes here
 router.get("/api/session", async (req, res) => {
-  req.session.reload(() => {
-    const session = req.session as any;
-    const user = session.user as User | undefined;
-    if (user) {
-      res.status(200).send({
-        succeeded: true,
-        user: {
-          username: user.username,
-          name: user.name,
-        },
-      });
-    } else {
-      res.status(200).send({
-        succeeded: false,
-      });
-    }
+  await new Promise((resolve) => {
+    req.session.reload(() => {
+      const session = req.session as any;
+      const user = session.user as User | undefined;
+      if (user) {
+        res.status(200).send({
+          succeeded: true,
+          user: {
+            username: user.username,
+            name: user.name,
+          },
+        });
+      } else {
+        res.status(200).send({
+          succeeded: false,
+        });
+      }
+      resolve(undefined);
+    });
   });
 });
 
 router.post("/api/session", async (req, res) => {
   const result = await login(req.body.username, req.body.password);
   if (result.succeeded) {
-    req.session.regenerate(() => {
-      const session = req.session as any;
-      session.user = result.user;
-      session.save();
-      res.status(200).send({
-        succeeded: true,
+    await new Promise((resolve) => {
+      req.session.regenerate(() => {
+        const session = req.session as any;
+        session.user = result.user;
+        session.save();
+        res.status(200).send({
+          succeeded: true,
+        });
+        resolve(undefined);
       });
     });
   } else {
@@ -45,8 +51,13 @@ router.post("/api/session", async (req, res) => {
   }
 });
 
-router.delete("/api/session", (req, res) => {
-  res.status(200).send({
-    message: "DELETE request from sample router",
+router.delete("/api/session", async (req, res) => {
+  await new Promise((resolve) => {
+    req.session.destroy(() => {
+      res.status(200).send({
+        succeeded: true,
+      });
+      resolve(undefined);
+    });
   });
 });

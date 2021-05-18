@@ -1,4 +1,3 @@
-export type Session = User;
 export interface User {
   username: string;
   name: string;
@@ -17,3 +16,7 @@ export interface ErrorResponse {
   message: string;
   detail?: string;
 }
+
+export type SessionResponse =
+  | { succeeded: false }
+  | { succeeded: true; user: User };

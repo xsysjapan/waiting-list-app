@@ -44,8 +44,29 @@ const handleLogin = async (
   };
 };
 
+const handleSession = async (): Promise<
+  { succeeded: true; user: User } | { succeeded: false }
+> => {
+  const result = await session();
+  if (result.succeeded) {
+    return {
+      succeeded: true,
+      user: result.user,
+    };
+  } else {
+    return {
+      succeeded: false,
+    };
+  }
+};
+
 const Page = (props: { onLoginSuccess: (user: User) => void }) => {
   const { onLoginSuccess } = props;
+  React.useEffect(() => {
+    handleSession().then(
+      (result) => result.succeeded && onLoginSuccess(result.user)
+    );
+  }, []);
   return (
     <LoginPage
       onLogin={async (values) => {
