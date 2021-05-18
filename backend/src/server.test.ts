@@ -1,17 +1,64 @@
 import request from "supertest";
 import app from "./server";
-import http from "http";
+import http, { Server } from "http";
+import { Connection, createConnection } from "typeorm";
+import { User } from "./entity/User";
+import bcrypt from "bcryptjs";
+import cookie from "cookie";
 
 describe("app", () => {
-  let server: ReturnType<typeof http.createServer>;
-  beforeAll((done) => {
+  let server: Server;
+  let connection: Connection;
+  beforeAll(async (done) => {
+    connection = await createConnection({
+      type: "sqljs",
+      synchronize: true,
+      logging: false,
+      entities: ["src/entity/**/*.ts"],
+      migrations: ["src/migration/**/*.ts"],
+      subscribers: ["src/subscriber/**/*.ts"],
+      cli: {
+        entitiesDir: "src/entity",
+        migrationsDir: "src/migration",
+        subscribersDir: "src/subscriber",
+      },
+    });
+    await connection.manager.save(
+      connection.manager.create(User, {
+        username: "admin",
+        name: "管理者",
+        password: await bcrypt.hash("P@ssw0rd", 10),
+      })
+    );
     server = http.createServer(app);
     server.listen(done);
   });
-  afterAll(() => {
+  afterAll(async () => {
     server.close();
+    await connection.dropDatabase();
+    await connection.close();
   });
-  test("/api/session should return 200 and empty object if not logged in", () => {
-    return request(server).get("/api/session").expect(200).expect({});
+  test("GET /api/session should return 200 and succeeded false if not logged in", async () => {
+    await request(server)
+      .get("/api/session")
+      .expect(200)
+      .expect({ succeeded: false });
+  });
+  test("GET /api/session should return 200 and user info if logged in", async () => {
+    let cookies: any;
+    await request(server)
+      .post("/api/session")
+      .send({ username: "admin", password: "P@ssw0rd" })
+      .expect(200)
+      .expect((res) => {
+        cookies = res.headers["set-cookie"];
+      });
+    await request(server)
+      .get("/api/session")
+      .set("Cookie", cookies)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.user).not.toBeUndefined();
+      });
   });
 });
