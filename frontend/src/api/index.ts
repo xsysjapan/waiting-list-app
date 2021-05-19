@@ -106,12 +106,10 @@ async function sendDelete(baseUrl: string, params?: any) {
 
 export async function login(
   values: LoginFormValues
-): Promise<SuccessfulResult | ErrorResult> {
+): Promise<SessionResult | ErrorResult> {
   const result = await sendPost("/api/session", values);
   if (result.status === 200) {
-    return {
-      succeeded: true,
-    };
+    return await session();
   } else {
     return {
       succeeded: false,

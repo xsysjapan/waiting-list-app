@@ -9,12 +9,13 @@ import {
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { User } from "./models";
+import { AuthContextProvider, useAuthContext } from "./components/AuthContext";
 
-type ProtectedRouteProps = { user: User | null } & RouteProps<string>;
+type ProtectedRouteProps = RouteProps<string>;
 
 const ProtectedRoute = (props: ProtectedRouteProps) => {
-  const { user, component, ...routeProps } = props;
+  const { component, ...routeProps } = props;
+  const { user } = useAuthContext();
   return (
     <Route
       {...routeProps}
@@ -39,26 +40,14 @@ const ProtectedRoute = (props: ProtectedRouteProps) => {
 };
 
 const App = () => {
-  const [user, setUser] = React.useState(null as User | null);
   return (
-    <Switch>
-      <ProtectedRoute user={user} path="/" exact component={HomePage} />
-      <Route
-        path="/login"
-        component={(props: RouterProps) => {
-          if (user) {
-            const search = props.history.location.search;
-            const returnUrl = search
-              ? new URLSearchParams(decodeURIComponent(search)).get("returnUrl")
-              : "";
-            return <Redirect to={returnUrl || "/"} />;
-          } else {
-            return <LoginPage {...props} onLoginSuccess={setUser} />;
-          }
-        }}
-      />
-      <Route path="*" exact component={NotFoundPage} />
-    </Switch>
+    <AuthContextProvider>
+      <Switch>
+        <ProtectedRoute path="/" exact component={HomePage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="*" exact component={NotFoundPage} />
+      </Switch>
+    </AuthContextProvider>
   );
 };
 

@@ -32,6 +32,14 @@ describe("App", () => {
     fetchMock.resetMocks();
   });
   test("should renders login screen given not logged in", () => {
+    fetchMock.mockResponseOnce(() => {
+      return Promise.resolve({
+        status: 200,
+        body: JSON.stringify({
+          succeeded: true,
+        }),
+      });
+    });
     renderAppWithRouter();
     const title = screen.getByText(/ログイン/i, {
       selector: "h1",
@@ -61,11 +69,23 @@ describe("App", () => {
         status: 200,
         body: JSON.stringify({
           succeeded: true,
+        }),
+      });
+    });
+    fetchMock.mockResponseOnce(() => {
+      return Promise.resolve({
+        status: 200,
+        body: JSON.stringify({
+          succeeded: true,
           user: { username: "admin", name: "管理者" },
         } as SessionResponse),
       });
     });
     renderAppWithRouter();
+    const title = screen.getByText(/ログイン/i, {
+      selector: "h1",
+    });
+    expect(title).toBeInTheDocument();
     const username = screen.getByTestId("username");
     const password = screen.getByTestId("password");
     const button = screen.getByText("ログイン", {

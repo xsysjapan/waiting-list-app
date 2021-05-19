@@ -64,7 +64,7 @@ export const LoginForm = (props: LoginFormProps) => {
         <div className="invalid-feedback">{formik.errors.password}</div>
       </div>
       <div className="mb-3">
-        <button className="btn btn-primary btn-block">ログイン</button>
+        <button type="submit" className="btn btn-primary btn-block">ログイン</button>
       </div>
     </form>
   );
