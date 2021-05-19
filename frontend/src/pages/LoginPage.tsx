@@ -3,11 +3,12 @@ import Layout from "../components/Layout";
 import LoginForm from "../components/LoginForm";
 import { useAuthContext } from "../components/AuthContext";
 import { Redirect, RouterProps } from "react-router";
+import { login } from "../api";
 
 export type LoginPageProps = {} & RouterProps;
 
 export const LoginPage = (props: LoginPageProps) => {
-  const { login, user } = useAuthContext();
+  const { user, setUser } = useAuthContext();
 
   if (user) {
     const search = props.history.location.search;
@@ -20,7 +21,14 @@ export const LoginPage = (props: LoginPageProps) => {
   return (
     <Layout>
       <h1>ログイン</h1>
-      <LoginForm onSubmit={(values) => login(values)} />
+      <LoginForm
+        onSubmit={async (values) => {
+          const result = await login(values);
+          if (result.succeeded) {
+            setUser(result.user);
+          }
+        }}
+      />
     </Layout>
   );
 };
