@@ -11,3 +11,11 @@ export default {
 const Template: Story<NavMenuProps> = (args) => <NavMenu {...args} />;
 
 export const Default = Template.bind({});
+
+export const withUser = Template.bind({});
+withUser.args = {
+  user: {
+    username: "admin",
+    name: "管理者",
+  },
+};
