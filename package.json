@@ -9,12 +9,11 @@
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
     "build:all": "npm run build:backend && npm run build:frontend",
-    "copy:backend": "npx cpx -C backend/build/** build",
-    "copy:frontend": "npx cpx -C frontend/build/** build/public",
+    "copy:backend": "npx cpx -C \"backend/build/**/*\" build",
+    "copy:frontend": "npx cpx -C \"frontend/build/**/*\" build/public",
     "copy:all": "npm run copy:backend && npm run copy:frontend",
     "build": "npm run install:all && npm run build:all && npm run copy:all",
-    "start": "npm run build && cd build && npm install && npm start",
-    "start:dev": "npx concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
+    "start": "npx concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
     "dev": "npx concurrently \"cd backend && npm run test\" \"cd frontend && npm run test\" \"cd frontend && npm run storybook\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
