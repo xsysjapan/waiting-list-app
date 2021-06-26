@@ -3,18 +3,23 @@
   "version": "0.0.1",
   "description": "wait-list-app.",
   "scripts": {
-    "install:backend": "cd backend && npm install",
-    "install:frontend": "cd frontend && npm install",
-    "install:all": "npm run install:backend && npm run install:frontend",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
     "build:all": "npm run build:backend && npm run build:frontend",
-    "copy:backend": "npx cpx -C \"backend/build/**/*\" build",
-    "copy:frontend": "npx cpx -C \"frontend/build/**/*\" build/public",
+    "copy:backend": "cpx -C \"backend/build/**/*\" build",
+    "copy:frontend": "cpx -C \"frontend/build/**/*\" build/public",
     "copy:all": "npm run copy:backend && npm run copy:frontend",
-    "build": "npm run install:all && npm run build:all && npm run copy:all",
-    "start": "npx concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
-    "dev": "npx concurrently \"cd backend && npm run test\" \"cd frontend && npm run test\" \"cd frontend && npm run storybook\"",
+    "build": "npm run build:all && npm run copy:all",
+    "start": "concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
+    "dev": "concurrently \"cd backend && npm run test\" \"cd frontend && npm run test\" \"cd frontend && npm run storybook\"",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "frontend": "file:./frontend",
+    "backend": "file:./backend"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.0",
+    "cpx": "^1.5.0"
   }
 }
