@@ -1,7 +1,9 @@
 import { v4 as uuid } from "uuid";
 import { WaitingList, WaitingListDetails } from "../models";
 
-export type WaitingListCreationParams = Pick<WaitingList, "name">;
+export type WaitingListCreationParams = {
+  name: string;
+};
 
 export class WaitingListsService {
   public get(id: string): WaitingListDetails {

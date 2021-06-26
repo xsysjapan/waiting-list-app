@@ -14,13 +14,11 @@ import {
   WaitingListCreationParams,
 } from "../services/waiting-list.service";
 
-@Route("lists")
+@Route("waiting-lists")
 export class WaitingListsController extends Controller {
-  @Get("{waitingListId}")
-  public async getWaitingList(
-    @Path() waitingListId: string
-  ): Promise<WaitingList> {
-    return new WaitingListsService().get(waitingListId);
+  @Get("{id}")
+  public async getWaitingList(@Path() id: string): Promise<WaitingList> {
+    return new WaitingListsService().get(id);
   }
 
   @SuccessResponse("201", "Created") // Custom success response

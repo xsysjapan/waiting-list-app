@@ -1,9 +1,13 @@
-import express from "express";
-import { RegisterRoutes } from "../build/routes";
+import express, { Response, Request } from "express";
+import swaggerUi from "swagger-ui-express";
+import { RegisterRoutes } from "./routes/routes";
 
 export const app = express();
 
-// Use body parser to read sent json payloads
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 RegisterRoutes(app);
+
+app.use("/docs", swaggerUi.serve, async (req: Request, res: Response) => {
+  return res.send(swaggerUi.generateHTML(await import("./swagger.json")));
+});
