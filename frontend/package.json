@@ -24,6 +24,7 @@
     "web-vitals": "^1.1.2"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.3.5",
     "@storybook/addon-actions": "^6.2.9",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
@@ -34,6 +35,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "build:openapi": "openapi-generator-cli generate -g typescript-fetch -i ../backend/src/swagger.json  -o ./src/api/generated --additional-properties=modelPropertyNaming=camelCase,supportsES6=true,withInterfaces=true,typescriptThreePlus=true",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

@@ -7,10 +7,16 @@ import {
   Post,
   Put,
   Query,
+  Response,
   Route,
   SuccessResponse,
 } from "tsoa";
-import { Customer } from "../models";
+import {
+  Customer,
+  ErrorResponse,
+  NotFoundResponse,
+  ValidationErrorResponse,
+} from "../models";
 import {
   CustomersService,
   CustomerCreationParams,
@@ -25,12 +31,15 @@ export class CustomersController extends Controller {
   }
 
   @Get("{id}")
+  @Response<NotFoundResponse>(404, "Not Found")
   public async getCustomer(@Path() id: string): Promise<Customer> {
     return new CustomersService().get(id);
   }
 
-  @SuccessResponse("201", "Created") // Custom success response
   @Post()
+  @SuccessResponse("201", "Created")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createCustomer(
     @Body() requestBody: CustomerCreationParams
   ): Promise<{ id: string }> {
@@ -39,8 +48,11 @@ export class CustomersController extends Controller {
     return { id: result.id };
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Put("{id}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async putCustomer(
     @Path() id: string,
     @Body() requestBody: CustomerModificationParams
@@ -50,8 +62,9 @@ export class CustomersController extends Controller {
     return;
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Delete("{id}")
+  @SuccessResponse("204", "No Content") // Custom success response
+  @Response<NotFoundResponse>(404, "Not Found")
   public async deleteCustomer(@Path() id: string): Promise<void> {
     new CustomersService().delete(id);
     this.setStatus(204); // set return status 204

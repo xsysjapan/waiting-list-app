@@ -1,5 +1,5 @@
 import * as React from "react";
-import { logout } from "../api";
+import api from "../api";
 import { useAuthContext } from "./AuthContext";
 import NavMenu from "./NavMenu";
 
@@ -13,7 +13,7 @@ export const Layout = (props: LayoutProps) => {
       <NavMenu
         user={user}
         onLogoutClick={async () => {
-          await logout();
+          await api.deleteSession();
           clearUser();
         }}
       />

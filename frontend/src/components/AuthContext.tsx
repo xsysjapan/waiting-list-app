@@ -1,6 +1,6 @@
 import * as React from "react";
 import { User } from "../models";
-import * as api from "../api";
+import api from "../api";
 
 type AuthState =
   | {
@@ -27,8 +27,8 @@ const AuthContext = React.createContext({
 
 const fetchSessionState = async () => {
   try {
-    const result = await api.session();
-    if (result.succeeded) {
+    const result = await api.getSession();
+    if (result.user) {
       return {
         loading: false,
         user: result.user,

@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 import LoginForm from "../components/LoginForm";
 import { useAuthContext } from "../components/AuthContext";
 import { Redirect, RouterProps } from "react-router";
-import { login } from "../api";
+import api from "../api";
 
 export type LoginPageProps = {} & RouterProps;
 
@@ -23,8 +23,10 @@ export const LoginPage = (props: LoginPageProps) => {
       <h1>ログイン</h1>
       <LoginForm
         onSubmit={async (values) => {
-          const result = await login(values);
-          if (result.succeeded) {
+          const result = await api.createSession({
+            sessionCreationParams: values,
+          });
+          if (result.user) {
             setUser(result.user);
           }
         }}
