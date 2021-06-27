@@ -11,7 +11,7 @@ import {
   Route,
   SuccessResponse,
 } from "tsoa";
-import { ErrorResponse, NotFoundResponse, User, ValidationErrorResponse } from "../models";
+import { CreatedResponse, ErrorResponse, NotFoundResponse, User, ValidationErrorResponse } from "../models";
 import {
   UsersService,
   UserCreationParams,
@@ -37,7 +37,7 @@ export class UsersController extends Controller {
   @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createUser(
     @Body() requestBody: UserCreationParams
-  ): Promise<{ id: string }> {
+  ): Promise<CreatedResponse> {
     const result = new UsersService().create(requestBody);
     this.setStatus(201);
     return { id: result.id };

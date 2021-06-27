@@ -38,7 +38,7 @@ export class CustomersController extends Controller {
   }
 
   @Post()
-  @SuccessResponse<CreatedResponse>("201", "Created")
+  @SuccessResponse("201", "Created")
   @Response<ErrorResponse>(400, "Bad Request")
   @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createCustomer(

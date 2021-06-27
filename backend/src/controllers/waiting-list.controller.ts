@@ -44,7 +44,7 @@ export class WaitingListsController extends Controller {
   }
 
   @Post()
-  @SuccessResponse<CreatedResponse>("201", "Created")
+  @SuccessResponse("201", "Created")
   @Response<ErrorResponse>(400, "Bad Request")
   @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createWaitingList(
@@ -70,7 +70,7 @@ export class WaitingListsController extends Controller {
   }
 
   @Post("{id}/customers")
-  @SuccessResponse("201", "Created")
+  @SuccessResponse("204", "No Content")
   @Response<ErrorResponse>(400, "Bad Request")
   @Response<NotFoundResponse>(404, "Not Found")
   @Response<ValidationErrorResponse>(422, "Validation Failed")
