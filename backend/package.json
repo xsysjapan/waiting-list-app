@@ -5,13 +5,15 @@
   "main": "src/index.ts",
   "private": true,
   "scripts": {
-    "build": "tsoa spec-and-routes && tsc",
+    "copy-package-json": "node -e \"require('fs').copyFileSync('./package.json', './build/package.json')\"",
+    "build": "tsoa spec-and-routes && tsc && npm run copy-package-json",
     "start": "node ./build/src/index.js",
     "dev": "tsoa spec-and-routes && ts-node ./src/index.ts",
     "dev:nodemon": "nodemon -w src -e ts,json --ignore ./src/routes/routes.ts --ignore ./src/swagger.json -x npm run dev",
     "test": "jest --watch"
   },
   "dependencies": {
+    "@tsoa/runtime": "^3.8.0",
     "express": "^4.17.1",
     "swagger-ui-express": "^4.1.6",
     "tsoa": "^3.8.0",

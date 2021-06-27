@@ -6,7 +6,7 @@ services:
     volumes:
       - ./build:/app
     working_dir: /app
-    command: bash -c "npm install && npm run start"
+    command: bash -c "npm install --only=production && node ./index.js"
     environment:
       PORT: "80"
       TYPEORM_CONNECTION: mysql
