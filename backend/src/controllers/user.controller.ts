@@ -7,10 +7,11 @@ import {
   Post,
   Put,
   Query,
+  Response,
   Route,
   SuccessResponse,
 } from "tsoa";
-import { User } from "../models";
+import { ErrorResponse, NotFoundResponse, User, ValidationErrorResponse } from "../models";
 import {
   UsersService,
   UserCreationParams,
@@ -25,36 +26,45 @@ export class UsersController extends Controller {
   }
 
   @Get("{id}")
+  @Response<NotFoundResponse>(404, "Not Found")
   public async getUser(@Path() id: string): Promise<User> {
     return new UsersService().get(id);
   }
 
-  @SuccessResponse("201", "Created") // Custom success response
   @Post()
+  @SuccessResponse("201", "Created")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createUser(
     @Body() requestBody: UserCreationParams
   ): Promise<{ id: string }> {
     const result = new UsersService().create(requestBody);
-    this.setStatus(201); // set return status 201
+    this.setStatus(201);
     return { id: result.id };
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Put("{id}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async putUser(
     @Path() id: string,
     @Body() requestBody: UserModificationParams
   ): Promise<void> {
     new UsersService().update(id, requestBody);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Delete("{id}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async deleteUser(@Path() id: string): Promise<void> {
     new UsersService().delete(id);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 }

@@ -66,4 +66,5 @@ export class WaitingListsService {
   ) {}
 
   public deleteCustomer(id: string, customerId: string) {}
+  public delete(id: string) {}
 }

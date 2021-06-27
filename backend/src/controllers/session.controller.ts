@@ -5,10 +5,11 @@ import {
   Delete,
   Get,
   Post,
+  Response,
   Route,
   SuccessResponse,
 } from "tsoa";
-import { User } from "../models";
+import { ErrorResponse, User, ValidationErrorResponse } from "../models";
 
 export type SessionCreationParams = {
   username: string;
@@ -16,13 +17,15 @@ export type SessionCreationParams = {
 };
 
 export type SessionResponse = {
-  user: User;
+  user?: User;
 };
 
 @Route("api/session")
 export class SessionsController extends Controller {
-  @SuccessResponse("201", "Created") // Custom success response
   @Post()
+  @SuccessResponse("201", "Created")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createSession(
     @Body() requestBody: SessionCreationParams
   ): Promise<SessionResponse> {
@@ -35,7 +38,6 @@ export class SessionsController extends Controller {
     };
   }
 
-  @SuccessResponse("200", "OK") // Custom success response
   @Get()
   public async getSession(): Promise<SessionResponse> {
     return {
@@ -47,7 +49,7 @@ export class SessionsController extends Controller {
     };
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Delete()
+  @SuccessResponse("204", "No Content")
   public async deleteSession(): Promise<void> {}
 }

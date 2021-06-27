@@ -12,6 +12,7 @@ import {
   SuccessResponse,
 } from "tsoa";
 import {
+  CreatedResponse,
   Customer,
   ErrorResponse,
   NotFoundResponse,
@@ -37,14 +38,14 @@ export class CustomersController extends Controller {
   }
 
   @Post()
-  @SuccessResponse("201", "Created")
+  @SuccessResponse<CreatedResponse>("201", "Created")
   @Response<ErrorResponse>(400, "Bad Request")
   @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createCustomer(
     @Body() requestBody: CustomerCreationParams
-  ): Promise<{ id: string }> {
+  ): Promise<CreatedResponse> {
     const result = new CustomersService().create(requestBody);
-    this.setStatus(201); // set return status 201
+    this.setStatus(201);
     return { id: result.id };
   }
 
@@ -58,16 +59,17 @@ export class CustomersController extends Controller {
     @Body() requestBody: CustomerModificationParams
   ): Promise<void> {
     new CustomersService().update(id, requestBody);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 
   @Delete("{id}")
-  @SuccessResponse("204", "No Content") // Custom success response
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
   @Response<NotFoundResponse>(404, "Not Found")
   public async deleteCustomer(@Path() id: string): Promise<void> {
     new CustomersService().delete(id);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 }

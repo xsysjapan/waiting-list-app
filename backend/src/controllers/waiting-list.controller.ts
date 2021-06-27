@@ -7,10 +7,18 @@ import {
   Post,
   Put,
   Query,
+  Response,
   Route,
   SuccessResponse,
 } from "tsoa";
-import { WaitingList, WaitingListDetails } from "../models";
+import {
+  CreatedResponse,
+  ErrorResponse,
+  NotFoundResponse,
+  ValidationErrorResponse,
+  WaitingList,
+  WaitingListDetails,
+} from "../models";
 import {
   WaitingListsService,
   WaitingListCreationParams,
@@ -30,74 +38,101 @@ export class WaitingListsController extends Controller {
   }
 
   @Get("{id}")
+  @Response<NotFoundResponse>(404, "Not Found")
   public async getWaitingList(@Path() id: string): Promise<WaitingListDetails> {
     return new WaitingListsService().get(id);
   }
 
-  @SuccessResponse("201", "Created") // Custom success response
   @Post()
+  @SuccessResponse<CreatedResponse>("201", "Created")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async createWaitingList(
     @Body() requestBody: WaitingListCreationParams
-  ): Promise<{ id: string }> {
+  ): Promise<CreatedResponse> {
     const result = new WaitingListsService().create(requestBody);
-    this.setStatus(201); // set return status 201
+    this.setStatus(201);
     return { id: result.id };
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Put("{id}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async putWaitingList(
     @Path() id: string,
     @Body() requestBody: WaitingListModificationParams
   ): Promise<void> {
     new WaitingListsService().update(id, requestBody);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 
-  @SuccessResponse("201", "Created") // Custom success response
   @Post("{id}/customers")
+  @SuccessResponse("201", "Created")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async postWaitingListCustomer(
     @Path() id: string,
     @Body() requestBody: WaitingListCustomerCreationParams
   ): Promise<void> {
     new WaitingListsService().addCustomer(id, requestBody);
-    this.setStatus(201); // set return status 204
+    this.setStatus(201);
     return;
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Put("{id}/customers/{customerId}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async putWaitingListCustomer(
     @Path() id: string,
     @Path() customerId: string,
     @Body() requestBody: WaitingListCustomerModificationParams
   ): Promise<void> {
     new WaitingListsService().updateCustomer(id, customerId, requestBody);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Post("{id}/customers/{customerId}/call")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async postWaitingListCustomerCall(
     @Path() id: string,
     @Path() customerId: string,
     @Body() requestBody: WaitingListCallCustomerParams
   ): Promise<void> {
     new WaitingListsService().callCustomer(id, customerId, requestBody);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
     return;
   }
 
-  @SuccessResponse("204", "No Content") // Custom success response
   @Delete("{id}/customers/{customerId}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
   public async deleteWaitingListCustomer(
     @Path() id: string,
     @Path() customerId: string
   ): Promise<void> {
     new WaitingListsService().deleteCustomer(id, customerId);
-    this.setStatus(204); // set return status 204
+    this.setStatus(204);
+    return;
+  }
+
+  @Delete("{id}")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  public async deleteWaitingList(@Path() id: string): Promise<void> {
+    new WaitingListsService().delete(id);
+    this.setStatus(204);
     return;
   }
 }
