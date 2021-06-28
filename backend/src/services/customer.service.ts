@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { Customer } from "../models";
+import { CustomerModel } from "../models";
 
 export type CustomerSearchParams = {
   name: string;
@@ -14,7 +14,7 @@ export type CustomerModificationParams = {
 };
 
 export class CustomersService {
-  public search(param: CustomerSearchParams): Customer[] {
+  public search(param: CustomerSearchParams): CustomerModel[] {
     return [
       {
         id: uuid(),
@@ -25,7 +25,7 @@ export class CustomersService {
     ];
   }
 
-  public get(id: string): Customer {
+  public get(id: string): CustomerModel {
     return {
       id,
       name: "name",

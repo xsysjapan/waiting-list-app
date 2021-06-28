@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { WaitingList, WaitingListDetails } from "../models";
+import { WaitingListModel, WaitingListDetailsModel } from "../models";
 
 export type WaitingListSearchParams = {
   name: string;
@@ -26,7 +26,7 @@ export type WaitingListCustomerModificationParams = {
 export type WaitingListCallCustomerParams = {};
 
 export class WaitingListsService {
-  public search(param: WaitingListSearchParams): WaitingList[] {
+  public search(param: WaitingListSearchParams): WaitingListModel[] {
     return [
       {
         id: uuid(),
@@ -35,7 +35,7 @@ export class WaitingListsService {
     ];
   }
 
-  public get(id: string): WaitingListDetails {
+  public get(id: string): WaitingListDetailsModel {
     return {
       id,
       name: "name",

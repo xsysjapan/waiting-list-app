@@ -9,7 +9,7 @@ import {
   Route,
   SuccessResponse,
 } from "tsoa";
-import { ErrorResponse, User, ValidationErrorResponse } from "../models";
+import { ErrorResponse, UserModel, ValidationErrorResponse } from "../models";
 
 export type SessionCreationParams = {
   username: string;
@@ -17,7 +17,7 @@ export type SessionCreationParams = {
 };
 
 export type SessionResponse = {
-  user?: User;
+  user?: UserModel;
 };
 
 @Route("api/session")

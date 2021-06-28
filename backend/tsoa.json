@@ -1,5 +1,6 @@
 {
   "entryFile": "src/server.ts",
+  "ignore": ["**/node_modules/**"],
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": ["src/**/*.controller.ts"],
   "spec": {

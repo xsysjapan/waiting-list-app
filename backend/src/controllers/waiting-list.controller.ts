@@ -16,8 +16,8 @@ import {
   ErrorResponse,
   NotFoundResponse,
   ValidationErrorResponse,
-  WaitingList,
-  WaitingListDetails,
+  WaitingListModel,
+  WaitingListDetailsModel,
 } from "../models";
 import {
   WaitingListsService,
@@ -33,13 +33,13 @@ export class WaitingListsController extends Controller {
   @Get()
   public async getWaitingLists(
     @Query("name") name: string
-  ): Promise<WaitingList[]> {
+  ): Promise<WaitingListModel[]> {
     return new WaitingListsService().search({ name });
   }
 
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
-  public async getWaitingList(@Path() id: string): Promise<WaitingListDetails> {
+  public async getWaitingList(@Path() id: string): Promise<WaitingListDetailsModel> {
     return new WaitingListsService().get(id);
   }
 

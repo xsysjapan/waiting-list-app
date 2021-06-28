@@ -1,17 +1,17 @@
-export interface WaitingList {
+export interface WaitingListModel {
   id: string;
   name: string;
 }
 
-export type CallingStatus = "NotCalled" | "Calling" | "Arrived";
+export type CallingStatusEnum = "NotCalled" | "Calling" | "Arrived";
 
-export interface WaitingCustomer {
+export interface WaitingCustomerModel {
   id: string;
   name: string;
   phoneNumber: string;
-  status: CallingStatus;
+  status: CallingStatusEnum;
 }
 
-export interface WaitingListDetails extends WaitingList {
-  customers: WaitingCustomer[];
+export interface WaitingListDetailsModel extends WaitingListModel {
+  customers: WaitingCustomerModel[];
 }

@@ -1,8 +1,9 @@
+import { PrismaClient } from "@prisma/client";
 import { v4 as uuid } from "uuid";
-import { User } from "../models";
+import { UserModel } from "../models";
 
 export type UserSearchParams = {
-  name: string;
+  name?: string;
 };
 
 export type UserCreationParams = {
@@ -15,27 +16,40 @@ export type UserModificationParams = {
 };
 
 export class UsersService {
-  public search(param: UserSearchParams): User[] {
-    return [
-      {
-        id: uuid(),
-        username: "username",
-        name: "name",
-      },
-    ];
+  public async search(param: UserSearchParams): Promise<UserModel[]> {
+    const client = new PrismaClient();
+    const dbUsers = await client.user.findMany();
+    return dbUsers.map((e) => ({
+      id: String(e.id),
+      name: e.name,
+      username: e.username,
+    }));
   }
 
-  public get(id: string): User {
+  public async get(id: string): Promise<UserModel | undefined> {
+    const client = new PrismaClient();
+    const dbUser = await client.user.findFirst({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!dbUser) {
+      return undefined;
+    }
     return {
-      id,
-      username: "username",
-      name: "name",
+      id: String(dbUser.id),
+      name: dbUser.name,
+      username: dbUser.username,
     };
   }
 
-  public create(param: UserCreationParams): { id: string } {
+  public async create(param: UserCreationParams): Promise<{ id: string }> {
+    const client = new PrismaClient();
+    var dbUser = await client.user.create({
+      data: param,
+    });
     return {
-      id: uuid(),
+      id: String(dbUser.id),
     };
   }
 

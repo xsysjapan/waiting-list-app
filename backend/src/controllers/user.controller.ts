@@ -11,7 +11,14 @@ import {
   Route,
   SuccessResponse,
 } from "tsoa";
-import { CreatedResponse, ErrorResponse, NotFoundResponse, User, ValidationErrorResponse } from "../models";
+import { NotFoundError } from "../errors";
+import {
+  CreatedResponse,
+  ErrorResponse,
+  NotFoundResponse,
+  UserModel,
+  ValidationErrorResponse,
+} from "../models";
 import {
   UsersService,
   UserCreationParams,
@@ -21,14 +28,18 @@ import {
 @Route("api/users")
 export class UsersController extends Controller {
   @Get()
-  public async getUsers(@Query("name") name: string): Promise<User[]> {
-    return new UsersService().search({ name });
+  public async getUsers(@Query("name") name?: string): Promise<UserModel[]> {
+    return await new UsersService().search({ name });
   }
 
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
-  public async getUser(@Path() id: string): Promise<User> {
-    return new UsersService().get(id);
+  public async getUser(@Path() id: string): Promise<UserModel> {
+    const user = await new UsersService().get(id);
+    if (!user) {
+      throw new NotFoundError();
+    }
+    return user;
   }
 
   @Post()
@@ -38,7 +49,7 @@ export class UsersController extends Controller {
   public async createUser(
     @Body() requestBody: UserCreationParams
   ): Promise<CreatedResponse> {
-    const result = new UsersService().create(requestBody);
+    const result = await new UsersService().create(requestBody);
     this.setStatus(201);
     return { id: result.id };
   }

@@ -13,7 +13,7 @@ import {
 } from "tsoa";
 import {
   CreatedResponse,
-  Customer,
+  CustomerModel,
   ErrorResponse,
   NotFoundResponse,
   ValidationErrorResponse,
@@ -27,13 +27,13 @@ import {
 @Route("api/customers")
 export class CustomersController extends Controller {
   @Get()
-  public async getCustomers(@Query("name") name: string): Promise<Customer[]> {
+  public async getCustomers(@Query("name") name: string): Promise<CustomerModel[]> {
     return new CustomersService().search({ name });
   }
 
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
-  public async getCustomer(@Path() id: string): Promise<Customer> {
+  public async getCustomer(@Path() id: string): Promise<CustomerModel> {
     return new CustomersService().get(id);
   }
 
