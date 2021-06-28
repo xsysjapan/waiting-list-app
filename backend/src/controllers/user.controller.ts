@@ -11,7 +11,13 @@ import {
   Route,
   SuccessResponse,
 } from "tsoa";
-import { CreatedResponse, ErrorResponse, NotFoundResponse, User, ValidationErrorResponse } from "../models";
+import {
+  CreatedResponse,
+  ErrorResponse,
+  NotFoundResponse,
+  User,
+  ValidationErrorResponse,
+} from "../models";
 import {
   UsersService,
   UserCreationParams,
@@ -21,14 +27,14 @@ import {
 @Route("api/users")
 export class UsersController extends Controller {
   @Get()
-  public async getUsers(@Query("name") name: string): Promise<User[]> {
-    return new UsersService().search({ name });
+  public async getUsers(@Query("name") name?: string): Promise<User[]> {
+    return await new UsersService().search({ name });
   }
 
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
   public async getUser(@Path() id: string): Promise<User> {
-    return new UsersService().get(id);
+    return await new UsersService().get(id);
   }
 
   @Post()
@@ -38,7 +44,7 @@ export class UsersController extends Controller {
   public async createUser(
     @Body() requestBody: UserCreationParams
   ): Promise<CreatedResponse> {
-    const result = new UsersService().create(requestBody);
+    const result = await new UsersService().create(requestBody);
     this.setStatus(201);
     return { id: result.id };
   }

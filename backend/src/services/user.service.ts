@@ -1,13 +1,15 @@
 import { v4 as uuid } from "uuid";
-import { User } from "../models";
+import { CreatedResponse, User } from "../models";
+import store from "../cqrs";
 
 export type UserSearchParams = {
-  name: string;
+  name?: string;
 };
 
 export type UserCreationParams = {
   username: string;
   name: string;
+  password: string;
 };
 
 export type UserModificationParams = {
@@ -15,27 +17,24 @@ export type UserModificationParams = {
 };
 
 export class UsersService {
-  public search(param: UserSearchParams): User[] {
-    return [
-      {
-        id: uuid(),
-        username: "username",
-        name: "name",
+  public async search(param: UserSearchParams): Promise<User[]> {
+    return (await store.users.getAll()).map((e: any) => e[1]);
+  }
+
+  public async get(id: string): Promise<User> {
+    return await store.users.get(Number(id));
+  }
+
+  public async create(param: UserCreationParams): Promise<CreatedResponse> {
+    const stream = await store.commandBus.send("createUser", undefined, {
+      payload: {
+        username: param.username,
+        name: param.name,
+        password: param.password,
       },
-    ];
-  }
-
-  public get(id: string): User {
+    });
     return {
-      id,
-      username: "username",
-      name: "name",
-    };
-  }
-
-  public create(param: UserCreationParams): { id: string } {
-    return {
-      id: uuid(),
+      id: stream[0].aggregateId!.toString(),
     };
   }
 
