@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  username  String   @unique
+  name      String?
+  role      Role     @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Customer {
+  id           Int                   @id @default(autoincrement())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @default(now())
+  name         String
+  phoneNumbers CustomerPhoneNumber[]
+}
+
+model CustomerPhoneNumber {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  phoneNumber String
+  Customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  Int
+}
+
+model WaitingList {
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @default(now())
+  name      String
+  customers WaitingListCustomer[]
+}
+
+model WaitingListCustomer {
+  id            Int           @id @default(autoincrement())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now())
+  name          String
+  phoneNumber   String
+  remarks       String?
+  status        CallingStatus @default(NOT_CALLED)
+  waitingList   WaitingList   @relation(fields: [waitingListId], references: [id])
+  waitingListId Int
+}
+
+enum CallingStatus {
+  NOT_CALLED
+  CALLING
+  ARRIVED
+}
