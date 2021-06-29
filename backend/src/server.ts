@@ -29,10 +29,12 @@ app.use(
       });
     }
     if (err instanceof InvalidOperationError) {
-      console.warn(`Unique Constraint Error for ${req.path}`);
+      console.warn(
+        `Invalid Operation Error for ${req.path}, code: ${err.code}, message: ${err.message}`
+      );
       return res.status(400).json({
-        code: "UniqueConstraintError",
-        message: "Unique tsConstraint Error",
+        code: err.code,
+        message: err.message,
       });
     }
     if (err instanceof Error) {

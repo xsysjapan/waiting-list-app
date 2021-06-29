@@ -11,11 +11,12 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  username  String   @unique
-  name      String
-  role      Role     @default(USER)
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  username     String   @unique
+  name         String
+  passwordHash String?
+  role         Role     @default(USER)
 }
 
 enum Role {

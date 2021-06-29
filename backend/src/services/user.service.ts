@@ -1,15 +1,26 @@
 import { PrismaClient } from "@prisma/client";
-import { NotFoundError } from "../errors";
+import crypto from "crypto";
+import { InvalidOperationError, NotFoundError } from "../errors";
 import { UserModel } from "../models";
 import { handlePrismaError } from "../utils/prisma";
+
+function md5Hash(data: string) {
+  return crypto.createHash("md5").update(data).digest("hex");
+}
 
 export type UserSearchParams = {
   name?: string;
 };
 
+export type SessionCreationParams = {
+  username: string;
+  password: string;
+};
+
 export type UserCreationParams = {
   username: string;
   name: string;
+  password: string;
 };
 
 export type UserModificationParams = {
@@ -19,8 +30,8 @@ export type UserModificationParams = {
 export class UsersService {
   public async search(param: UserSearchParams): Promise<UserModel[]> {
     const client = new PrismaClient();
-    const dbUsers = await client.user.findMany();
-    return dbUsers.map((e) => ({
+    const entities = await client.user.findMany();
+    return entities.map((e) => ({
       id: e.id,
       name: e.name,
       username: e.username,
@@ -29,29 +40,53 @@ export class UsersService {
 
   public async get(id: string): Promise<UserModel> {
     const client = new PrismaClient();
-    const dbUser = await client.user.findFirst({
+    const entity = await client.user.findFirst({
       where: {
         id,
       },
     });
-    if (!dbUser) {
+    if (!entity) {
       throw new NotFoundError();
     }
     return {
-      id: String(dbUser.id),
-      name: dbUser.name,
-      username: dbUser.username,
+      id: entity.id,
+      name: entity.name,
+      username: entity.username,
+    };
+  }
+
+  public async login(param: SessionCreationParams): Promise<UserModel> {
+    const client = new PrismaClient();
+    const entity = await client.user.findFirst({
+      where: {
+        username: param.username,
+      },
+    });
+    if (!entity) {
+      throw new InvalidOperationError("LoginFailed", "Login Failed");
+    }
+    if (entity.passwordHash !== md5Hash(param.password)) {
+      throw new InvalidOperationError("LoginFailed", "Login Failed");
+    }
+    return {
+      id: entity.id,
+      name: entity.name,
+      username: entity.username,
     };
   }
 
   public async create(param: UserCreationParams): Promise<{ id: string }> {
     const client = new PrismaClient();
     try {
-      var dbUser = await client.user.create({
-        data: param,
+      var entity = await client.user.create({
+        data: {
+          username: param.username,
+          name: param.name,
+          passwordHash: md5Hash(param.password),
+        },
       });
       return {
-        id: String(dbUser.id),
+        id: entity.id,
       };
     } catch (e) {
       handlePrismaError(e);

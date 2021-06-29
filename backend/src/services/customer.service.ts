@@ -1,5 +1,8 @@
+import { PrismaClient } from "@prisma/client";
 import { v4 as uuid } from "uuid";
+import { NotFoundError } from "../errors";
 import { CustomerModel } from "../models";
+import { handlePrismaError } from "../utils/prisma";
 
 export type CustomerSearchParams = {
   name: string;
@@ -14,32 +17,75 @@ export type CustomerModificationParams = {
 };
 
 export class CustomersService {
-  public search(param: CustomerSearchParams): CustomerModel[] {
-    return [
-      {
-        id: uuid(),
-        name: "name",
-        emails: [],
-        phoneNumbers: [],
-      },
-    ];
-  }
-
-  public get(id: string): CustomerModel {
-    return {
-      id,
-      name: "name",
+  public async search(param: CustomerSearchParams): Promise<CustomerModel[]> {
+    const client = new PrismaClient();
+    const entities = await client.customer.findMany({
+      include: { phoneNumbers: true },
+    });
+    return entities.map((e) => ({
+      id: e.id,
+      name: e.name,
       emails: [],
-      phoneNumbers: [],
-    };
+      phoneNumbers: e.phoneNumbers.map((e) => e.phoneNumber),
+    }));
   }
 
-  public create(param: CustomerCreationParams): { id: string } {
+  public async get(id: string): Promise<CustomerModel> {
+    const client = new PrismaClient();
+    const entity = await client.customer.findFirst({
+      include: { phoneNumbers: true },
+    });
+    if (!entity) {
+      throw new NotFoundError();
+    }
     return {
-      id: uuid(),
+      id: entity.id,
+      name: entity.name,
+      emails: [],
+      phoneNumbers: entity.phoneNumbers.map((e) => e.phoneNumber),
     };
   }
 
-  public update(id: string, param: CustomerModificationParams) {}
-  public delete(id: string) {}
+  public async create(param: CustomerCreationParams): Promise<{ id: string }> {
+    const client = new PrismaClient();
+    try {
+      var entity = await client.customer.create({
+        data: param,
+      });
+      return {
+        id: entity.id,
+      };
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
+  }
+
+  public async update(id: string, param: CustomerModificationParams) {
+    const client = new PrismaClient();
+    try {
+      await client.customer.update({
+        where: {
+          id,
+        },
+        data: param,
+      });
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
+  }
+  public async delete(id: string) {
+    const client = new PrismaClient();
+    try {
+      await client.customer.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
+  }
 }

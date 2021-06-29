@@ -27,14 +27,16 @@ import {
 @Route("api/customers")
 export class CustomersController extends Controller {
   @Get()
-  public async getCustomers(@Query("name") name: string): Promise<CustomerModel[]> {
+  public async getCustomers(
+    @Query("name") name: string
+  ): Promise<CustomerModel[]> {
     return new CustomersService().search({ name });
   }
 
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
   public async getCustomer(@Path() id: string): Promise<CustomerModel> {
-    return new CustomersService().get(id);
+    return await new CustomersService().get(id);
   }
 
   @Post()
@@ -44,7 +46,7 @@ export class CustomersController extends Controller {
   public async createCustomer(
     @Body() requestBody: CustomerCreationParams
   ): Promise<CreatedResponse> {
-    const result = new CustomersService().create(requestBody);
+    const result = await new CustomersService().create(requestBody);
     this.setStatus(201);
     return { id: result.id };
   }
@@ -58,7 +60,7 @@ export class CustomersController extends Controller {
     @Path() id: string,
     @Body() requestBody: CustomerModificationParams
   ): Promise<void> {
-    new CustomersService().update(id, requestBody);
+    await new CustomersService().update(id, requestBody);
     this.setStatus(204);
     return;
   }
@@ -68,7 +70,7 @@ export class CustomersController extends Controller {
   @Response<ErrorResponse>(400, "Bad Request")
   @Response<NotFoundResponse>(404, "Not Found")
   public async deleteCustomer(@Path() id: string): Promise<void> {
-    new CustomersService().delete(id);
+    await new CustomersService().delete(id);
     this.setStatus(204);
     return;
   }

@@ -1,6 +1,6 @@
 export class NotFoundError extends Error {}
 export class InvalidOperationError extends Error {
-  constructor(code: string, message: string) {
+  constructor(public code: string, public message: string) {
     super(message);
   }
 }
