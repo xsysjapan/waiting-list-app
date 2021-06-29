@@ -11,7 +11,6 @@ import {
   Route,
   SuccessResponse,
 } from "tsoa";
-import { NotFoundError } from "../errors";
 import {
   CreatedResponse,
   ErrorResponse,
@@ -35,11 +34,7 @@ export class UsersController extends Controller {
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
   public async getUser(@Path() id: string): Promise<UserModel> {
-    const user = await new UsersService().get(id);
-    if (!user) {
-      throw new NotFoundError();
-    }
-    return user;
+    return await new UsersService().get(id);
   }
 
   @Post()
@@ -63,7 +58,7 @@ export class UsersController extends Controller {
     @Path() id: string,
     @Body() requestBody: UserModificationParams
   ): Promise<void> {
-    new UsersService().update(id, requestBody);
+    await new UsersService().update(id, requestBody);
     this.setStatus(204);
     return;
   }
@@ -74,7 +69,7 @@ export class UsersController extends Controller {
   @Response<NotFoundResponse>(404, "Not Found")
   @Response<ValidationErrorResponse>(422, "Validation Failed")
   public async deleteUser(@Path() id: string): Promise<void> {
-    new UsersService().delete(id);
+    await new UsersService().delete(id);
     this.setStatus(204);
     return;
   }

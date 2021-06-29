@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuid } from "uuid";
+import { NotFoundError } from "../errors";
 import { UserModel } from "../models";
+import { handlePrismaError } from "../utils/prisma";
 
 export type UserSearchParams = {
   name?: string;
@@ -20,21 +21,21 @@ export class UsersService {
     const client = new PrismaClient();
     const dbUsers = await client.user.findMany();
     return dbUsers.map((e) => ({
-      id: String(e.id),
+      id: e.id,
       name: e.name,
       username: e.username,
     }));
   }
 
-  public async get(id: string): Promise<UserModel | undefined> {
+  public async get(id: string): Promise<UserModel> {
     const client = new PrismaClient();
     const dbUser = await client.user.findFirst({
       where: {
-        id: Number(id),
+        id,
       },
     });
     if (!dbUser) {
-      return undefined;
+      throw new NotFoundError();
     }
     return {
       id: String(dbUser.id),
@@ -45,15 +46,45 @@ export class UsersService {
 
   public async create(param: UserCreationParams): Promise<{ id: string }> {
     const client = new PrismaClient();
-    var dbUser = await client.user.create({
-      data: param,
-    });
-    return {
-      id: String(dbUser.id),
-    };
+    try {
+      var dbUser = await client.user.create({
+        data: param,
+      });
+      return {
+        id: String(dbUser.id),
+      };
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
   }
 
-  public update(id: string, param: UserModificationParams) {}
+  public async update(id: string, param: UserModificationParams) {
+    const client = new PrismaClient();
+    try {
+      await client.user.update({
+        where: {
+          id,
+        },
+        data: param,
+      });
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
+  }
 
-  public delete(id: string) {}
+  public async delete(id: string) {
+    const client = new PrismaClient();
+    try {
+      await client.user.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
+  }
 }

@@ -3,7 +3,7 @@ import express, { Response, Request, NextFunction } from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "./routes/routes";
 import { ValidateError } from "tsoa";
-import { NotFoundError } from "./errors";
+import { NotFoundError, UniqueConstraintError } from "./errors";
 
 export const app = express();
 
@@ -23,12 +23,20 @@ app.use(
     }
     if (err instanceof NotFoundError) {
       console.warn(`Not Found Error for ${req.path}`);
-      return res.status(422).json({
+      return res.status(404).json({
         code: "NotFound",
         message: "Not Found",
       });
     }
+    if (err instanceof UniqueConstraintError) {
+      console.warn(`Unique Constraint Error for ${req.path}`);
+      return res.status(400).json({
+        code: "UniqueConstraintError",
+        message: "Unique Constraint Error",
+      });
+    }
     if (err instanceof Error) {
+      console.error(err);
       return res.status(500).json({
         code: "UnknownError",
         message: "Internal Server Error",
