@@ -3,7 +3,7 @@ import express, { Response, Request, NextFunction } from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "./routes/routes";
 import { ValidateError } from "tsoa";
-import { NotFoundError, UniqueConstraintError } from "./errors";
+import { InvalidOperationError, NotFoundError } from "./errors";
 
 export const app = express();
 
@@ -28,11 +28,11 @@ app.use(
         message: "Not Found",
       });
     }
-    if (err instanceof UniqueConstraintError) {
+    if (err instanceof InvalidOperationError) {
       console.warn(`Unique Constraint Error for ${req.path}`);
       return res.status(400).json({
         code: "UniqueConstraintError",
-        message: "Unique Constraint Error",
+        message: "Unique tsConstraint Error",
       });
     }
     if (err instanceof Error) {

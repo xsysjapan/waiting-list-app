@@ -9,6 +9,7 @@ export interface WaitingCustomerModel {
   id: string;
   name: string;
   phoneNumber: string;
+  remarks?: string;
   status: CallingStatusEnum;
 }
 

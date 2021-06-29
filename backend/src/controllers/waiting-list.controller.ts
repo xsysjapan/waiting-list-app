@@ -26,20 +26,21 @@ import {
   WaitingListCustomerCreationParams,
   WaitingListCallCustomerParams,
   WaitingListCustomerModificationParams,
+  WaitingListMoveCustomerParams,
 } from "../services/waiting-list.service";
 
 @Route("api/waiting-lists")
 export class WaitingListsController extends Controller {
   @Get()
-  public async getWaitingLists(
-    @Query("name") name: string
+  public getWaitingLists(
+    @Query("name") name?: string
   ): Promise<WaitingListModel[]> {
     return new WaitingListsService().search({ name });
   }
 
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
-  public async getWaitingList(@Path() id: string): Promise<WaitingListDetailsModel> {
+  public getWaitingList(@Path() id: string): Promise<WaitingListDetailsModel> {
     return new WaitingListsService().get(id);
   }
 
@@ -50,7 +51,7 @@ export class WaitingListsController extends Controller {
   public async createWaitingList(
     @Body() requestBody: WaitingListCreationParams
   ): Promise<CreatedResponse> {
-    const result = new WaitingListsService().create(requestBody);
+    const result = await new WaitingListsService().create(requestBody);
     this.setStatus(201);
     return { id: result.id };
   }
@@ -64,7 +65,7 @@ export class WaitingListsController extends Controller {
     @Path() id: string,
     @Body() requestBody: WaitingListModificationParams
   ): Promise<void> {
-    new WaitingListsService().update(id, requestBody);
+    await new WaitingListsService().update(id, requestBody);
     this.setStatus(204);
     return;
   }
@@ -78,8 +79,8 @@ export class WaitingListsController extends Controller {
     @Path() id: string,
     @Body() requestBody: WaitingListCustomerCreationParams
   ): Promise<void> {
-    new WaitingListsService().addCustomer(id, requestBody);
-    this.setStatus(201);
+    await new WaitingListsService().addCustomer(id, requestBody);
+    this.setStatus(204);
     return;
   }
 
@@ -93,7 +94,7 @@ export class WaitingListsController extends Controller {
     @Path() customerId: string,
     @Body() requestBody: WaitingListCustomerModificationParams
   ): Promise<void> {
-    new WaitingListsService().updateCustomer(id, customerId, requestBody);
+    await new WaitingListsService().updateCustomer(id, customerId, requestBody);
     this.setStatus(204);
     return;
   }
@@ -108,7 +109,22 @@ export class WaitingListsController extends Controller {
     @Path() customerId: string,
     @Body() requestBody: WaitingListCallCustomerParams
   ): Promise<void> {
-    new WaitingListsService().callCustomer(id, customerId, requestBody);
+    await new WaitingListsService().callCustomer(id, customerId, requestBody);
+    this.setStatus(204);
+    return;
+  }
+
+  @Post("{id}/customers/{customerId}/move")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
+  public async postWaitingListCustomerOrder(
+    @Path() id: string,
+    @Path() customerId: string,
+    @Body() requestBody: WaitingListMoveCustomerParams
+  ): Promise<void> {
+    await new WaitingListsService().moveCustomer(id, customerId, requestBody);
     this.setStatus(204);
     return;
   }
@@ -121,7 +137,7 @@ export class WaitingListsController extends Controller {
     @Path() id: string,
     @Path() customerId: string
   ): Promise<void> {
-    new WaitingListsService().deleteCustomer(id, customerId);
+    await new WaitingListsService().deleteCustomer(id, customerId);
     this.setStatus(204);
     return;
   }
@@ -131,7 +147,7 @@ export class WaitingListsController extends Controller {
   @Response<ErrorResponse>(400, "Bad Request")
   @Response<NotFoundResponse>(404, "Not Found")
   public async deleteWaitingList(@Path() id: string): Promise<void> {
-    new WaitingListsService().delete(id);
+    await new WaitingListsService().delete(id);
     this.setStatus(204);
     return;
   }

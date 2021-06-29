@@ -55,6 +55,7 @@ model WaitingListCustomer {
   name          String
   phoneNumber   String
   remarks       String?
+  order         Int
   status        CallingStatus @default(NOT_CALLED)
   waitingList   WaitingList   @relation(fields: [waitingListId], references: [id])
   waitingListId String
