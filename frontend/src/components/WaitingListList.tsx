@@ -7,14 +7,14 @@ interface WaitingListItem {
 }
 
 export type WaitingListListProps = {
-  waitings: WaitingListItem[];
+  waitingLists: WaitingListItem[];
 };
 
 export const WaitingListList = (props: WaitingListListProps) => {
-  const { waitings } = props;
+  const { waitingLists } = props;
   return (
     <div className="list-group">
-      {waitings.map((e) => {
+      {waitingLists.map((e) => {
         return (
           <Link
             key={e.id}

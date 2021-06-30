@@ -14,7 +14,7 @@ const Template: Story<WaitingListListProps> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  waitings: [
+  waitingLists: [
     {
       id: "id",
       name: "2021-05-24",
@@ -24,7 +24,7 @@ Default.args = {
 
 export const MultipleLines = Template.bind({});
 MultipleLines.args = {
-  waitings: [
+  waitingLists: [
     {
       id: "id1",
       name: "2021-05-24 1",
