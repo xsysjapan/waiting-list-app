@@ -6,18 +6,10 @@ services:
     volumes:
       - ./build:/app
     working_dir: /app
-    command: bash -c "npm install --only=production && node ./index.js"
+    command: bash -c "npm install --only=production && npx prisma generate && node ./index.js"
     environment:
       PORT: "80"
-      TYPEORM_CONNECTION: mysql
-      TYPEORM_HOST: db
-      TYPEORM_USERNAME: admin
-      TYPEORM_PASSWORD: Passw0rd
-      TYPEORM_DATABASE: waitinglistdb
-      TYPEORM_PORT: "3306"
-      TYPEORM_SYNCHRONIZE: "true"
-      TYPEORM_LOGGING: "true"
-      TYPEORM_ENTITIES: src/entity/**/*.js
+      DATABASE_URL: mysql://admin:Passw0rd@db/waitinglistdb
     ports:
       - 8080:80
     depends_on:

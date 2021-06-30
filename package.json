@@ -6,8 +6,8 @@
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
     "build:all": "npm run build:backend && npm run build:frontend",
-    "copy:backend": "cpx -C \"backend/build/**/*\" build",
-    "copy:frontend": "cpx -C \"frontend/build/**/*\" build/public",
+    "copy:backend": "cpx-fixed -C \"backend/build/**/*\" build",
+    "copy:frontend": "cpx-fixed -C \"frontend/build/**/*\" build/public",
     "copy:all": "npm run copy:backend && npm run copy:frontend",
     "build": "npm run build:all && npm run copy:all",
     "start": "concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
@@ -15,11 +15,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "frontend": "file:./frontend",
-    "backend": "file:./backend"
+    "backend": "file:./backend",
+    "frontend": "file:./frontend"
   },
   "devDependencies": {
     "concurrently": "^6.2.0",
-    "cpx": "^1.5.0"
+    "cpx-fixed": "^1.6.0"
   }
 }

@@ -6,9 +6,10 @@
   "private": true,
   "scripts": {
     "copy-package-json": "node -e \"require('fs').copyFileSync('./package.json', './build/package.json')\"",
+    "copy-prisma": "cpx-fixed -C \"prisma/**/*\" build/prisma",
     "build:tsoa": "tsoa spec-and-routes",
     "build:openapi": "openapi-generator-cli generate -g typescript-fetch -i ./src/swagger.json  -o ../frontend/src/api/generated --additional-properties=modelPropertyNaming=camelCase,supportsES6=true,withInterfaces=true,typescriptThreePlus=true",
-    "build": "npm run build:tsoa && npm run build:openapi && tsc && npm run copy-package-json",
+    "build": "npm run build:tsoa && npm run build:openapi && tsc && npm run copy-package-json && npm run copy-prisma",
     "start": "node ./build/src/index.js",
     "dev": "npm run build:tsoa && npm run build:openapi && ts-node ./src/index.ts",
     "dev:nodemon:app": "nodemon -w src -e ts,json --ignore ./src/routes/routes.ts --ignore ./src/swagger.json -x \"npm run build:tsoa && ts-node ./src/index.ts\"",
@@ -22,6 +23,7 @@
     "cookie": "^0.4.1",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
+    "prisma": "^2.26.0",
     "swagger-ui-express": "^4.1.6",
     "tsoa": "^3.8.0",
     "uuid": "^8.3.2"
@@ -34,9 +36,9 @@
     "@types/swagger-ui-express": "^4.1.2",
     "@types/uuid": "^8.3.0",
     "concurrently": "^6.2.0",
+    "cpx-fixed": "^1.6.0",
     "jest": "^27.0.5",
     "nodemon": "^2.0.7",
-    "prisma": "^2.25.0",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.4"
