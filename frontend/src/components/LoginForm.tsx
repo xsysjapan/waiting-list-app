@@ -1,6 +1,10 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import { LoginFormValues } from "../models";
+
+export interface LoginFormValues {
+  username: string;
+  password: string;
+}
 
 export type LoginFormProps = {
   onSubmit: (values: LoginFormValues) => void;
@@ -64,7 +68,9 @@ export const LoginForm = (props: LoginFormProps) => {
         <div className="invalid-feedback">{formik.errors.password}</div>
       </div>
       <div className="mb-3">
-        <button type="submit" className="btn btn-primary btn-block">ログイン</button>
+        <button type="submit" className="btn btn-primary btn-block">
+          ログイン
+        </button>
       </div>
     </form>
   );

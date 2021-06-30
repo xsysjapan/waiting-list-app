@@ -3,12 +3,6 @@ export interface User {
   name: string;
 }
 
-// Form
-export interface LoginFormValues {
-  username: string;
-  password: string;
-}
-
 // Server
 type ErrorCodes = string;
 export interface ErrorResponse {
