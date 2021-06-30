@@ -1,16 +1,16 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
-export type WaitingListProps = {
-  waitings: {
-    id: number;
-    date: string;
-    number: number;
-    customer: { id: number; name: string; phoneNumber: string };
-  }[];
+interface WaitingListItem {
+  id: string;
+  name: string;
+}
+
+export type WaitingListListProps = {
+  waitings: WaitingListItem[];
 };
 
-export const WaitingList = (props: WaitingListProps) => {
+export const WaitingListList = (props: WaitingListListProps) => {
   const { waitings } = props;
   return (
     <div className="list-group">
@@ -18,10 +18,10 @@ export const WaitingList = (props: WaitingListProps) => {
         return (
           <Link
             key={e.id}
-            to={`/waitings/${e.id}`}
+            to={`/waiting-lists/${e.id}`}
             className="list-group-item list-group-item-action"
           >
-            {e.customer.name}
+            {e.name}
           </Link>
         );
       })}
@@ -29,4 +29,4 @@ export const WaitingList = (props: WaitingListProps) => {
   );
 };
 
-export default WaitingList;
+export default WaitingListList;
