@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "wait-list-app.",
   "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "preinstall": "npm run install:backend && npm run install:frontend",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
     "build:all": "npm run build:backend && npm run build:frontend",
@@ -13,10 +16,6 @@
     "start": "concurrently \"cd backend && npm run dev:nodemon\" \"cd frontend && npm run start\"",
     "dev": "concurrently \"cd backend && npm run test\" \"cd frontend && npm run test\" \"cd frontend && npm run storybook\"",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "backend": "file:./backend",
-    "frontend": "file:./frontend"
   },
   "devDependencies": {
     "concurrently": "^6.2.0",
