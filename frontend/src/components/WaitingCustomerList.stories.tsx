@@ -18,8 +18,8 @@ const Template: Story<WaitingCustomerListProps> = (args) => (
 const defaultCustomer = {
   id: "id",
   name: "Customer Name",
-  status: "NOT_CALLED",
-  mode: "NORMAL",
+  status: "NOT_CALLED" as "NOT_CALLED" | "CALLING" | "ARRIVED",
+  mode: "NORMAL" as "NORMAL" | "ACTIVE",
 };
 
 const customer1 = {

@@ -14,6 +14,8 @@ export type WaitingCustomerListItemProps = {
   onActivate: (id: string) => void;
   onDeactivate: (id: string) => void;
   onCallClick: (id: string) => void;
+  onCancelCallClick: (id: string) => void;
+  onArriveClick: (id: string) => void;
   onMoveUpClick: (id: string) => void;
   onMoveDownClick: (id: string) => void;
 };
@@ -27,6 +29,8 @@ export const WaitingCustomerListItem = (
     isLast,
     onDeactivate,
     onCallClick,
+    onCancelCallClick,
+    onArriveClick,
     onMoveUpClick,
     onMoveDownClick,
   } = props;
@@ -48,17 +52,64 @@ export const WaitingCustomerListItem = (
       </p>
       {e.mode === "ACTIVE" ? (
         <div className="row mt-3">
-          <div className="col-auto">
-            <button
-              className="btn btn-sm btn-outline-light"
-              onClick={(ev) => {
-                ev.preventDefault();
-                onCallClick(e.id);
-              }}
-            >
-              呼出
-            </button>
-          </div>
+          {e.status === "NOT_CALLED" ? (
+            <div className="col-auto">
+              <button
+                className="btn btn-sm btn-outline-light"
+                onClick={() => {
+                  onCallClick(e.id);
+                }}
+              >
+                呼出
+              </button>
+            </div>
+          ) : null}
+          {e.status === "CALLING" ? (
+            <>
+              <div className="col-auto">
+                <button
+                  className="btn btn-sm btn-outline-light"
+                  onClick={() => {
+                    onCallClick(e.id);
+                  }}
+                >
+                  再呼出
+                </button>
+              </div>
+              <div className="col-auto">
+                <button
+                  className="btn btn-sm btn-outline-light"
+                  onClick={() => {
+                    onCancelCallClick(e.id);
+                  }}
+                >
+                  呼出キャンセル
+                </button>
+              </div>
+              <div className="col-auto">
+                <button
+                  className="btn btn-sm btn-outline-light"
+                  onClick={() => {
+                    onArriveClick(e.id);
+                  }}
+                >
+                  完了
+                </button>
+              </div>
+            </>
+          ) : null}
+          {e.status === "ARRIVED" ? (
+            <div className="col-auto">
+              <button
+                className="btn btn-sm btn-outline-light"
+                onClick={() => {
+                  onCallClick(e.id);
+                }}
+              >
+                再呼出
+              </button>
+            </div>
+          ) : null}
           <div className="col-auto">
             <button
               className="col-auto btn btn-sm btn-outline-light"
@@ -88,6 +139,8 @@ export type WaitingCustomerListProps = {
   onActivate: WaitingCustomerListItemProps["onActivate"];
   onDeactivate: WaitingCustomerListItemProps["onDeactivate"];
   onCallClick: WaitingCustomerListItemProps["onCallClick"];
+  onCancelCallClick: WaitingCustomerListItemProps["onCancelCallClick"];
+  onArriveClick: WaitingCustomerListItemProps["onArriveClick"];
   onMoveUpTo: (id: string, before: string) => void;
   onMoveDownTo: (id: string, after: string) => void;
 };
@@ -98,6 +151,8 @@ export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
     onActivate,
     onDeactivate,
     onCallClick,
+    onCancelCallClick,
+    onArriveClick,
     onMoveUpTo,
     onMoveDownTo,
   } = props;
@@ -111,6 +166,8 @@ export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
           onActivate={onActivate}
           onDeactivate={onDeactivate}
           onCallClick={onCallClick}
+          onCancelCallClick={onCancelCallClick}
+          onArriveClick={onArriveClick}
           onMoveUpClick={() => onMoveUpTo(e.id, customers[i - 1].id)}
           onMoveDownClick={() => onMoveDownTo(e.id, customers[i + 1].id)}
         />
