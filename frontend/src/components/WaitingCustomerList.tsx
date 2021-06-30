@@ -27,6 +27,7 @@ export const WaitingCustomerListItem = (
     customer: e,
     isFirst,
     isLast,
+    onActivate,
     onDeactivate,
     onCallClick,
     onCancelCallClick,
@@ -41,7 +42,12 @@ export const WaitingCustomerListItem = (
         e.mode === "ACTIVE" ? " active" : ""
       }`}
     >
-      <p className="my-0" onClick={() => onDeactivate(e.id)}>
+      <p
+        className="my-0"
+        onClick={() =>
+          e.mode === "ACTIVE" ? onDeactivate(e.id) : onActivate(e.id)
+        }
+      >
         {e.name}
         {e.status === "CALLING" ? (
           <>
@@ -160,6 +166,7 @@ export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
     <div className="list-group">
       {customers.map((e, i) => (
         <WaitingCustomerListItem
+          key={e.id}
           customer={e}
           isFirst={i === 0}
           isLast={i === customers.length - 1}

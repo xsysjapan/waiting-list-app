@@ -9,6 +9,7 @@ import {
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import WaitingListDetailsPage from "./pages/WaitingListDetailsPage";
 import { AuthContextProvider, useAuthContext } from "./components/AuthContext";
 
 type ProtectedRouteProps = RouteProps<string>;
@@ -44,6 +45,11 @@ const App = () => {
     <AuthContextProvider>
       <Switch>
         <ProtectedRoute path="/" exact component={HomePage} />
+        <ProtectedRoute
+          path="/waiting-lists/:id"
+          exact
+          component={WaitingListDetailsPage}
+        />
         <Route path="/login" component={LoginPage} />
         <Route path="*" exact component={NotFoundPage} />
       </Switch>
