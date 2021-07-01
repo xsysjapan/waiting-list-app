@@ -3,6 +3,11 @@ export interface User {
   name: string;
 }
 
+export interface WaitingListSummary {
+  id: string;
+  name: string;
+}
+
 export interface WaitingListDetails {
   id: string;
   name: string;

@@ -12,6 +12,7 @@ import configureStore from "./shared/configureStore";
 import HomePage from "./home/HomePage";
 import LoginPage from "./login/LoginPage";
 import NotFoundPage from "./404/NotFoundPage";
+import WaitingListIndexPage from "./waiting-lists/WaitingListIndexPage";
 import WaitingListDetailsPage from "./waiting-lists/WaitingListDetailsPage";
 
 type ProtectedRouteProps = RouteProps<string>;
@@ -49,8 +50,12 @@ const App = () => {
       <Switch>
         <ProtectedRoute path="/" exact component={HomePage} />
         <ProtectedRoute
-          path="/waiting-lists/:id"
+          path="/waiting-lists"
           exact
+          component={WaitingListIndexPage}
+        />
+        <ProtectedRoute
+          path="/waiting-lists/:id"
           component={WaitingListDetailsPage}
         />
         <Route path="/login" component={LoginPage} />
