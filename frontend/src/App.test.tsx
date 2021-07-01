@@ -9,7 +9,13 @@ import App from "./App";
 import { createMemoryHistory, LocationState, History } from "history";
 import { MemoryRouter, Router } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
-import { SessionResponse } from "./models";
+
+export interface User {
+  username: string;
+  name: string;
+}
+
+export type SessionResponse = { user?: User };
 
 async function renderAppWithRouter<T = LocationState>(history?: History<T>) {
   if (history) {
@@ -38,9 +44,7 @@ describe("App", () => {
     fetchMock.mockResponseOnce(() => {
       return Promise.resolve({
         status: 200,
-        body: JSON.stringify({
-          succeeded: true,
-        }),
+        body: JSON.stringify({}),
       });
     });
     await renderAppWithRouter();
@@ -54,7 +58,7 @@ describe("App", () => {
       return Promise.resolve({
         status: 200,
         body: JSON.stringify({
-          succeeded: true,
+          user: { username: "admin", name: "管理者" },
         }),
       });
     });
@@ -71,7 +75,6 @@ describe("App", () => {
       return Promise.resolve({
         status: 200,
         body: JSON.stringify({
-          succeeded: true,
           user: { username: "admin", name: "管理者" },
         } as SessionResponse),
       });
@@ -86,24 +89,21 @@ describe("App", () => {
     fetchMock.mockResponseOnce(() => {
       return Promise.resolve({
         status: 200,
-        body: JSON.stringify({
-          succeeded: true,
-        }),
+        body: JSON.stringify({} as SessionResponse),
       });
     });
     fetchMock.mockResponseOnce(() => {
       return Promise.resolve({
         status: 200,
         body: JSON.stringify({
-          succeeded: true,
-        }),
+          user: { username: "admin", name: "管理者" },
+        } as SessionResponse),
       });
     });
     fetchMock.mockResponseOnce(() => {
       return Promise.resolve({
         status: 200,
         body: JSON.stringify({
-          succeeded: true,
           user: { username: "admin", name: "管理者" },
         } as SessionResponse),
       });
