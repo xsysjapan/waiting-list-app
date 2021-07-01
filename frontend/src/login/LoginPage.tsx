@@ -1,14 +1,15 @@
 import * as React from "react";
 import Layout from "../shared/Layout";
 import LoginForm from "./LoginForm";
-import { useAuthContext } from "../shared/AuthContext";
 import { Redirect, RouterProps } from "react-router";
-import api from "../shared/api";
+import { useAppDispatch, useAppSelector } from "../shared/hooks";
+import { login } from "../shared/authReducer";
 
 export type LoginPageProps = {} & RouterProps;
 
 export const LoginPage = (props: LoginPageProps) => {
-  const { user, setUser } = useAuthContext();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
 
   if (user) {
     const search = props.history.location.search;
@@ -21,16 +22,7 @@ export const LoginPage = (props: LoginPageProps) => {
   return (
     <Layout>
       <h1>ログイン</h1>
-      <LoginForm
-        onSubmit={async (values) => {
-          const result = await api.createSession({
-            sessionCreationParams: values,
-          });
-          if (result.user) {
-            setUser(result.user);
-          }
-        }}
-      />
+      <LoginForm onSubmit={(values) => dispatch(login(values))} />
     </Layout>
   );
 };

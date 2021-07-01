@@ -6,17 +6,19 @@ import {
   RouterProps,
   Switch,
 } from "react-router-dom";
+import { Provider } from "react-redux";
+import { useAppSelector } from "./shared/hooks";
+import configureStore from "./shared/configureStore";
 import HomePage from "./home/HomePage";
 import LoginPage from "./login/LoginPage";
 import NotFoundPage from "./404/NotFoundPage";
 import WaitingListDetailsPage from "./waiting-lists/WaitingListDetailsPage";
-import { AuthContextProvider, useAuthContext } from "./shared/AuthContext";
 
 type ProtectedRouteProps = RouteProps<string>;
 
 const ProtectedRoute = (props: ProtectedRouteProps) => {
   const { component, ...routeProps } = props;
-  const { user } = useAuthContext();
+  const user = useAppSelector((state) => state.auth.user);
   return (
     <Route
       {...routeProps}
@@ -41,8 +43,9 @@ const ProtectedRoute = (props: ProtectedRouteProps) => {
 };
 
 const App = () => {
+  const store = React.useMemo(configureStore, []);
   return (
-    <AuthContextProvider>
+    <Provider store={store}>
       <Switch>
         <ProtectedRoute path="/" exact component={HomePage} />
         <ProtectedRoute
@@ -53,7 +56,7 @@ const App = () => {
         <Route path="/login" component={LoginPage} />
         <Route path="*" exact component={NotFoundPage} />
       </Switch>
-    </AuthContextProvider>
+    </Provider>
   );
 };
 

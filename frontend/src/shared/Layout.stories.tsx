@@ -1,14 +1,12 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import { Layout, LayoutProps } from "./Layout";
 
 export default {
   component: Layout,
-  title: "components/Layout",
+  title: "shared/Layout",
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta;
 
 const Template: Story<LayoutProps> = (args) => <Layout {...args} />;

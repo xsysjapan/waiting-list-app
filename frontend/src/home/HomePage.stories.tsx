@@ -1,5 +1,4 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import { HomePage, HomePageProps } from "./HomePage";
 
 export default {
@@ -8,7 +7,6 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta;
 
 const Template: Story<HomePageProps> = (args) => <HomePage {...args} />;

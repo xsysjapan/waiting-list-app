@@ -1,5 +1,4 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import {
   WaitingCustomerList,
   WaitingCustomerListProps,
@@ -7,8 +6,7 @@ import {
 
 export default {
   component: WaitingCustomerList,
-  title: "components/WaitingCustomerList",
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
+  title: "waiting-lists/WaitingCustomerList",
 } as Meta;
 
 const Template: Story<WaitingCustomerListProps> = (args) => (

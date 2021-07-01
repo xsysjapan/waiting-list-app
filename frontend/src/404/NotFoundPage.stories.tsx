@@ -1,5 +1,4 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import { NotFoundPage, NotFoundPageProps } from "./NotFoundPage";
 
 export default {
@@ -8,7 +7,6 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta;
 
 const Template: Story<NotFoundPageProps> = (args) => <NotFoundPage {...args} />;

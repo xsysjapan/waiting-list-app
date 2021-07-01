@@ -1,11 +1,9 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import { WaitingListList, WaitingListListProps } from "./WaitingListList";
 
 export default {
   component: WaitingListList,
-  title: "components/WaitingListList",
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
+  title: "waiting-lists/WaitingListList",
 } as Meta;
 
 const Template: Story<WaitingListListProps> = (args) => (

@@ -1,5 +1,4 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import {
   CreateWaitingListForm,
   CreateWaitingListFormProps,
@@ -7,8 +6,7 @@ import {
 
 export default {
   component: CreateWaitingListForm,
-  title: "components/CreateWaitingListForm",
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
+  title: "waiting-lists/CreateWaitingListForm",
 } as Meta;
 
 const Template: Story<CreateWaitingListFormProps> = (args) => (

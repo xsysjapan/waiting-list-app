@@ -1,5 +1,4 @@
 import { Story, Meta } from "@storybook/react";
-import { MemoryRouter } from "react-router";
 import {
   WaitingListDetailsPageView,
   WaitingListDetailsPageViewProps,
@@ -7,11 +6,10 @@ import {
 
 export default {
   component: WaitingListDetailsPageView,
-  title: "pages/WaitingListDetailsPage",
+  title: "waiting-lists/WaitingListDetailsPage",
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta;
 
 const Template: Story<WaitingListDetailsPageViewProps> = (args) => (

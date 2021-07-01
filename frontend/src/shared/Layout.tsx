@@ -1,22 +1,17 @@
 import * as React from "react";
-import api from "./api";
-import { useAuthContext } from "./AuthContext";
+import { logout } from "./authReducer";
+import { useAppDispatch, useAppSelector } from "./hooks";
 import NavMenu from "./NavMenu";
 
 export type LayoutProps = React.PropsWithChildren<{}>;
 
 export const Layout = (props: LayoutProps) => {
   const { children } = props;
-  const { user, clearUser } = useAuthContext();
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
   return (
     <div>
-      <NavMenu
-        user={user}
-        onLogoutClick={async () => {
-          await api.deleteSession();
-          clearUser();
-        }}
-      />
+      <NavMenu user={user} onLogoutClick={() => dispatch(logout)} />
       <div className="container-fluid">{children}</div>
     </div>
   );
