@@ -16,8 +16,8 @@ const Template: Story<WaitingCustomerListProps> = (args) => (
 const defaultCustomer = {
   id: "id",
   name: "Customer Name",
+  phoneNumber: "09012345678",
   status: "NOT_CALLED" as "NOT_CALLED" | "CALLING" | "ARRIVED",
-  mode: "NORMAL" as "NORMAL" | "ACTIVE",
 };
 
 const customer1 = {
@@ -46,6 +46,7 @@ withNormalAndNotCalledState.args = {
       status: "NOT_CALLED",
     },
   ],
+  activeIds: [],
 };
 
 export const withNormalAndCallingState = Template.bind({});
@@ -56,6 +57,7 @@ withNormalAndCallingState.args = {
       status: "CALLING",
     },
   ],
+  activeIds: [],
 };
 
 export const withNormalAndArrivedState = Template.bind({});
@@ -66,6 +68,7 @@ withNormalAndArrivedState.args = {
       status: "ARRIVED",
     },
   ],
+  activeIds: [],
 };
 
 export const withActiveAndNotCalledState = Template.bind({});
@@ -74,9 +77,9 @@ withActiveAndNotCalledState.args = {
     {
       ...defaultCustomer,
       status: "NOT_CALLED",
-      mode: "ACTIVE",
     },
   ],
+  activeIds: ["id"],
 };
 
 export const withActiveAndCallingState = Template.bind({});
@@ -85,9 +88,9 @@ withActiveAndCallingState.args = {
     {
       ...defaultCustomer,
       status: "CALLING",
-      mode: "ACTIVE",
     },
   ],
+  activeIds: ["id"],
 };
 
 export const withActiveAndArrivedState = Template.bind({});
@@ -96,14 +99,15 @@ withActiveAndArrivedState.args = {
     {
       ...defaultCustomer,
       status: "ARRIVED",
-      mode: "ACTIVE",
     },
   ],
+  activeIds: ["id"],
 };
 
 export const MultipleLines = Template.bind({});
 MultipleLines.args = {
   customers: [customer1, customer2, customer3],
+  activeIds: [],
 };
 
 export const MultipleLinesWithActiveState1 = Template.bind({});
@@ -111,11 +115,11 @@ MultipleLinesWithActiveState1.args = {
   customers: [
     {
       ...customer1,
-      mode: "ACTIVE",
     },
     customer2,
     customer3,
   ],
+  activeIds: ["id1"],
 };
 
 export const MultipleLinesWithActiveState2 = Template.bind({});
@@ -124,10 +128,10 @@ MultipleLinesWithActiveState2.args = {
     customer1,
     {
       ...customer2,
-      mode: "ACTIVE",
     },
     customer3,
   ],
+  activeIds: ["id2"],
 };
 
 export const MultipleLinesWithActiveState3 = Template.bind({});
@@ -137,7 +141,7 @@ MultipleLinesWithActiveState3.args = {
     customer2,
     {
       ...customer3,
-      mode: "ACTIVE",
     },
   ],
+  activeIds: ["id3"],
 };

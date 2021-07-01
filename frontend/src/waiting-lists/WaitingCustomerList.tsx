@@ -1,14 +1,9 @@
 import * as React from "react";
-
-interface WaitingCustomerItem {
-  id: string;
-  name: string;
-  status: "NOT_CALLED" | "CALLING" | "ARRIVED";
-  mode: "NORMAL" | "ACTIVE";
-}
+import { WaitingListCustomer } from "../shared/types";
 
 export type WaitingCustomerListItemProps = {
-  customer: WaitingCustomerItem;
+  customer: WaitingListCustomer;
+  active: boolean;
   isFirst: boolean;
   isLast: boolean;
   onActivate: (id: string) => void;
@@ -25,6 +20,7 @@ export const WaitingCustomerListItem = (
 ) => {
   const {
     customer: e,
+    active,
     isFirst,
     isLast,
     onActivate,
@@ -39,14 +35,12 @@ export const WaitingCustomerListItem = (
     <div
       key={e.id}
       className={`list-group-item list-group-item-action${
-        e.mode === "ACTIVE" ? " active" : ""
+        active ? " active" : ""
       }`}
     >
       <p
         className="my-0"
-        onClick={() =>
-          e.mode === "ACTIVE" ? onDeactivate(e.id) : onActivate(e.id)
-        }
+        onClick={() => (active ? onDeactivate(e.id) : onActivate(e.id))}
       >
         {e.name}
         {e.status === "CALLING" ? (
@@ -56,7 +50,7 @@ export const WaitingCustomerListItem = (
           </>
         ) : null}
       </p>
-      {e.mode === "ACTIVE" ? (
+      {active ? (
         <div className="row mt-3">
           {e.status === "NOT_CALLED" ? (
             <div className="col-auto">
@@ -141,7 +135,8 @@ export const WaitingCustomerListItem = (
 };
 
 export type WaitingCustomerListProps = {
-  customers: WaitingCustomerItem[];
+  customers: WaitingListCustomer[];
+  activeIds: string[];
   onActivate: WaitingCustomerListItemProps["onActivate"];
   onDeactivate: WaitingCustomerListItemProps["onDeactivate"];
   onCallClick: WaitingCustomerListItemProps["onCallClick"];
@@ -154,6 +149,7 @@ export type WaitingCustomerListProps = {
 export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
   const {
     customers,
+    activeIds,
     onActivate,
     onDeactivate,
     onCallClick,
@@ -168,6 +164,7 @@ export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
         <WaitingCustomerListItem
           key={e.id}
           customer={e}
+          active={activeIds.includes(e.id)}
           isFirst={i === 0}
           isLast={i === customers.length - 1}
           onActivate={onActivate}

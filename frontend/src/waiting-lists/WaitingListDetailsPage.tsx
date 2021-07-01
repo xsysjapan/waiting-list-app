@@ -1,26 +1,11 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { WaitingListDetails } from "../shared/types";
 import Layout from "../shared/Layout";
 import WaitingCustomerList from "../waiting-lists/WaitingCustomerList";
 
-interface WaitingListCustomer {
-  id: string;
-  name: string;
-  phoneNumber: string;
-  status: "NOT_CALLED" | "CALLING" | "ARRIVED";
-  mode: "NORMAL" | "ACTIVE";
-}
-
-interface WaitingListDetails {
-  id: string;
-  name: string;
-  customers: WaitingListCustomer[];
-}
-
 export type WaitingListDetailsPageViewProps = {
   waitingList: WaitingListDetails;
-  onActivate: (id: string) => void;
-  onDeactivate: (id: string) => void;
   onCallClick: (id: string) => void;
   onCancelCallClick: (id: string) => void;
   onArriveClick: (id: string) => void;
@@ -31,16 +16,27 @@ export type WaitingListDetailsPageViewProps = {
 export const WaitingListDetailsPageView = (
   props: WaitingListDetailsPageViewProps
 ) => {
+  const [activeIds, setActiveIds] = React.useState([] as string[]);
   const { waitingList, ...handlers } = props;
+  const onActivate = (id: string) => setActiveIds([id]);
+  const onDeactivate = (id: string) =>
+    setActiveIds(activeIds.filter((e) => e !== id));
+
   return (
     <Layout>
-      <h1>{waitingList.name}</h1>
+      <div className="d-flex justify-content-between">
+        <h1>{waitingList.name}</h1>
+        <button className="btn btn-outline-dark">追加</button>
+      </div>
       <div className="my-3">
         <h5>呼出中</h5>
         <WaitingCustomerList
           customers={waitingList.customers.filter(
             (e) => e.status === "CALLING"
           )}
+          activeIds={activeIds}
+          onActivate={onActivate}
+          onDeactivate={onDeactivate}
           {...handlers}
         />
       </div>
@@ -50,6 +46,9 @@ export const WaitingListDetailsPageView = (
           customers={waitingList.customers.filter(
             (e) => e.status === "NOT_CALLED"
           )}
+          activeIds={activeIds}
+          onActivate={onActivate}
+          onDeactivate={onDeactivate}
           {...handlers}
         />
       </div>
@@ -59,6 +58,9 @@ export const WaitingListDetailsPageView = (
           customers={waitingList.customers.filter(
             (e) => e.status === "ARRIVED"
           )}
+          activeIds={activeIds}
+          onActivate={onActivate}
+          onDeactivate={onDeactivate}
           {...handlers}
         />
       </div>
@@ -74,8 +76,6 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   return (
     <WaitingListDetailsPageView
       waitingList={{ id: "dummy", name: "Dummy", customers: [] }}
-      onActivate={(id) => console.log(id)}
-      onDeactivate={(id) => console.log(id)}
       onCallClick={(id) => console.log(id)}
       onCancelCallClick={(id) => console.log(id)}
       onArriveClick={(id) => console.log(id)}
