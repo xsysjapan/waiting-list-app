@@ -12,7 +12,7 @@ export const Layout = (props: LayoutProps) => {
   return (
     <div>
       <NavMenu user={user} onLogoutClick={() => dispatch(logout)} />
-      <div className="container-fluid">{children}</div>
+      <div className="container-fluid m-3">{children}</div>
     </div>
   );
 };
