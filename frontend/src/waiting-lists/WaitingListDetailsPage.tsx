@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import Layout from "../components/Layout";
-import WaitingCustomerList from "../components/WaitingCustomerList";
+import Layout from "../shared/Layout";
+import WaitingCustomerList from "../waiting-lists/WaitingCustomerList";
 
 interface WaitingListCustomer {
   id: string;

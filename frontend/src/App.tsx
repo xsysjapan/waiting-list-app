@@ -6,11 +6,11 @@ import {
   RouterProps,
   Switch,
 } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import WaitingListDetailsPage from "./pages/WaitingListDetailsPage";
-import { AuthContextProvider, useAuthContext } from "./components/AuthContext";
+import HomePage from "./home/HomePage";
+import LoginPage from "./login/LoginPage";
+import NotFoundPage from "./404/NotFoundPage";
+import WaitingListDetailsPage from "./waiting-lists/WaitingListDetailsPage";
+import { AuthContextProvider, useAuthContext } from "./shared/AuthContext";
 
 type ProtectedRouteProps = RouteProps<string>;
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import Layout from "../components/Layout";
+import Layout from "../shared/Layout";
 
 export type NotFoundPageProps = {};
 

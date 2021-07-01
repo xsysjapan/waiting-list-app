@@ -9,11 +9,7 @@ import App from "./App";
 import { createMemoryHistory, LocationState, History } from "history";
 import { MemoryRouter, Router } from "react-router-dom";
 import fetchMock from "jest-fetch-mock";
-
-export interface User {
-  username: string;
-  name: string;
-}
+import { User } from "./shared/types";
 
 export type SessionResponse = { user?: User };
 

@@ -1,16 +1,13 @@
 import { Story, Meta } from "@storybook/react";
 import { MemoryRouter } from "react-router";
-import { HomePage, HomePageProps } from "./HomePage";
+import { LoginForm, LoginFormProps } from "./LoginForm";
 
 export default {
-  component: HomePage,
-  title: "pages/HomePage",
-  parameters: {
-    layout: "fullscreen",
-  },
+  component: LoginForm,
+  title: "login/LoginForm",
   decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta;
 
-const Template: Story<HomePageProps> = (args) => <HomePage {...args} />;
+const Template: Story<LoginFormProps> = (args) => <LoginForm {...args} />;
 
 export const Default = Template.bind({});

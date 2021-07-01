@@ -1,9 +1,9 @@
 import * as React from "react";
-import Layout from "../components/Layout";
-import LoginForm from "../components/LoginForm";
-import { useAuthContext } from "../components/AuthContext";
+import Layout from "../shared/Layout";
+import LoginForm from "./LoginForm";
+import { useAuthContext } from "../shared/AuthContext";
 import { Redirect, RouterProps } from "react-router";
-import api from "../api";
+import api from "../shared/api";
 
 export type LoginPageProps = {} & RouterProps;
 

@@ -4,7 +4,7 @@ import { NotFoundPage, NotFoundPageProps } from "./NotFoundPage";
 
 export default {
   component: NotFoundPage,
-  title: "pages/NotFoundPage",
+  title: "404/NotFoundPage",
   parameters: {
     layout: "fullscreen",
   },

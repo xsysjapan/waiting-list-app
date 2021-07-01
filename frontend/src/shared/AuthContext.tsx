@@ -1,6 +1,6 @@
 import * as React from "react";
-import { User } from "../models";
-import api from "../api";
+import { User } from "./types";
+import api from "./api";
 
 type AuthState =
   | {
