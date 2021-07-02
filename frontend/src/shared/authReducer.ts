@@ -20,6 +20,7 @@ export const logout = createAsyncThunk("auth/logoutStatus", async () => {
 
 interface AuthState {
   state: "INITIALIZING" | "LOADING" | "LOADED";
+  error?: string;
   user?: User;
 }
 
@@ -33,11 +34,15 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(session.pending, (state) => {
+      delete state.user;
       state.state = "LOADING";
     });
     builder.addCase(session.fulfilled, (state, action) => {
       state.state = "LOADED";
       state.user = action.payload.user;
+    });
+    builder.addCase(session.rejected, (state) => {
+      state.state = "LOADED";
     });
     builder.addCase(login.pending, (state) => {
       state.state = "LOADING";
@@ -45,6 +50,10 @@ const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.state = "LOADED";
       state.user = action.payload.user;
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.state = "LOADED";
+      state.error = (action.payload as any)?.message || "ログインできません";
     });
   },
 });

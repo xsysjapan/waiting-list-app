@@ -9,3 +9,8 @@ export default {
 const Template: Story<LoginFormProps> = (args) => <LoginForm {...args} />;
 
 export const Default = Template.bind({});
+
+export const withError = Template.bind({});
+withError.args = {
+  error: "Error message.",
+};

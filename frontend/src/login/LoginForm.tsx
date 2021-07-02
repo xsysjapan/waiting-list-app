@@ -7,11 +7,12 @@ export interface LoginFormValues {
 }
 
 export type LoginFormProps = {
+  error: string | undefined;
   onSubmit: (values: LoginFormValues) => void;
 };
 
 export const LoginForm = (props: LoginFormProps) => {
-  const { onSubmit } = props;
+  const { error, onSubmit } = props;
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -31,6 +32,7 @@ export const LoginForm = (props: LoginFormProps) => {
   });
   return (
     <form onSubmit={formik.handleSubmit}>
+      {error ? <p className="text-danger">{error}</p> : null}
       <div className="mb-3">
         <label htmlFor="username" className="form-label">
           ユーザー名
