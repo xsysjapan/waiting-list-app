@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../shared/api";
 import {
   CreateWaitingListRequest,
+  PostWaitingListCustomerCallRequest,
   PostWaitingListCustomerRequest,
+  PutWaitingListCustomerStatusRequest,
 } from "../shared/api/generated";
 import {
   OperationState,
@@ -41,10 +43,47 @@ export const createWaitingListCustomer = createAsyncThunk(
   }
 );
 
+export const deleteWaitingList = createAsyncThunk(
+  "waitingLists/deleteWaitingListStatus",
+  (param: { id: string }) => {
+    return api.deleteWaitingList(param);
+  }
+);
+
 export const deleteWaitingListCustomer = createAsyncThunk(
   "waitingLists/deleteWaitingListCustomerStatus",
   (param: { id: string; customerId: string }) => {
     return api.deleteWaitingListCustomer(param);
+  }
+);
+
+export const callWaitingListCustomer = createAsyncThunk(
+  "waitingLists/callWaitingListCustomerStatus",
+  (
+    param: {
+      id: string;
+      customerId: string;
+    } & PostWaitingListCustomerCallRequest["waitingListCallCustomerParams"]
+  ) => {
+    return api.postWaitingListCustomerCall({
+      ...param,
+      waitingListCallCustomerParams: param,
+    });
+  }
+);
+
+export const updateWaitingListCustomerCallingStatus = createAsyncThunk(
+  "waitingLists/updateWaitingListCustomerCallingStatusStatus",
+  (
+    param: {
+      id: string;
+      customerId: string;
+    } & PutWaitingListCustomerStatusRequest["waitingListUpdateCallingStatusParams"]
+  ) => {
+    return api.putWaitingListCustomerStatus({
+      ...param,
+      waitingListUpdateCallingStatusParams: param,
+    });
   }
 );
 
@@ -59,7 +98,10 @@ interface WaitingListState {
   createWaitingListFormStatus: OperationState;
   createWaitingListCustomerFormError?: string;
   createWaitingListCustomerFormStatus: OperationState;
+  deleteWaitingListStatus: OperationState;
   deleteWaitingListCustomerStatus: OperationState;
+  callWaitingListCustomerStatus: OperationState;
+  updateWaitingListCustomerCallingStatusStatus: OperationState;
 }
 
 const initialState: WaitingListState = {
@@ -68,7 +110,10 @@ const initialState: WaitingListState = {
   waitingLists: [],
   createWaitingListFormStatus: "UNSUBMITTED",
   createWaitingListCustomerFormStatus: "UNSUBMITTED",
+  deleteWaitingListStatus: "UNSUBMITTED",
   deleteWaitingListCustomerStatus: "UNSUBMITTED",
+  callWaitingListCustomerStatus: "UNSUBMITTED",
+  updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
 };
 
 const waitingListSlice = createSlice({
@@ -82,6 +127,10 @@ const waitingListSlice = createSlice({
     createWaitingListCustomerFormInitialized(state) {
       delete state.createWaitingListCustomerFormError;
       state.createWaitingListCustomerFormStatus = "UNSUBMITTED";
+    },
+    waitingListDeleted(state) {
+      delete state.waitingList;
+      state.deleteWaitingListStatus = "UNSUBMITTED";
     },
   },
   extraReducers: (builder) => {
@@ -137,6 +186,19 @@ const waitingListSlice = createSlice({
       state.createWaitingListCustomerFormStatus = "FAILED";
     });
 
+    // 待ちリストの削除
+    builder.addCase(deleteWaitingList.fulfilled, (state, action) => {
+      state.deleteWaitingListStatus = "SUCCEEDED";
+      if (state.waitingList) {
+        state.waitingLists = state.waitingLists.filter(
+          (e) => e.id !== action.meta.arg.id
+        );
+      }
+    });
+    builder.addCase(deleteWaitingList.rejected, (state) => {
+      state.deleteWaitingListStatus = "FAILED";
+    });
+
     // 顧客の削除
     builder.addCase(deleteWaitingListCustomer.fulfilled, (state, action) => {
       state.deleteWaitingListCustomerStatus = "SUCCEEDED";
@@ -149,11 +211,50 @@ const waitingListSlice = createSlice({
     builder.addCase(deleteWaitingListCustomer.rejected, (state) => {
       state.deleteWaitingListCustomerStatus = "FAILED";
     });
+
+    // 顧客の呼び出し
+    builder.addCase(callWaitingListCustomer.fulfilled, (state, action) => {
+      state.callWaitingListCustomerStatus = "SUCCEEDED";
+      if (state.waitingList) {
+        const customer = state.waitingList.customers.filter(
+          (e) => e.id === action.meta.arg.customerId
+        )[0];
+        if (customer) {
+          customer.status = "CALLING";
+        }
+      }
+    });
+    builder.addCase(callWaitingListCustomer.rejected, (state) => {
+      state.callWaitingListCustomerStatus = "FAILED";
+    });
+
+    // 顧客の呼び出し状態の更新
+    builder.addCase(
+      updateWaitingListCustomerCallingStatus.fulfilled,
+      (state, action) => {
+        state.updateWaitingListCustomerCallingStatusStatus = "SUCCEEDED";
+        if (state.waitingList) {
+          const customer = state.waitingList.customers.filter(
+            (e) => e.id === action.meta.arg.customerId
+          )[0];
+          if (customer) {
+            customer.status = action.meta.arg.status;
+          }
+        }
+      }
+    );
+    builder.addCase(
+      updateWaitingListCustomerCallingStatus.rejected,
+      (state) => {
+        state.updateWaitingListCustomerCallingStatusStatus = "FAILED";
+      }
+    );
   },
 });
 
 export const {
   createWaitingListFormInitialized,
   createWaitingListCustomerFormInitialized,
+  waitingListDeleted,
 } = waitingListSlice.actions;
 export default waitingListSlice.reducer;

@@ -4,6 +4,8 @@ import { InvalidOperationError, NotFoundError } from "../errors";
 import { UserModel } from "../models";
 import { handlePrismaError } from "../utils/prisma";
 
+const client = new PrismaClient();
+
 function md5Hash(data: string) {
   return crypto.createHash("md5").update(data).digest("hex");
 }
@@ -29,7 +31,6 @@ export type UserModificationParams = {
 
 export class UsersService {
   public async search(param: UserSearchParams): Promise<UserModel[]> {
-    const client = new PrismaClient();
     const entities = await client.user.findMany();
     return entities.map((e) => ({
       id: e.id,
@@ -39,7 +40,6 @@ export class UsersService {
   }
 
   public async get(id: string): Promise<UserModel> {
-    const client = new PrismaClient();
     const entity = await client.user.findFirst({
       where: {
         id,
@@ -56,7 +56,6 @@ export class UsersService {
   }
 
   public async login(param: SessionCreationParams): Promise<UserModel> {
-    const client = new PrismaClient();
     const entity = await client.user.findFirst({
       where: {
         username: param.username,
@@ -76,7 +75,6 @@ export class UsersService {
   }
 
   public async create(param: UserCreationParams): Promise<{ id: string }> {
-    const client = new PrismaClient();
     try {
       var entity = await client.user.create({
         data: {
@@ -95,7 +93,6 @@ export class UsersService {
   }
 
   public async update(id: string, param: UserModificationParams) {
-    const client = new PrismaClient();
     try {
       await client.user.update({
         where: {
@@ -110,7 +107,6 @@ export class UsersService {
   }
 
   public async delete(id: string) {
-    const client = new PrismaClient();
     try {
       await client.user.delete({
         where: {

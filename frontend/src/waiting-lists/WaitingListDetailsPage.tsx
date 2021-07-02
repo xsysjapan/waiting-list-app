@@ -1,18 +1,24 @@
 import * as React from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { OperationState, WaitingListDetails } from "../shared/types";
 import Layout from "../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
 import { useAppDispatch, useAppSelector } from "../shared/hooks";
 import {
+  callWaitingListCustomer,
+  deleteWaitingList,
   deleteWaitingListCustomer,
   getWaitingListById,
+  updateWaitingListCustomerCallingStatus,
+  waitingListDeleted,
 } from "./waitingListsReducer";
+import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../shared/api/generated";
 
 export type WaitingListDetailsPageViewProps = {
   waitingListStatus: OperationState;
   waitingList: WaitingListDetails | undefined;
+  onDeleteClick: () => void;
   onCancelClick: (id: string) => void;
   onCallClick: (id: string) => void;
   onCancelCallClick: (id: string) => void;
@@ -25,7 +31,7 @@ export const WaitingListDetailsPageView = (
   props: WaitingListDetailsPageViewProps
 ) => {
   const [activeIds, setActiveIds] = React.useState([] as string[]);
-  const { waitingList, ...handlers } = props;
+  const { waitingList, onDeleteClick, ...handlers } = props;
   const onActivate = (id: string) => setActiveIds([id]);
   const onDeactivate = (id: string) =>
     setActiveIds(activeIds.filter((e) => e !== id));
@@ -67,13 +73,24 @@ export const WaitingListDetailsPageView = (
     <Layout>
       <div className="d-flex justify-content-between">
         <h1>{waitingList.name}</h1>
-        <div>
-          <Link
-            to={`/waiting-lists/${waitingList.id}/addCustomer`}
-            className="btn btn-outline-dark"
-          >
-            追加
-          </Link>
+        <div className="row">
+          <div className="col-auto">
+            <button
+              className="btn btn-outline-danger"
+              onClick={onDeleteClick}
+              disabled={waitingList.customers.length > 0}
+            >
+              削除
+            </button>
+          </div>
+          <div className="col-auto">
+            <Link
+              to={`/waiting-lists/${waitingList.id}/addCustomer`}
+              className="btn btn-outline-dark"
+            >
+              追加
+            </Link>
+          </div>
         </div>
       </div>
       {callingCustomers.length > 0 ? (
@@ -123,9 +140,8 @@ export type WaitingListDetailsPageProps = {};
 export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const { getWaitingListByIdStatus, waitingList } = useAppSelector(
-    (state) => state.waitingLists
-  );
+  const { getWaitingListByIdStatus, deleteWaitingListStatus, waitingList } =
+    useAppSelector((state) => state.waitingLists);
   const dispatch = useAppDispatch();
   const onInitialize = () => {
     dispatch(getWaitingListById(id));
@@ -134,16 +150,48 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(onInitialize, []);
 
+  const router = useHistory();
+  const onDeleteStatusChange = () => {
+    if (deleteWaitingListStatus === "SUCCEEDED") {
+      dispatch(waitingListDeleted());
+      router.push("/waiting-lists");
+    }
+    return;
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(onDeleteStatusChange, [deleteWaitingListStatus]);
+
   return (
     <WaitingListDetailsPageView
       waitingListStatus={getWaitingListByIdStatus}
       waitingList={waitingList}
-      onCancelClick={(customerId) =>
-        dispatch(deleteWaitingListCustomer({ id, customerId }))
-      }
-      onCallClick={(id) => console.log(id)}
-      onCancelCallClick={(id) => console.log(id)}
-      onArriveClick={(id) => console.log(id)}
+      onDeleteClick={() => {
+        dispatch(deleteWaitingList({ id }));
+      }}
+      onCancelClick={(customerId) => {
+        dispatch(deleteWaitingListCustomer({ id, customerId }));
+      }}
+      onCallClick={(customerId) => {
+        dispatch(callWaitingListCustomer({ id, customerId }));
+      }}
+      onCancelCallClick={(customerId) => {
+        dispatch(
+          updateWaitingListCustomerCallingStatus({
+            id,
+            customerId,
+            status: WaitingListUpdateCallingStatusParamsStatusEnum.NotCalled,
+          })
+        );
+      }}
+      onArriveClick={(customerId) => {
+        dispatch(
+          updateWaitingListCustomerCallingStatus({
+            id,
+            customerId,
+            status: WaitingListUpdateCallingStatusParamsStatusEnum.Arrived,
+          })
+        );
+      }}
       onMoveUpTo={(id, before) => console.log(id, before)}
       onMoveDownTo={(id, after) => console.log(id, after)}
     />

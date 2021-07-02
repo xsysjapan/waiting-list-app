@@ -27,6 +27,7 @@ import {
   WaitingListCallCustomerParams,
   WaitingListCustomerModificationParams,
   WaitingListMoveCustomerParams,
+  WaitingListUpdateCallingStatusParams,
 } from "../services/waiting-list.service";
 
 @Route("api/waiting-lists")
@@ -110,6 +111,25 @@ export class WaitingListsController extends Controller {
     @Body() requestBody: WaitingListCallCustomerParams
   ): Promise<void> {
     await new WaitingListsService().callCustomer(id, customerId, requestBody);
+    this.setStatus(204);
+    return;
+  }
+
+  @Put("{id}/customers/{customerId}/status")
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
+  public async putWaitingListCustomerStatus(
+    @Path() id: string,
+    @Path() customerId: string,
+    @Body() requestBody: WaitingListUpdateCallingStatusParams
+  ): Promise<void> {
+    await new WaitingListsService().updateCustomerCallingStatus(
+      id,
+      customerId,
+      requestBody
+    );
     this.setStatus(204);
     return;
   }

@@ -4,6 +4,8 @@ import { NotFoundError } from "../errors";
 import { CustomerModel } from "../models";
 import { handlePrismaError } from "../utils/prisma";
 
+const client = new PrismaClient();
+
 export type CustomerSearchParams = {
   name: string;
 };
@@ -18,7 +20,6 @@ export type CustomerModificationParams = {
 
 export class CustomersService {
   public async search(param: CustomerSearchParams): Promise<CustomerModel[]> {
-    const client = new PrismaClient();
     const entities = await client.customer.findMany({
       include: { phoneNumbers: true },
     });
@@ -31,7 +32,6 @@ export class CustomersService {
   }
 
   public async get(id: string): Promise<CustomerModel> {
-    const client = new PrismaClient();
     const entity = await client.customer.findFirst({
       include: { phoneNumbers: true },
     });
@@ -47,7 +47,6 @@ export class CustomersService {
   }
 
   public async create(param: CustomerCreationParams): Promise<{ id: string }> {
-    const client = new PrismaClient();
     try {
       var entity = await client.customer.create({
         data: param,
@@ -62,7 +61,6 @@ export class CustomersService {
   }
 
   public async update(id: string, param: CustomerModificationParams) {
-    const client = new PrismaClient();
     try {
       await client.customer.update({
         where: {
@@ -76,7 +74,6 @@ export class CustomersService {
     }
   }
   public async delete(id: string) {
-    const client = new PrismaClient();
     try {
       await client.customer.delete({
         where: {

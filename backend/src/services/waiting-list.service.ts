@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuid } from "uuid";
 import { InvalidOperationError, NotFoundError } from "../errors";
 import { WaitingListModel, WaitingListDetailsModel } from "../models";
 import { handlePrismaError } from "../utils/prisma";
+
+const client = new PrismaClient();
 
 export type WaitingListSearchParams = {
   name?: string;
@@ -30,6 +31,10 @@ export type WaitingListCallCustomerParams = {
   message?: string;
 };
 
+export type WaitingListUpdateCallingStatusParams = {
+  status: "NOT_CALLED" | "ARRIVED";
+};
+
 export type WaitingListMoveCustomerParams = {
   before?: string;
   after?: string;
@@ -39,7 +44,6 @@ export class WaitingListsService {
   public async search(
     param: WaitingListSearchParams
   ): Promise<WaitingListModel[]> {
-    const client = new PrismaClient();
     const entities = await client.waitingList.findMany();
     return entities.map((e) => ({
       id: e.id,
@@ -48,7 +52,6 @@ export class WaitingListsService {
   }
 
   public async get(id: string): Promise<WaitingListDetailsModel> {
-    const client = new PrismaClient();
     const entity = await client.waitingList.findFirst({
       where: { id },
       include: { customers: true },
@@ -74,7 +77,6 @@ export class WaitingListsService {
   public async create(
     param: WaitingListCreationParams
   ): Promise<{ id: string }> {
-    const client = new PrismaClient();
     try {
       const entity = await client.waitingList.create({
         data: param,
@@ -89,7 +91,6 @@ export class WaitingListsService {
   }
 
   public async update(id: string, param: WaitingListModificationParams) {
-    const client = new PrismaClient();
     try {
       const entity = await client.waitingList.update({
         where: { id },
@@ -111,7 +112,6 @@ export class WaitingListsService {
     id: string,
     param: WaitingListCustomerCreationParams
   ) {
-    const client = new PrismaClient();
     const entities = await client.waitingListCustomer.findMany({
       where: { waitingListId: id },
     });
@@ -134,7 +134,6 @@ export class WaitingListsService {
     customerId: string,
     param: WaitingListCustomerModificationParams
   ) {
-    const client = new PrismaClient();
     try {
       await client.waitingListCustomer.update({
         where: { id: customerId },
@@ -154,12 +153,29 @@ export class WaitingListsService {
     customerId: string,
     param: WaitingListCallCustomerParams
   ) {
-    const client = new PrismaClient();
     try {
       await client.waitingListCustomer.update({
         where: { id: customerId },
         data: {
           status: "CALLING",
+          updatedAt: new Date(),
+        },
+      });
+    } catch (e) {
+      handlePrismaError(e);
+      throw e;
+    }
+  }
+  public async updateCustomerCallingStatus(
+    id: string,
+    customerId: string,
+    param: WaitingListUpdateCallingStatusParams
+  ) {
+    try {
+      await client.waitingListCustomer.update({
+        where: { id: customerId },
+        data: {
+          status: param.status,
           updatedAt: new Date(),
         },
       });
@@ -174,7 +190,6 @@ export class WaitingListsService {
     customerId: string,
     param: WaitingListMoveCustomerParams
   ) {
-    const client = new PrismaClient();
     const entities = await client.waitingListCustomer.findMany({
       where: { waitingListId: id },
       orderBy: { order: "asc" },
@@ -269,7 +284,6 @@ export class WaitingListsService {
   }
 
   public async deleteCustomer(id: string, customerId: string) {
-    const client = new PrismaClient();
     try {
       await client.waitingListCustomer.delete({
         where: { id: customerId },
@@ -280,7 +294,6 @@ export class WaitingListsService {
     }
   }
   public async delete(id: string) {
-    const client = new PrismaClient();
     try {
       await client.waitingList.delete({
         where: { id: id },
