@@ -1,14 +1,16 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
+import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { WaitingListDetails } from "../shared/types";
+import { OperationState, WaitingListDetails } from "../shared/types";
 import Layout from "../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
 import { useAppDispatch, useAppSelector } from "../shared/hooks";
 import { getWaitingListById } from "./waitingListsReducer";
 
 export type WaitingListDetailsPageViewProps = {
-  waitingList: WaitingListDetails;
+  waitingListStatus: OperationState;
+  waitingList: WaitingListDetails | undefined;
+  onCancelClick: (id: string) => void;
   onCallClick: (id: string) => void;
   onCancelCallClick: (id: string) => void;
   onArriveClick: (id: string) => void;
@@ -25,28 +27,51 @@ export const WaitingListDetailsPageView = (
   const onDeactivate = (id: string) =>
     setActiveIds(activeIds.filter((e) => e !== id));
   const callingCustomers = React.useMemo(
-    () => waitingList.customers.filter((e) => e.status === "CALLING"),
-    [waitingList.customers]
+    () =>
+      waitingList
+        ? waitingList.customers.filter((e) => e.status === "CALLING")
+        : [],
+    [waitingList]
   );
   const waitingCustomers = React.useMemo(
-    () => waitingList.customers.filter((e) => e.status === "NOT_CALLED"),
-    [waitingList.customers]
+    () =>
+      waitingList
+        ? waitingList.customers.filter((e) => e.status === "NOT_CALLED")
+        : [],
+    [waitingList]
   );
   const arrivedCustomers = React.useMemo(
-    () => waitingList.customers.filter((e) => e.status === "ARRIVED").reverse(),
-    [waitingList.customers]
+    () =>
+      waitingList
+        ? waitingList.customers.filter((e) => e.status === "ARRIVED").reverse()
+        : [],
+    [waitingList]
   );
+
+  if (!waitingList) {
+    return (
+      <Layout>
+        <div className="d-flex justify-content-center">
+          <div className="spinner-grow text-primary" role="status">
+            <span className="visually-hidden">読み込み中...</span>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <div className="d-flex justify-content-between">
         <h1>{waitingList.name}</h1>
-        <Link
-          to={`/waiting-lists/${waitingList.id}/addCustomer`}
-          className="btn btn-outline-dark"
-        >
-          追加
-        </Link>
+        <div>
+          <Link
+            to={`/waiting-lists/${waitingList.id}/addCustomer`}
+            className="btn btn-outline-dark"
+          >
+            追加
+          </Link>
+        </div>
       </div>
       {callingCustomers.length > 0 ? (
         <div className="my-3">
@@ -90,13 +115,11 @@ export const WaitingListDetailsPageView = (
   );
 };
 
-export type WaitingListDetailsPageProps = {} & RouteComponentProps<{
-  id: string;
-}>;
+export type WaitingListDetailsPageProps = {};
 
 export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
-  const { match } = props;
-  const id = match?.params?.id;
+  const params = useParams<{ id: string }>();
+  const id = params.id;
   const { getWaitingListByIdStatus, waitingList } = useAppSelector(
     (state) => state.waitingLists
   );
@@ -107,18 +130,12 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(onInitialize, []);
-  if (getWaitingListByIdStatus === "UNSUBMITTED") {
-    return null;
-  }
-  if (getWaitingListByIdStatus === "LOADING") {
-    return null;
-  }
-  if (getWaitingListByIdStatus === "FAILED") {
-    return null;
-  }
+
   return (
     <WaitingListDetailsPageView
-      waitingList={waitingList!}
+      waitingListStatus={getWaitingListByIdStatus}
+      waitingList={waitingList}
+      onCancelClick={(id) => console.log(id)}
       onCallClick={(id) => console.log(id)}
       onCancelCallClick={(id) => console.log(id)}
       onArriveClick={(id) => console.log(id)}

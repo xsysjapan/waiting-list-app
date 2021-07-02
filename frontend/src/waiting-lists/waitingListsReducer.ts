@@ -4,7 +4,11 @@ import {
   CreateWaitingListRequest,
   PostWaitingListCustomerRequest,
 } from "../shared/api/generated";
-import { WaitingListDetails, WaitingListSummary } from "../shared/types";
+import {
+  OperationState,
+  WaitingListDetails,
+  WaitingListSummary,
+} from "../shared/types";
 
 export const getWaitingLists = createAsyncThunk(
   "waitingLists/getWaitingListsStatus",
@@ -15,6 +19,7 @@ export const getWaitingListById = createAsyncThunk(
   "waitingLists/getWaitingListByIdStatus",
   (id: string) => api.getWaitingList({ id })
 );
+
 export const createWaitingList = createAsyncThunk(
   "waitingLists/createWaitingListStatus",
   (param: CreateWaitingListRequest["waitingListCreationParams"]) => {
@@ -35,8 +40,6 @@ export const createWaitingListCustomer = createAsyncThunk(
     });
   }
 );
-
-type OperationState = "UNSUBMITTED" | "LOADING" | "SUCCEEDED" | "FAILED";
 
 interface WaitingListState {
   getWaitingListsError?: string;
@@ -75,7 +78,6 @@ const waitingListSlice = createSlice({
   extraReducers: (builder) => {
     // 待ちリストの取得
     builder.addCase(getWaitingLists.pending, (state) => {
-      state.waitingLists = [];
       state.getWaitingListsStatus = "LOADING";
     });
     builder.addCase(getWaitingLists.fulfilled, (state, action) => {

@@ -66,12 +66,7 @@ export class WaitingListsService {
           name: e.name,
           phoneNumber: e.phoneNumber,
           remarks: e.remarks || undefined,
-          status:
-            e.status === "NOT_CALLED"
-              ? "NotCalled"
-              : e.status === "CALLING"
-              ? "Calling"
-              : "Arrived",
+          status: e.status,
         })),
     };
   }

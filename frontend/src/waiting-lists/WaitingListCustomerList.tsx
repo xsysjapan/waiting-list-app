@@ -8,6 +8,7 @@ export type WaitingListCustomerListItemProps = {
   isLast: boolean;
   onActivate: (id: string) => void;
   onDeactivate: (id: string) => void;
+  onCancelClick: (id: string) => void;
   onCallClick: (id: string) => void;
   onCancelCallClick: (id: string) => void;
   onArriveClick: (id: string) => void;
@@ -25,6 +26,7 @@ export const WaitingListCustomerListItem = (
     isLast,
     onActivate,
     onDeactivate,
+    onCancelClick,
     onCallClick,
     onCancelCallClick,
     onArriveClick,
@@ -53,16 +55,28 @@ export const WaitingListCustomerListItem = (
       {active ? (
         <div className="row mt-3">
           {e.status === "NOT_CALLED" ? (
-            <div className="col-auto">
-              <button
-                className="btn btn-sm btn-outline-light"
-                onClick={() => {
-                  onCallClick(e.id);
-                }}
-              >
-                呼出
-              </button>
-            </div>
+            <>
+              <div className="col-auto">
+                <button
+                  className="btn btn-sm btn-outline-light"
+                  onClick={() => {
+                    onCallClick(e.id);
+                  }}
+                >
+                  呼出
+                </button>
+              </div>
+              <div className="col-auto">
+                <button
+                  className="btn btn-sm btn-outline-light"
+                  onClick={() => {
+                    onCancelClick(e.id);
+                  }}
+                >
+                  キャンセル
+                </button>
+              </div>
+            </>
           ) : null}
           {e.status === "CALLING" ? (
             <>
@@ -139,6 +153,7 @@ export type WaitingListCustomerListProps = {
   activeIds: string[];
   onActivate: WaitingListCustomerListItemProps["onActivate"];
   onDeactivate: WaitingListCustomerListItemProps["onDeactivate"];
+  onCancelClick: WaitingListCustomerListItemProps["onCancelClick"];
   onCallClick: WaitingListCustomerListItemProps["onCallClick"];
   onCancelCallClick: WaitingListCustomerListItemProps["onCancelCallClick"];
   onArriveClick: WaitingListCustomerListItemProps["onArriveClick"];
@@ -146,12 +161,15 @@ export type WaitingListCustomerListProps = {
   onMoveDownTo: (id: string, after: string) => void;
 };
 
-export const WaitingListCustomerList = (props: WaitingListCustomerListProps) => {
+export const WaitingListCustomerList = (
+  props: WaitingListCustomerListProps
+) => {
   const {
     customers,
     activeIds,
     onActivate,
     onDeactivate,
+    onCancelClick,
     onCallClick,
     onCancelCallClick,
     onArriveClick,
@@ -169,6 +187,7 @@ export const WaitingListCustomerList = (props: WaitingListCustomerListProps) => 
           isLast={i === customers.length - 1}
           onActivate={onActivate}
           onDeactivate={onDeactivate}
+          onCancelClick={onCancelClick}
           onCallClick={onCallClick}
           onCancelCallClick={onCancelCallClick}
           onArriveClick={onArriveClick}

@@ -3,7 +3,7 @@ export interface WaitingListModel {
   name: string;
 }
 
-export type CallingStatusEnum = "NotCalled" | "Calling" | "Arrived";
+export type CallingStatusEnum = "NOT_CALLED" | "CALLING" | "ARRIVED";
 
 export interface WaitingCustomerModel {
   id: string;
