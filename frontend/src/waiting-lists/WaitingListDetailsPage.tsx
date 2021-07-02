@@ -5,7 +5,10 @@ import { OperationState, WaitingListDetails } from "../shared/types";
 import Layout from "../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
 import { useAppDispatch, useAppSelector } from "../shared/hooks";
-import { getWaitingListById } from "./waitingListsReducer";
+import {
+  deleteWaitingListCustomer,
+  getWaitingListById,
+} from "./waitingListsReducer";
 
 export type WaitingListDetailsPageViewProps = {
   waitingListStatus: OperationState;
@@ -135,7 +138,9 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
     <WaitingListDetailsPageView
       waitingListStatus={getWaitingListByIdStatus}
       waitingList={waitingList}
-      onCancelClick={(id) => console.log(id)}
+      onCancelClick={(customerId) =>
+        dispatch(deleteWaitingListCustomer({ id, customerId }))
+      }
       onCallClick={(id) => console.log(id)}
       onCancelCallClick={(id) => console.log(id)}
       onArriveClick={(id) => console.log(id)}

@@ -2,8 +2,11 @@ import * as React from "react";
 import Layout from "../shared/Layout";
 import WaitingListCustomerForm from "./WaitingListCustomerForm";
 import { useAppDispatch, useAppSelector } from "../shared/hooks";
-import { createWaitingListCustomer } from "./waitingListsReducer";
-import { useParams } from "react-router";
+import {
+  createWaitingListCustomer,
+  createWaitingListCustomerFormInitialized,
+} from "./waitingListsReducer";
+import { useHistory, useParams } from "react-router";
 
 export type AddWaitingListCustomerPageProps = {};
 
@@ -13,9 +16,19 @@ export const AddWaitingListCustomerPage = (
   const params = useParams<{ id: string }>();
   const id = params.id;
   const dispatch = useAppDispatch();
-  const error = useAppSelector(
-    (state) => state.waitingLists.createWaitingListCustomerFormError
-  );
+  const {
+    createWaitingListCustomerFormStatus: status,
+    createWaitingListCustomerFormError: error,
+  } = useAppSelector((state) => state.waitingLists);
+  
+  const router = useHistory();
+  React.useEffect(() => {
+    if (status === "SUCCEEDED") {
+      dispatch(createWaitingListCustomerFormInitialized());
+      router.push(`/waiting-lists/${id}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   return (
     <Layout>

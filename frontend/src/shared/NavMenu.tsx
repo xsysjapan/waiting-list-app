@@ -11,8 +11,8 @@ export const NavMenu = (props: NavMenuProps) => {
   const { user, onLogoutClick } = props;
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
-        <Link className="navbar-brand mx-3" to="/">
+      <div className="container">
+        <Link className="navbar-brand" to="/">
           順番待ちリスト
         </Link>
         {user ? (
@@ -40,7 +40,7 @@ export const NavMenu = (props: NavMenuProps) => {
                   </NavLink>
                 </li>
               </ul>
-              <ul className="navbar-nav mx-3">
+              <ul className="navbar-nav">
                 <li className="nav-item">
                   <button
                     className="btn btn-link p-0 nav-link active"

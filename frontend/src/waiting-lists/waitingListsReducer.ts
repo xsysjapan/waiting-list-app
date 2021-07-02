@@ -41,6 +41,13 @@ export const createWaitingListCustomer = createAsyncThunk(
   }
 );
 
+export const deleteWaitingListCustomer = createAsyncThunk(
+  "waitingLists/deleteWaitingListCustomerStatus",
+  (param: { id: string; customerId: string }) => {
+    return api.deleteWaitingListCustomer(param);
+  }
+);
+
 interface WaitingListState {
   getWaitingListsError?: string;
   getWaitingListsStatus: OperationState;
@@ -52,6 +59,7 @@ interface WaitingListState {
   createWaitingListFormStatus: OperationState;
   createWaitingListCustomerFormError?: string;
   createWaitingListCustomerFormStatus: OperationState;
+  deleteWaitingListCustomerStatus: OperationState;
 }
 
 const initialState: WaitingListState = {
@@ -60,6 +68,7 @@ const initialState: WaitingListState = {
   waitingLists: [],
   createWaitingListFormStatus: "UNSUBMITTED",
   createWaitingListCustomerFormStatus: "UNSUBMITTED",
+  deleteWaitingListCustomerStatus: "UNSUBMITTED",
 };
 
 const waitingListSlice = createSlice({
@@ -127,7 +136,24 @@ const waitingListSlice = createSlice({
       state.createWaitingListCustomerFormError = "登録に失敗しました。";
       state.createWaitingListCustomerFormStatus = "FAILED";
     });
+
+    // 顧客の削除
+    builder.addCase(deleteWaitingListCustomer.fulfilled, (state, action) => {
+      state.deleteWaitingListCustomerStatus = "SUCCEEDED";
+      if (state.waitingList) {
+        state.waitingList.customers = state.waitingList.customers.filter(
+          (e) => e.id !== action.meta.arg.customerId
+        );
+      }
+    });
+    builder.addCase(deleteWaitingListCustomer.rejected, (state) => {
+      state.deleteWaitingListCustomerStatus = "FAILED";
+    });
   },
 });
 
+export const {
+  createWaitingListFormInitialized,
+  createWaitingListCustomerFormInitialized,
+} = waitingListSlice.actions;
 export default waitingListSlice.reducer;
