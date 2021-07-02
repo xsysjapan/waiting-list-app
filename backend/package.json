@@ -20,6 +20,7 @@
   "dependencies": {
     "@prisma/client": "^2.25.0",
     "@tsoa/runtime": "^3.8.0",
+    "aws-sdk": "^2.938.0",
     "cookie": "^0.4.1",
     "express": "^4.17.1",
     "mysql": "^2.18.1",

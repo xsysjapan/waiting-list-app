@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { InvalidOperationError, NotFoundError } from "../errors";
 import { WaitingListModel, WaitingListDetailsModel } from "../models";
 import { handlePrismaError } from "../utils/prisma";
+import { SmsService } from "./sms.service";
 
 const client = new PrismaClient();
 
@@ -154,13 +155,35 @@ export class WaitingListsService {
     param: WaitingListCallCustomerParams
   ) {
     try {
-      await client.waitingListCustomer.update({
+      const customer = await client.waitingListCustomer.findFirst({
         where: { id: customerId },
-        data: {
-          status: "CALLING",
-          updatedAt: new Date(),
-        },
       });
+      if (customer) {
+        const message = param.message || "順番になりました。";
+        const messageId = await new SmsService().sendMessage(
+          customer.phoneNumber,
+          message
+        );
+        if (messageId) {
+          await client.waitingListCallingHistory.create({
+            data: {
+              messageId: messageId,
+              message,
+              waitingListId: id,
+              customerId: customerId,
+              customerName: customer.name,
+              phoneNumber: customer.phoneNumber,
+            },
+          });
+          await client.waitingListCustomer.update({
+            where: { id: customerId },
+            data: {
+              status: "CALLING",
+              updatedAt: new Date(),
+            },
+          });
+        }
+      }
     } catch (e) {
       handlePrismaError(e);
       throw e;
@@ -295,6 +318,9 @@ export class WaitingListsService {
   }
   public async delete(id: string) {
     try {
+      await client.waitingListCallingHistory.deleteMany({
+        where: { waitingListId: id },
+      });
       await client.waitingList.delete({
         where: { id: id },
       });

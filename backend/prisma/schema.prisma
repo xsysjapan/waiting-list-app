@@ -42,11 +42,12 @@ model CustomerPhoneNumber {
 }
 
 model WaitingList {
-  id        String                @id @default(uuid())
-  createdAt DateTime              @default(now())
-  updatedAt DateTime              @default(now())
-  name      String
-  customers WaitingListCustomer[]
+  id                        String                      @id @default(uuid())
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @default(now())
+  name                      String
+  customers                 WaitingListCustomer[]
+  WaitingListCallingHistory WaitingListCallingHistory[]
 }
 
 model WaitingListCustomer {
@@ -66,4 +67,16 @@ enum CallingStatus {
   NOT_CALLED
   CALLING
   ARRIVED
+}
+
+model WaitingListCallingHistory {
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now())
+  messageId     String
+  message       String
+  waitingList   WaitingList @relation(fields: [waitingListId], references: [id])
+  waitingListId String
+  customerId    String?
+  customerName  String?
+  phoneNumber   String?
 }
