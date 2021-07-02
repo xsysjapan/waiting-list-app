@@ -3,6 +3,7 @@ import api from "../shared/api";
 import {
   CreateWaitingListRequest,
   PostWaitingListCustomerCallRequest,
+  PostWaitingListCustomerOrderRequest,
   PostWaitingListCustomerRequest,
   PutWaitingListCustomerStatusRequest,
 } from "../shared/api/generated";
@@ -87,6 +88,21 @@ export const updateWaitingListCustomerCallingStatus = createAsyncThunk(
   }
 );
 
+export const moveWaitingListCustomer = createAsyncThunk(
+  "waitingLists/moveWaitingListCustomerStatus",
+  (
+    param: {
+      id: string;
+      customerId: string;
+    } & PostWaitingListCustomerOrderRequest["waitingListMoveCustomerParams"]
+  ) => {
+    return api.postWaitingListCustomerOrder({
+      ...param,
+      waitingListMoveCustomerParams: param,
+    });
+  }
+);
+
 interface WaitingListState {
   getWaitingListsError?: string;
   getWaitingListsStatus: OperationState;
@@ -102,6 +118,7 @@ interface WaitingListState {
   deleteWaitingListCustomerStatus: OperationState;
   callWaitingListCustomerStatus: OperationState;
   updateWaitingListCustomerCallingStatusStatus: OperationState;
+  moveWaitingListCustomerStatus: OperationState;
 }
 
 const initialState: WaitingListState = {
@@ -114,6 +131,7 @@ const initialState: WaitingListState = {
   deleteWaitingListCustomerStatus: "UNSUBMITTED",
   callWaitingListCustomerStatus: "UNSUBMITTED",
   updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
+  moveWaitingListCustomerStatus: "UNSUBMITTED",
 };
 
 const waitingListSlice = createSlice({
@@ -249,6 +267,34 @@ const waitingListSlice = createSlice({
         state.updateWaitingListCustomerCallingStatusStatus = "FAILED";
       }
     );
+
+    // 顧客の並び順更新
+    builder.addCase(moveWaitingListCustomer.fulfilled, (state, action) => {
+      state.moveWaitingListCustomerStatus = "SUCCEEDED";
+      if (state.waitingList) {
+        const customers = state.waitingList.customers;
+        const { customerId, before, after } = action.meta.arg;
+        const target = customers.filter((e) => e.id === customerId)[0];
+        if (target) {
+          customers.splice(customers.indexOf(target), 1);
+          if (before) {
+            const beforeTarget = customers.filter((e) => e.id === before)[0];
+            if (beforeTarget) {
+              customers.splice(customers.indexOf(beforeTarget), 0, target);
+            }
+          }
+          if (after) {
+            const afterTarget = customers.filter((e) => e.id === after)[0];
+            if (afterTarget) {
+              customers.splice(customers.indexOf(afterTarget) + 1, 0, target);
+            }
+          }
+        }
+      }
+    });
+    builder.addCase(moveWaitingListCustomer.rejected, (state) => {
+      state.moveWaitingListCustomerStatus = "FAILED";
+    });
   },
 });
 

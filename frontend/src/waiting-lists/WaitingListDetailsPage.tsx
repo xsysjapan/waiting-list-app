@@ -10,6 +10,7 @@ import {
   deleteWaitingList,
   deleteWaitingListCustomer,
   getWaitingListById,
+  moveWaitingListCustomer,
   updateWaitingListCustomerCallingStatus,
   waitingListDeleted,
 } from "./waitingListsReducer";
@@ -192,8 +193,24 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
           })
         );
       }}
-      onMoveUpTo={(id, before) => console.log(id, before)}
-      onMoveDownTo={(id, after) => console.log(id, after)}
+      onMoveUpTo={(customerId, before) => {
+        dispatch(
+          moveWaitingListCustomer({
+            id,
+            customerId,
+            before,
+          })
+        );
+      }}
+      onMoveDownTo={(customerId, after) => {
+        dispatch(
+          moveWaitingListCustomer({
+            id,
+            customerId,
+            after,
+          })
+        );
+      }}
     />
   );
 };
