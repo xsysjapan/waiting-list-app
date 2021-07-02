@@ -30,7 +30,7 @@ export const WaitingListDetailsPageView = (
     [waitingList.customers]
   );
   const arrivedCustomers = React.useMemo(
-    () => waitingList.customers.filter((e) => e.status === "ARRIVED"),
+    () => waitingList.customers.filter((e) => e.status === "ARRIVED").reverse(),
     [waitingList.customers]
   );
 

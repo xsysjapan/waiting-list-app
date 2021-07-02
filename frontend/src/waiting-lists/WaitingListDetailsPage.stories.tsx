@@ -31,10 +31,11 @@ Default.args = {
     name: "Waiting List Name",
     customers: [
       { ...customer, id: "cust1", name: "Customer Name 1", status: "ARRIVED" },
-      { ...customer, id: "cust2", name: "Customer Name 2", status: "CALLING" },
+      { ...customer, id: "cust2", name: "Customer Name 2", status: "ARRIVED" },
       { ...customer, id: "cust3", name: "Customer Name 3", status: "CALLING" },
-      { ...customer, id: "cust4", name: "Customer Name 4" },
+      { ...customer, id: "cust4", name: "Customer Name 4", status: "CALLING" },
       { ...customer, id: "cust5", name: "Customer Name 5" },
+      { ...customer, id: "cust6", name: "Customer Name 6" },
     ],
   },
 };
