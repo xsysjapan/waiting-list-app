@@ -55,6 +55,10 @@ const authSlice = createSlice({
       state.state = "LOADED";
       state.error = (action.payload as any)?.message || "ログインできません";
     });
+    builder.addCase(logout.fulfilled, (state) => {
+      delete state.user;
+      state.state = "LOADED";
+    });
   },
 });
 
