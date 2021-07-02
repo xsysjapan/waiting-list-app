@@ -14,3 +14,8 @@ const Template: Story<WaitingListCustomerFormProps> = (args) => (
 );
 
 export const Default = Template.bind({});
+
+export const withError = Template.bind({});
+withError.args = {
+  error: "Error message.",
+};

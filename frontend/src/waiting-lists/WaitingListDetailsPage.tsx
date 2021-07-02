@@ -1,8 +1,11 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import { WaitingListDetails } from "../shared/types";
 import Layout from "../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
+import { useAppDispatch, useAppSelector } from "../shared/hooks";
+import { getWaitingListById } from "./waitingListsReducer";
 
 export type WaitingListDetailsPageViewProps = {
   waitingList: WaitingListDetails;
@@ -38,7 +41,12 @@ export const WaitingListDetailsPageView = (
     <Layout>
       <div className="d-flex justify-content-between">
         <h1>{waitingList.name}</h1>
-        <button className="btn btn-outline-dark">追加</button>
+        <Link
+          to={`/waiting-lists/${waitingList.id}/addCustomer`}
+          className="btn btn-outline-dark"
+        >
+          追加
+        </Link>
       </div>
       {callingCustomers.length > 0 ? (
         <div className="my-3">
@@ -87,11 +95,30 @@ export type WaitingListDetailsPageProps = {} & RouteComponentProps<{
 }>;
 
 export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
-  const onInitialize = () => {};
+  const { match } = props;
+  const id = match?.params?.id;
+  const { getWaitingListByIdStatus, waitingList } = useAppSelector(
+    (state) => state.waitingLists
+  );
+  const dispatch = useAppDispatch();
+  const onInitialize = () => {
+    dispatch(getWaitingListById(id));
+    return;
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(onInitialize, []);
+  if (getWaitingListByIdStatus === "UNSUBMITTED") {
+    return null;
+  }
+  if (getWaitingListByIdStatus === "LOADING") {
+    return null;
+  }
+  if (getWaitingListByIdStatus === "FAILED") {
+    return null;
+  }
   return (
     <WaitingListDetailsPageView
-      waitingList={{ id: "dummy", name: "Dummy", customers: [] }}
+      waitingList={waitingList!}
       onCallClick={(id) => console.log(id)}
       onCancelCallClick={(id) => console.log(id)}
       onArriveClick={(id) => console.log(id)}

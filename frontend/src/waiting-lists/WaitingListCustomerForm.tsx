@@ -7,13 +7,14 @@ interface WaitingListCustomerFormValues {
 }
 
 export type WaitingListCustomerFormProps = {
+  error: string | undefined;
   onSubmit: (values: WaitingListCustomerFormValues) => void;
 };
 
 export const WaitingListCustomerForm = (
   props: WaitingListCustomerFormProps
 ) => {
-  const { onSubmit } = props;
+  const { error, onSubmit } = props;
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -33,6 +34,7 @@ export const WaitingListCustomerForm = (
   });
   return (
     <form onSubmit={formik.handleSubmit}>
+      {error ? <p className="text-danger">{error}</p> : null}
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           名前

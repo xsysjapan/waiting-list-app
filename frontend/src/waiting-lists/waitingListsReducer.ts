@@ -4,21 +4,26 @@ import {
   CreateWaitingListRequest,
   PostWaitingListCustomerRequest,
 } from "../shared/api/generated";
-import { WaitingListSummary } from "../shared/types";
+import { WaitingListDetails, WaitingListSummary } from "../shared/types";
 
-export const getWaitingLists = createAsyncThunk("waitingLists/get", () =>
-  api.getWaitingLists({})
+export const getWaitingLists = createAsyncThunk(
+  "waitingLists/getWaitingListsStatus",
+  () => api.getWaitingLists({})
 );
 
+export const getWaitingListById = createAsyncThunk(
+  "waitingLists/getWaitingListByIdStatus",
+  (id: string) => api.getWaitingList({ id })
+);
 export const createWaitingList = createAsyncThunk(
-  "waitingLists/create",
+  "waitingLists/createWaitingListStatus",
   (param: CreateWaitingListRequest["waitingListCreationParams"]) => {
     return api.createWaitingList({ waitingListCreationParams: param });
   }
 );
 
 export const createWaitingListCustomer = createAsyncThunk(
-  "waitingLists/createCustomer",
+  "waitingLists/createWaitingListCustomerStatus",
   (
     param: {
       id: string;
@@ -34,9 +39,12 @@ export const createWaitingListCustomer = createAsyncThunk(
 type OperationState = "UNSUBMITTED" | "LOADING" | "SUCCEEDED" | "FAILED";
 
 interface WaitingListState {
-  waitingListsError?: string;
-  waitingListsStatus: OperationState;
+  getWaitingListsError?: string;
+  getWaitingListsStatus: OperationState;
+  getWaitingListByIdError?: string;
+  getWaitingListByIdStatus: OperationState;
   waitingLists: WaitingListSummary[];
+  waitingList?: WaitingListDetails;
   createWaitingListFormError?: string;
   createWaitingListFormStatus: OperationState;
   createWaitingListCustomerFormError?: string;
@@ -44,7 +52,8 @@ interface WaitingListState {
 }
 
 const initialState: WaitingListState = {
-  waitingListsStatus: "UNSUBMITTED",
+  getWaitingListsStatus: "UNSUBMITTED",
+  getWaitingListByIdStatus: "UNSUBMITTED",
   waitingLists: [],
   createWaitingListFormStatus: "UNSUBMITTED",
   createWaitingListCustomerFormStatus: "UNSUBMITTED",
@@ -67,15 +76,28 @@ const waitingListSlice = createSlice({
     // 待ちリストの取得
     builder.addCase(getWaitingLists.pending, (state) => {
       state.waitingLists = [];
-      state.waitingListsStatus = "LOADING";
+      state.getWaitingListsStatus = "LOADING";
     });
     builder.addCase(getWaitingLists.fulfilled, (state, action) => {
-      state.waitingListsStatus = "SUCCEEDED";
+      state.getWaitingListsStatus = "SUCCEEDED";
       state.waitingLists = action.payload;
     });
     builder.addCase(getWaitingLists.rejected, (state) => {
-      state.waitingListsError = "検索に失敗しました。";
-      state.waitingListsStatus = "FAILED";
+      state.getWaitingListsError = "検索に失敗しました。";
+      state.getWaitingListsStatus = "FAILED";
+    });
+    // 待ちリストの取得
+    builder.addCase(getWaitingListById.pending, (state) => {
+      state.waitingLists = [];
+      state.getWaitingListByIdStatus = "LOADING";
+    });
+    builder.addCase(getWaitingListById.fulfilled, (state, action) => {
+      state.getWaitingListByIdStatus = "SUCCEEDED";
+      state.waitingList = action.payload as any;
+    });
+    builder.addCase(getWaitingListById.rejected, (state) => {
+      state.getWaitingListByIdError = "検索に失敗しました。";
+      state.getWaitingListByIdStatus = "FAILED";
     });
 
     // 待ちリストの作成

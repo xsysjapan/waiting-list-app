@@ -1,8 +1,5 @@
 import { Story, Meta } from "@storybook/react";
-import {
-  WaitingListForm,
-  WaitingListFormProps,
-} from "./WaitingListForm";
+import { WaitingListForm, WaitingListFormProps } from "./WaitingListForm";
 
 export default {
   component: WaitingListForm,
@@ -14,3 +11,8 @@ const Template: Story<WaitingListFormProps> = (args) => (
 );
 
 export const Default = Template.bind({});
+
+export const withError = Template.bind({});
+withError.args = {
+  error: "Error message.",
+};
