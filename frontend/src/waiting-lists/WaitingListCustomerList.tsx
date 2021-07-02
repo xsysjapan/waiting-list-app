@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WaitingListCustomer } from "../shared/types";
 
-export type WaitingCustomerListItemProps = {
+export type WaitingListCustomerListItemProps = {
   customer: WaitingListCustomer;
   active: boolean;
   isFirst: boolean;
@@ -15,8 +15,8 @@ export type WaitingCustomerListItemProps = {
   onMoveDownClick: (id: string) => void;
 };
 
-export const WaitingCustomerListItem = (
-  props: WaitingCustomerListItemProps
+export const WaitingListCustomerListItem = (
+  props: WaitingListCustomerListItemProps
 ) => {
   const {
     customer: e,
@@ -134,19 +134,19 @@ export const WaitingCustomerListItem = (
   );
 };
 
-export type WaitingCustomerListProps = {
+export type WaitingListCustomerListProps = {
   customers: WaitingListCustomer[];
   activeIds: string[];
-  onActivate: WaitingCustomerListItemProps["onActivate"];
-  onDeactivate: WaitingCustomerListItemProps["onDeactivate"];
-  onCallClick: WaitingCustomerListItemProps["onCallClick"];
-  onCancelCallClick: WaitingCustomerListItemProps["onCancelCallClick"];
-  onArriveClick: WaitingCustomerListItemProps["onArriveClick"];
+  onActivate: WaitingListCustomerListItemProps["onActivate"];
+  onDeactivate: WaitingListCustomerListItemProps["onDeactivate"];
+  onCallClick: WaitingListCustomerListItemProps["onCallClick"];
+  onCancelCallClick: WaitingListCustomerListItemProps["onCancelCallClick"];
+  onArriveClick: WaitingListCustomerListItemProps["onArriveClick"];
   onMoveUpTo: (id: string, before: string) => void;
   onMoveDownTo: (id: string, after: string) => void;
 };
 
-export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
+export const WaitingListCustomerList = (props: WaitingListCustomerListProps) => {
   const {
     customers,
     activeIds,
@@ -161,7 +161,7 @@ export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
   return (
     <div className="list-group">
       {customers.map((e, i) => (
-        <WaitingCustomerListItem
+        <WaitingListCustomerListItem
           key={e.id}
           customer={e}
           active={activeIds.includes(e.id)}
@@ -180,4 +180,4 @@ export const WaitingCustomerList = (props: WaitingCustomerListProps) => {
   );
 };
 
-export default WaitingCustomerList;
+export default WaitingListCustomerList;

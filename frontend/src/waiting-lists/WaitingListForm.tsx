@@ -1,22 +1,22 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
 
-interface CreateWaitingListFormValues {
+interface WaitingListFormValues {
   name: string;
 }
 
-export type CreateWaitingListFormProps = {
-  onSubmit: (values: CreateWaitingListFormValues) => void;
+export type WaitingListFormProps = {
+  onSubmit: (values: WaitingListFormValues) => void;
 };
 
-export const CreateWaitingListForm = (props: CreateWaitingListFormProps) => {
+export const WaitingListForm = (props: WaitingListFormProps) => {
   const { onSubmit } = props;
   const formik = useFormik({
     initialValues: {
       name: "",
     },
     validate: (value) => {
-      const result = {} as FormikErrors<CreateWaitingListFormValues>;
+      const result = {} as FormikErrors<WaitingListFormValues>;
       if (!value.name) {
         result.name = "表示名が未入力です。";
       }
@@ -51,4 +51,4 @@ export const CreateWaitingListForm = (props: CreateWaitingListFormProps) => {
   );
 };
 
-export default CreateWaitingListForm;
+export default WaitingListForm;

@@ -1,17 +1,17 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
 
-interface CreateWaitingCustomerFormValues {
+interface WaitingListCustomerFormValues {
   name: string;
   phoneNumber: string;
 }
 
-export type CreateWaitingCustomerFormProps = {
-  onSubmit: (values: CreateWaitingCustomerFormValues) => void;
+export type WaitingListCustomerFormProps = {
+  onSubmit: (values: WaitingListCustomerFormValues) => void;
 };
 
-export const CreateWaitingCustomerForm = (
-  props: CreateWaitingCustomerFormProps
+export const WaitingListCustomerForm = (
+  props: WaitingListCustomerFormProps
 ) => {
   const { onSubmit } = props;
   const formik = useFormik({
@@ -20,7 +20,7 @@ export const CreateWaitingCustomerForm = (
       phoneNumber: "",
     },
     validate: (value) => {
-      const result = {} as FormikErrors<CreateWaitingCustomerFormValues>;
+      const result = {} as FormikErrors<WaitingListCustomerFormValues>;
       if (!value.name) {
         result.name = "名前が未入力です。";
       }
@@ -74,4 +74,4 @@ export const CreateWaitingCustomerForm = (
   );
 };
 
-export default CreateWaitingCustomerForm;
+export default WaitingListCustomerForm;

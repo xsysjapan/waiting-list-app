@@ -1,16 +1,16 @@
 import { Story, Meta } from "@storybook/react";
 import {
-  WaitingCustomerList,
-  WaitingCustomerListProps,
-} from "./WaitingCustomerList";
+  WaitingListCustomerList,
+  WaitingListCustomerListProps,
+} from "./WaitingListCustomerList";
 
 export default {
-  component: WaitingCustomerList,
-  title: "waiting-lists/WaitingCustomerList",
+  component: WaitingListCustomerList,
+  title: "waiting-lists/WaitingListCustomerList",
 } as Meta;
 
-const Template: Story<WaitingCustomerListProps> = (args) => (
-  <WaitingCustomerList {...args} />
+const Template: Story<WaitingListCustomerListProps> = (args) => (
+  <WaitingListCustomerList {...args} />
 );
 
 const defaultCustomer = {

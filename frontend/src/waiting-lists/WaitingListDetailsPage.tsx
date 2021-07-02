@@ -2,7 +2,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { WaitingListDetails } from "../shared/types";
 import Layout from "../shared/Layout";
-import WaitingCustomerList from "../waiting-lists/WaitingCustomerList";
+import WaitingListCustomerList from "./WaitingListCustomerList";
 
 export type WaitingListDetailsPageViewProps = {
   waitingList: WaitingListDetails;
@@ -30,7 +30,7 @@ export const WaitingListDetailsPageView = (
       </div>
       <div className="my-3">
         <h5>呼出中</h5>
-        <WaitingCustomerList
+        <WaitingListCustomerList
           customers={waitingList.customers.filter(
             (e) => e.status === "CALLING"
           )}
@@ -42,7 +42,7 @@ export const WaitingListDetailsPageView = (
       </div>
       <div className="my-3">
         <h5>待ち</h5>
-        <WaitingCustomerList
+        <WaitingListCustomerList
           customers={waitingList.customers.filter(
             (e) => e.status === "NOT_CALLED"
           )}
@@ -54,7 +54,7 @@ export const WaitingListDetailsPageView = (
       </div>
       <div className="my-3">
         <h5>受付済</h5>
-        <WaitingCustomerList
+        <WaitingListCustomerList
           customers={waitingList.customers.filter(
             (e) => e.status === "ARRIVED"
           )}
