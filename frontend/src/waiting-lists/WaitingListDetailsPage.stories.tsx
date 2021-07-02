@@ -38,3 +38,39 @@ Default.args = {
     ],
   },
 };
+
+export const withEmpty = Template.bind({});
+withEmpty.args = {
+  waitingList: {
+    id: "wl1",
+    name: "Waiting List Name",
+    customers: [],
+  },
+};
+
+export const withWaitingCustomerOnly = Template.bind({});
+withWaitingCustomerOnly.args = {
+  waitingList: {
+    id: "wl1",
+    name: "Waiting List Name",
+    customers: [{ ...customer }],
+  },
+};
+
+export const withCallingCustomerOnly = Template.bind({});
+withCallingCustomerOnly.args = {
+  waitingList: {
+    id: "wl1",
+    name: "Waiting List Name",
+    customers: [{ ...customer, status: "CALLING" }],
+  },
+};
+
+export const withArrivedCustomerOnly = Template.bind({});
+withArrivedCustomerOnly.args = {
+  waitingList: {
+    id: "wl1",
+    name: "Waiting List Name",
+    customers: [{ ...customer, status: "ARRIVED" }],
+  },
+};
