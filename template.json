@@ -213,48 +213,28 @@
           },
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_CONNECTION",
-            "Value": "mysql"
+            "OptionName": "DATABASE_URL",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "mysql://",
+                  { "Ref": "DBUser" },
+                  ":",
+                  { "Ref": "DBPassword" },
+                  "@",
+                  { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Address"] },
+                  ":",
+                  { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Port"] },
+                  "/WaitingListDb"
+                ]
+              ]
+            }
           },
           {
             "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_HOST",
-            "Value": { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Address"] }
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_PORT",
-            "Value": { "Fn::GetAtt": ["WaitingListAppDB", "Endpoint.Port"] }
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_DATABASE",
-            "Value": "WaitingListDb"
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_USERNAME",
-            "Value": { "Ref": "DBUser" }
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_PASSWORD",
-            "Value": { "Ref": "DBPassword" }
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_SYNCHRONIZE",
-            "Value": "true"
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_LOGGING",
-            "Value": "true"
-          },
-          {
-            "Namespace": "aws:elasticbeanstalk:application:environment",
-            "OptionName": "TYPEORM_ENTITIES",
-            "Value": "src/entity/**/*.js"
+            "OptionName": "AWS_DEFAULT_REGION",
+            "Value": { "Ref": "AWS::Region" }
           },
           {
             "Namespace": "aws:autoscaling:launchconfiguration",
