@@ -1,12 +1,15 @@
 import path from "path";
 import express, { Response, Request, NextFunction } from "express";
+import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "./routes/routes";
 import { ValidateError } from "tsoa";
 import { InvalidOperationError, NotFoundError } from "./errors";
 
 export const app = express();
-
+if (process.env.NODE_ENV == "Production") {
+  app.use(helmet());
+}
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 RegisterRoutes(app);

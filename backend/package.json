@@ -23,6 +23,7 @@
     "aws-sdk": "^2.938.0",
     "cookie": "^0.4.1",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "mysql": "^2.18.1",
     "prisma": "^2.26.0",
     "swagger-ui-express": "^4.1.6",
