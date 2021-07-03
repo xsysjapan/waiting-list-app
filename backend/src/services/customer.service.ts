@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { v4 as uuid } from "uuid";
 import { NotFoundError } from "../errors";
 import { CustomerModel } from "../models";
 import { handlePrismaError } from "../utils/prisma";

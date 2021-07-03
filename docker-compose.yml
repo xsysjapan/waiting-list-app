@@ -6,10 +6,11 @@ services:
     volumes:
       - ./build:/app
     working_dir: /app
-    command: bash -c "npm install --only=production && npx prisma generate && node ./index.js"
+    command: bash -c "npm install --only=production && npx prisma generate && npm start"
     environment:
-      PORT: "80"
-      DATABASE_URL: mysql://admin:Passw0rd@db/waitinglistdb
+      - PORT=80
+      - DATABASE_URL=mysql://admin:Passw0rd@db/waitinglistdb
+      - AWS_DEFAULT_REGION=ap-northeast-1
     ports:
       - 8080:80
     depends_on:
