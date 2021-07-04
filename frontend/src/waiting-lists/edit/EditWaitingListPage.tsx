@@ -1,13 +1,13 @@
 import * as React from "react";
-import Layout from "../shared/Layout";
-import WaitingListForm from "./WaitingListForm";
-import { useAppDispatch, useAppSelector } from "../shared/hooks";
+import { useHistory, useParams } from "react-router";
+import Layout from "../../shared/Layout";
+import WaitingListForm from "../shared/WaitingListForm";
+import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 import {
   editWaitingListName,
   editWaitingListFormMounted,
   editWaitingListFormUnmounted,
-} from "./waitingListsReducer";
-import { useHistory, useParams } from "react-router";
+} from "../waitingListsReducer";
 
 export type EditWaitingListPageProps = {};
 

@@ -1,109 +1,44 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
-import { OperationState, WaitingListSummary } from "../shared/types";
-import Layout from "../shared/Layout";
-import WaitingListList from "../waiting-lists/WaitingListList";
-import { useAppDispatch, useAppSelector } from "../shared/hooks";
-import { getWaitingLists } from "./waitingListsReducer";
+import { Route, Switch } from "react-router-dom";
+import NotFoundPage from "../404/NotFoundPage";
+import WaitingListListPage from "./index/WaitingListListPage";
+import CreateWaitingListPage from "./create/CreateWaitingListPage";
+import EditWaitingListPage from "./edit/EditWaitingListPage";
+import WaitingListDetailsPage from "./details/WaitingListDetailsPage";
+import AddWaitingListCustomerPage from "./add-customer/AddWaitingListCustomerPage";
+import EditWaitingListCustomerPage from "./edit-customer/EditWaitingListCustomerPage";
 
-export type WaitingListIndexPageViewProps = {
-  waitingListsStatus: OperationState;
-  waitingLists: WaitingListSummary[] | undefined;
-};
-
-export const WaitingListIndexPageView = (
-  props: WaitingListIndexPageViewProps
-) => {
-  const { waitingListsStatus, waitingLists } = props;
-  const activeWaitingLists = React.useMemo(
-    () => waitingLists!.filter((e) => e.active),
-    [waitingLists]
-  );
-  const inactiveWaitingLists = React.useMemo(
-    () => waitingLists!.filter((e) => !e.active),
-    [waitingLists]
-  );
-
-  if (waitingListsStatus !== "SUCCEEDED") {
-    return (
-      <Layout>
-        <div className="d-flex justify-content-between">
-          <h1>待ちリスト一覧</h1>
-          <div>
-            <Link to="/waiting-lists/create" className="btn btn-outline-dark">
-              追加
-            </Link>
-          </div>
-        </div>
-        <div className="my-3">
-          <div className="d-flex justify-content-center">
-            <div className="spinner-grow text-primary" role="status">
-              <span className="visually-hidden">読み込み中...</span>
-            </div>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
+const WaitingListIndexPage = () => {
   return (
-    <Layout>
-      <div className="d-flex justify-content-between">
-        <h1>待ちリスト一覧</h1>
-        <div>
-          <Link to="/waiting-lists/create" className="btn btn-outline-dark">
-            追加
-          </Link>
-        </div>
-      </div>
-      <div className="my-3">
-        <div className="mb-2">
-          <h5>Active</h5>
-        </div>
-        {activeWaitingLists.length > 0 ? (
-          <WaitingListList waitingLists={activeWaitingLists} />
-        ) : (
-          <p>現在Activeな待ちリストはありません。</p>
-        )}
-      </div>
-      <div className="my-3">
-        <div className="mb-2">
-          <h5>Inactive</h5>
-        </div>
-        {inactiveWaitingLists.length > 0 ? (
-          <WaitingListList waitingLists={inactiveWaitingLists} />
-        ) : (
-          <p>現在Inactiveな待ちリストはありません。</p>
-        )}
-      </div>
-    </Layout>
-  );
-};
-
-export type WaitingListIndexPageProps = {};
-
-export const WaitingListIndexPage = (props: WaitingListIndexPageProps) => {
-  const { getWaitingListsStatus, waitingLists } = useAppSelector(
-    (state) => state.waitingLists
-  );
-  const dispatch = useAppDispatch();
-  let isInited = false;
-  const onInitialize = () => {
-    dispatch(getWaitingLists());
-    // eslint-disable-next-line
-    isInited = true;
-    return;
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(onInitialize, []);
-  if (isInited) {
-    return null;
-  }
-  return (
-    <WaitingListIndexPageView
-      waitingListsStatus={getWaitingListsStatus}
-      waitingLists={waitingLists}
-    />
+    <Switch>
+      <Route path="/waiting-lists" exact component={WaitingListListPage} />
+      <Route
+        path="/waiting-lists/create"
+        exact
+        component={CreateWaitingListPage}
+      />
+      <Route
+        path="/waiting-lists/:id"
+        exact
+        component={WaitingListDetailsPage}
+      />
+      <Route
+        path="/waiting-lists/:id/edit"
+        exact
+        component={EditWaitingListPage}
+      />
+      <Route
+        path="/waiting-lists/:id/customers/create"
+        exact
+        component={AddWaitingListCustomerPage}
+      />
+      <Route
+        path="/waiting-lists/:id/customers/:customerId/edit"
+        exact
+        component={EditWaitingListCustomerPage}
+      />
+      <Route path="*" exact component={NotFoundPage} />
+    </Switch>
   );
 };
 

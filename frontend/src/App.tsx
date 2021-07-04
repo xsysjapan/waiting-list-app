@@ -13,11 +13,6 @@ import HomePage from "./home/HomePage";
 import LoginPage from "./login/LoginPage";
 import NotFoundPage from "./404/NotFoundPage";
 import WaitingListIndexPage from "./waiting-lists/WaitingListIndexPage";
-import CreateWaitingListPage from "./waiting-lists/CreateWaitingListPage";
-import EditWaitingListPage from "./waiting-lists/EditWaitingListPage";
-import WaitingListDetailsPage from "./waiting-lists/WaitingListDetailsPage";
-import AddWaitingListCustomerPage from "./waiting-lists/AddWaitingListCustomerPage";
-import EditWaitingListCustomerPage from "./waiting-lists/EditWaitingListCustomerPage";
 
 type ProtectedRouteProps = RouteProps<string>;
 
@@ -55,33 +50,7 @@ const App = () => {
         <ProtectedRoute path="/" exact component={HomePage} />
         <ProtectedRoute
           path="/waiting-lists"
-          exact
           component={WaitingListIndexPage}
-        />
-        <ProtectedRoute
-          path="/waiting-lists/create"
-          exact
-          component={CreateWaitingListPage}
-        />
-        <ProtectedRoute
-          path="/waiting-lists/:id"
-          exact
-          component={WaitingListDetailsPage}
-        />
-        <ProtectedRoute
-          path="/waiting-lists/:id/edit"
-          exact
-          component={EditWaitingListPage}
-        />
-        <ProtectedRoute
-          path="/waiting-lists/:id/customers/create"
-          exact
-          component={AddWaitingListCustomerPage}
-        />
-        <ProtectedRoute
-          path="/waiting-lists/:id/customers/:customerId/edit"
-          exact
-          component={EditWaitingListCustomerPage}
         />
         <Route path="/login" component={LoginPage} />
         <Route path="*" exact component={NotFoundPage} />

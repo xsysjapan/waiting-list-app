@@ -1,11 +1,11 @@
 import * as React from "react";
-import WaitingListCustomerForm from "./WaitingListCustomerForm";
+import WaitingListCustomerForm from "../shared/WaitingListCustomerForm";
 import {
   editWaitingListCustomer,
   editWaitingListCustomerFormMounted,
   editWaitingListCustomerFormUnmounted,
-} from "./waitingListsReducer";
-import { useAppDispatch, useAppSelector } from "../shared/hooks";
+} from "../waitingListsReducer";
+import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 
 export type EditWaitingListCustomerFormProps = {
   id: string;

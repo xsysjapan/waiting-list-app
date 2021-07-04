@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import { OperationState } from "../shared/types";
+import { OperationState } from "../../shared/types";
 
 interface WaitingListCustomerFormValues {
   name: string;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WaitingListCustomer } from "../shared/types";
+import { WaitingListCustomer } from "../../shared/types";
 
 export type WaitingListCustomerListItemProps = {
   customer: WaitingListCustomer;

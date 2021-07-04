@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { OperationState, WaitingListDetails } from "../shared/types";
-import Layout from "../shared/Layout";
+import { OperationState, WaitingListDetails } from "../../shared/types";
+import { useAppDispatch, useAppSelector } from "../../shared/hooks";
+import Layout from "../../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
-import { useAppDispatch, useAppSelector } from "../shared/hooks";
 import {
   callWaitingListCustomer,
   deleteWaitingList,
@@ -15,8 +15,8 @@ import {
   updateWaitingListCustomerCallingStatus,
   waitingListDetailsPageMounted,
   waitingListDetailsPageUnmounted,
-} from "./waitingListsReducer";
-import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../shared/api/generated";
+} from "../waitingListsReducer";
+import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../../shared/api/generated";
 
 export type WaitingListDetailsPageViewProps = {
   waitingListStatus: OperationState;
