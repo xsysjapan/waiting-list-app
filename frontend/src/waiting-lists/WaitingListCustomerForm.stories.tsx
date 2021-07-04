@@ -19,3 +19,8 @@ export const withError = Template.bind({});
 withError.args = {
   error: "Error message.",
 };
+
+export const withLoading = Template.bind({});
+withLoading.args = {
+  state: "LOADING",
+};

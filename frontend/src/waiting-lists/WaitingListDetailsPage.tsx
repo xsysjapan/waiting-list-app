@@ -12,7 +12,6 @@ import {
   getWaitingListById,
   moveWaitingListCustomer,
   updateWaitingListCustomerCallingStatus,
-  waitingListDeleted,
 } from "./waitingListsReducer";
 import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../shared/api/generated";
 
@@ -141,8 +140,11 @@ export type WaitingListDetailsPageProps = {};
 export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const { getWaitingListByIdStatus, deleteWaitingListStatus, waitingList } =
-    useAppSelector((state) => state.waitingLists);
+  const {
+    getWaitingListByIdStatus,
+    waitingListDetails,
+    deleteWaitingListState,
+  } = useAppSelector((state) => state.waitingLists);
   const dispatch = useAppDispatch();
   const onInitialize = () => {
     dispatch(getWaitingListById(id));
@@ -153,19 +155,18 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
 
   const router = useHistory();
   const onDeleteStatusChange = () => {
-    if (deleteWaitingListStatus === "SUCCEEDED") {
-      dispatch(waitingListDeleted());
+    if (deleteWaitingListState[id] === "SUCCEEDED") {
       router.push("/waiting-lists");
     }
-    return;
   };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(onDeleteStatusChange, [deleteWaitingListStatus]);
+  React.useEffect(onDeleteStatusChange, [deleteWaitingListState]);
 
   return (
     <WaitingListDetailsPageView
       waitingListStatus={getWaitingListByIdStatus}
-      waitingList={waitingList}
+      waitingList={waitingListDetails[id]}
       onDeleteClick={() => {
         dispatch(deleteWaitingList({ id }));
       }}

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import api from "../shared/api";
 import {
   CreateWaitingListRequest,
@@ -103,52 +103,90 @@ export const moveWaitingListCustomer = createAsyncThunk(
   }
 );
 
-interface WaitingListState {
-  getWaitingListsError?: string;
-  getWaitingListsStatus: OperationState;
-  getWaitingListByIdError?: string;
-  getWaitingListByIdStatus: OperationState;
-  waitingLists: WaitingListSummary[];
-  waitingList?: WaitingListDetails;
-  createWaitingListFormError?: string;
-  createWaitingListFormStatus: OperationState;
-  createWaitingListCustomerFormError?: string;
-  createWaitingListCustomerFormStatus: OperationState;
-  deleteWaitingListStatus: OperationState;
+interface WaitingListDetailsPageState {
   deleteWaitingListCustomerStatus: OperationState;
   callWaitingListCustomerStatus: OperationState;
   updateWaitingListCustomerCallingStatusStatus: OperationState;
   moveWaitingListCustomerStatus: OperationState;
 }
 
+interface CreateWaitingListFormState {
+  error?: string;
+  state: OperationState;
+}
+
+interface AddWaitingListCustomerFormState {
+  error?: string;
+  state: OperationState;
+}
+
+interface WaitingListState {
+  getWaitingListsError?: string;
+  getWaitingListsStatus: OperationState;
+  getWaitingListByIdError?: string;
+  getWaitingListByIdStatus: OperationState;
+  waitingLists: WaitingListSummary[];
+  waitingListDetails: { [id: string]: WaitingListDetails };
+  deleteWaitingListState: { [id: string]: OperationState };
+  waitingListDetailsPageState: { [id: string]: WaitingListDetailsPageState };
+  createWaitingListFormState?: CreateWaitingListFormState;
+  addWaitingListCustomerFormState: {
+    [id: string]: AddWaitingListCustomerFormState;
+  };
+}
+
 const initialState: WaitingListState = {
   getWaitingListsStatus: "UNSUBMITTED",
   getWaitingListByIdStatus: "UNSUBMITTED",
   waitingLists: [],
-  createWaitingListFormStatus: "UNSUBMITTED",
-  createWaitingListCustomerFormStatus: "UNSUBMITTED",
-  deleteWaitingListStatus: "UNSUBMITTED",
-  deleteWaitingListCustomerStatus: "UNSUBMITTED",
-  callWaitingListCustomerStatus: "UNSUBMITTED",
-  updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
-  moveWaitingListCustomerStatus: "UNSUBMITTED",
+  waitingListDetails: {},
+  deleteWaitingListState: {},
+  waitingListDetailsPageState: {},
+  addWaitingListCustomerFormState: {},
 };
 
 const waitingListSlice = createSlice({
   name: "waitingLists",
   initialState: initialState,
   reducers: {
-    createWaitingListFormInitialized(state) {
-      delete state.createWaitingListFormError;
-      state.createWaitingListFormStatus = "UNSUBMITTED";
+    waitingListDetailsPageMounted(
+      state,
+      action: PayloadAction<{ id: string }>
+    ) {
+      state.waitingListDetailsPageState[action.payload.id] = {
+        deleteWaitingListCustomerStatus: "UNSUBMITTED",
+        callWaitingListCustomerStatus: "UNSUBMITTED",
+        updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
+        moveWaitingListCustomerStatus: "UNSUBMITTED",
+      };
     },
-    createWaitingListCustomerFormInitialized(state) {
-      delete state.createWaitingListCustomerFormError;
-      state.createWaitingListCustomerFormStatus = "UNSUBMITTED";
+    waitingListDetailsPageUnmounted(
+      state,
+      action: PayloadAction<{ id: string }>
+    ) {
+      delete state.waitingListDetailsPageState[action.payload.id];
     },
-    waitingListDeleted(state) {
-      delete state.waitingList;
-      state.deleteWaitingListStatus = "UNSUBMITTED";
+    createWaitingListFormMounted(state) {
+      state.createWaitingListFormState = {
+        state: "UNSUBMITTED",
+      };
+    },
+    createWaitingListFormUnmounted(state) {
+      delete state.createWaitingListFormState;
+    },
+    addWaitingListCustomerFormMounted(
+      state,
+      action: PayloadAction<{ id: string }>
+    ) {
+      state.addWaitingListCustomerFormState[action.payload.id] = {
+        state: "UNSUBMITTED",
+      };
+    },
+    addWaitingListCustomerFormUnmounted(
+      state,
+      action: PayloadAction<{ id: string }>
+    ) {
+      delete state.addWaitingListCustomerFormState[action.payload.id];
     },
   },
   extraReducers: (builder) => {
@@ -166,12 +204,11 @@ const waitingListSlice = createSlice({
     });
     // 待ちリストの取得
     builder.addCase(getWaitingListById.pending, (state) => {
-      state.waitingLists = [];
       state.getWaitingListByIdStatus = "LOADING";
     });
     builder.addCase(getWaitingListById.fulfilled, (state, action) => {
       state.getWaitingListByIdStatus = "SUCCEEDED";
-      state.waitingList = action.payload as any;
+      state.waitingListDetails[action.meta.arg] = action.payload as any;
     });
     builder.addCase(getWaitingListById.rejected, (state) => {
       state.getWaitingListByIdError = "検索に失敗しました。";
@@ -179,62 +216,81 @@ const waitingListSlice = createSlice({
     });
 
     // 待ちリストの作成
-    builder.addCase(createWaitingList.pending, (state) => {
-      delete state.createWaitingListFormError;
-      state.createWaitingListFormStatus = "LOADING";
+    builder.addCase(createWaitingList.pending, (state, action) => {
+      delete state.createWaitingListFormState!.error;
+      state.createWaitingListFormState!.state = "LOADING";
     });
     builder.addCase(createWaitingList.fulfilled, (state) => {
-      state.createWaitingListFormStatus = "SUCCEEDED";
+      state.createWaitingListFormState!.state = "SUCCEEDED";
     });
     builder.addCase(createWaitingList.rejected, (state) => {
-      state.createWaitingListFormError = "登録に失敗しました。";
-      state.createWaitingListFormStatus = "FAILED";
+      state.createWaitingListFormState!.error = "登録に失敗しました。";
+      state.createWaitingListFormState!.state = "FAILED";
     });
 
     // 顧客の追加
-    builder.addCase(createWaitingListCustomer.pending, (state) => {
-      delete state.createWaitingListCustomerFormError;
-      state.createWaitingListCustomerFormStatus = "LOADING";
+    builder.addCase(createWaitingListCustomer.pending, (state, action) => {
+      delete state.addWaitingListCustomerFormState[action.meta.arg.id].error;
+      state.addWaitingListCustomerFormState[action.meta.arg.id].state =
+        "LOADING";
     });
-    builder.addCase(createWaitingListCustomer.fulfilled, (state) => {
-      state.createWaitingListCustomerFormStatus = "SUCCEEDED";
+    builder.addCase(createWaitingListCustomer.fulfilled, (state, action) => {
+      state.addWaitingListCustomerFormState[action.meta.arg.id].state =
+        "SUCCEEDED";
     });
-    builder.addCase(createWaitingListCustomer.rejected, (state) => {
-      state.createWaitingListCustomerFormError = "登録に失敗しました。";
-      state.createWaitingListCustomerFormStatus = "FAILED";
+    builder.addCase(createWaitingListCustomer.rejected, (state, action) => {
+      state.addWaitingListCustomerFormState[action.meta.arg.id].error =
+        "登録に失敗しました。";
+      state.addWaitingListCustomerFormState[action.meta.arg.id].state =
+        "FAILED";
     });
 
     // 待ちリストの削除
     builder.addCase(deleteWaitingList.fulfilled, (state, action) => {
-      state.deleteWaitingListStatus = "SUCCEEDED";
-      if (state.waitingList) {
-        state.waitingLists = state.waitingLists.filter(
-          (e) => e.id !== action.meta.arg.id
-        );
+      state.deleteWaitingListState[action.meta.arg.id] = "SUCCEEDED";
+      if (state.waitingListDetails[action.meta.arg.id]) {
+        delete state.waitingListDetails[action.meta.arg.id];
       }
+      state.waitingLists = state.waitingLists.filter(
+        (e) => e.id !== action.meta.arg.id
+      );
     });
-    builder.addCase(deleteWaitingList.rejected, (state) => {
-      state.deleteWaitingListStatus = "FAILED";
+    builder.addCase(deleteWaitingList.rejected, (state, action) => {
+      state.deleteWaitingListState[action.meta.arg.id] = "FAILED";
     });
 
     // 顧客の削除
     builder.addCase(deleteWaitingListCustomer.fulfilled, (state, action) => {
-      state.deleteWaitingListCustomerStatus = "SUCCEEDED";
-      if (state.waitingList) {
-        state.waitingList.customers = state.waitingList.customers.filter(
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].deleteWaitingListCustomerStatus = "SUCCEEDED";
+      }
+      const details = state.waitingListDetails[action.meta.arg.id];
+      if (details) {
+        details.customers = details.customers.filter(
           (e) => e.id !== action.meta.arg.customerId
         );
       }
     });
-    builder.addCase(deleteWaitingListCustomer.rejected, (state) => {
-      state.deleteWaitingListCustomerStatus = "FAILED";
+    builder.addCase(deleteWaitingListCustomer.rejected, (state, action) => {
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].deleteWaitingListCustomerStatus = "FAILED";
+      }
     });
 
     // 顧客の呼び出し
     builder.addCase(callWaitingListCustomer.fulfilled, (state, action) => {
-      state.callWaitingListCustomerStatus = "SUCCEEDED";
-      if (state.waitingList) {
-        const customer = state.waitingList.customers.filter(
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].callWaitingListCustomerStatus = "SUCCEEDED";
+      }
+      const details = state.waitingListDetails[action.meta.arg.id];
+      if (details) {
+        const customer = details.customers.filter(
           (e) => e.id === action.meta.arg.customerId
         )[0];
         if (customer) {
@@ -242,17 +298,26 @@ const waitingListSlice = createSlice({
         }
       }
     });
-    builder.addCase(callWaitingListCustomer.rejected, (state) => {
-      state.callWaitingListCustomerStatus = "FAILED";
+    builder.addCase(callWaitingListCustomer.rejected, (state, action) => {
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].callWaitingListCustomerStatus = "FAILED";
+      }
     });
 
     // 顧客の呼び出し状態の更新
     builder.addCase(
       updateWaitingListCustomerCallingStatus.fulfilled,
       (state, action) => {
-        state.updateWaitingListCustomerCallingStatusStatus = "SUCCEEDED";
-        if (state.waitingList) {
-          const customer = state.waitingList.customers.filter(
+        if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+          state.waitingListDetailsPageState[
+            action.meta.arg.id
+          ].updateWaitingListCustomerCallingStatusStatus = "SUCCEEDED";
+        }
+        const details = state.waitingListDetails[action.meta.arg.id];
+        if (details) {
+          const customer = details.customers.filter(
             (e) => e.id === action.meta.arg.customerId
           )[0];
           if (customer) {
@@ -263,16 +328,25 @@ const waitingListSlice = createSlice({
     );
     builder.addCase(
       updateWaitingListCustomerCallingStatus.rejected,
-      (state) => {
-        state.updateWaitingListCustomerCallingStatusStatus = "FAILED";
+      (state, action) => {
+        if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+          state.waitingListDetailsPageState[
+            action.meta.arg.id
+          ].updateWaitingListCustomerCallingStatusStatus = "FAILED";
+        }
       }
     );
 
     // 顧客の並び順更新
     builder.addCase(moveWaitingListCustomer.fulfilled, (state, action) => {
-      state.moveWaitingListCustomerStatus = "SUCCEEDED";
-      if (state.waitingList) {
-        const customers = state.waitingList.customers;
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].moveWaitingListCustomerStatus = "SUCCEEDED";
+      }
+      const details = state.waitingListDetails[action.meta.arg.id];
+      if (details) {
+        const customers = details.customers;
         const { customerId, before, after } = action.meta.arg;
         const target = customers.filter((e) => e.id === customerId)[0];
         if (target) {
@@ -292,15 +366,22 @@ const waitingListSlice = createSlice({
         }
       }
     });
-    builder.addCase(moveWaitingListCustomer.rejected, (state) => {
-      state.moveWaitingListCustomerStatus = "FAILED";
+    builder.addCase(moveWaitingListCustomer.rejected, (state, action) => {
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].moveWaitingListCustomerStatus = "FAILED";
+      }
     });
   },
 });
 
 export const {
-  createWaitingListFormInitialized,
-  createWaitingListCustomerFormInitialized,
-  waitingListDeleted,
+  waitingListDetailsPageMounted,
+  waitingListDetailsPageUnmounted,
+  createWaitingListFormMounted,
+  createWaitingListFormUnmounted,
+  addWaitingListCustomerFormMounted,
+  addWaitingListCustomerFormUnmounted,
 } = waitingListSlice.actions;
 export default waitingListSlice.reducer;

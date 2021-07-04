@@ -1,5 +1,6 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
+import { OperationState } from "../shared/types";
 
 interface WaitingListCustomerFormValues {
   name: string;
@@ -7,6 +8,7 @@ interface WaitingListCustomerFormValues {
 }
 
 export type WaitingListCustomerFormProps = {
+  state: OperationState;
   error: string | undefined;
   onSubmit: (values: WaitingListCustomerFormValues) => void;
 };
@@ -14,7 +16,7 @@ export type WaitingListCustomerFormProps = {
 export const WaitingListCustomerForm = (
   props: WaitingListCustomerFormProps
 ) => {
-  const { error, onSubmit } = props;
+  const { state: status, error, onSubmit } = props;
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -27,6 +29,8 @@ export const WaitingListCustomerForm = (
       }
       if (!value.phoneNumber) {
         result.phoneNumber = "電話番号が未入力です。";
+      } else if (!value.phoneNumber.match(/^(090|080|070)\d{8}$/g)) {
+        result.phoneNumber = "携帯電話の番号をハイフン無しで入力してください。";
       }
       return result;
     },
@@ -40,7 +44,10 @@ export const WaitingListCustomerForm = (
           名前
         </label>
         <input
-          className={"form-control " + (formik.errors.name ? "is-invalid" : "")}
+          className={
+            "form-control " +
+            (formik.touched.name && formik.errors.name ? "is-invalid" : "")
+          }
           type="text"
           name="name"
           id="name"
@@ -56,7 +63,10 @@ export const WaitingListCustomerForm = (
         </label>
         <input
           className={
-            "form-control " + (formik.errors.phoneNumber ? "is-invalid" : "")
+            "form-control " +
+            (formik.touched.phoneNumber && formik.errors.phoneNumber
+              ? "is-invalid"
+              : "")
           }
           type="text"
           name="phoneNumber"
@@ -68,7 +78,11 @@ export const WaitingListCustomerForm = (
         <div className="invalid-feedback">{formik.errors.phoneNumber}</div>
       </div>
       <div className="mb-3">
-        <button type="submit" className="btn btn-primary btn-block">
+        <button
+          type="submit"
+          className="btn btn-primary btn-block"
+          disabled={status === "LOADING" || !formik.isValid}
+        >
           登録
         </button>
       </div>
