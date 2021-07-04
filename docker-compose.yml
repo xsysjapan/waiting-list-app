@@ -6,7 +6,7 @@ services:
     volumes:
       - ./build:/app
     working_dir: /app
-    command: bash -c "npm install --only=production && npx prisma generate && npm start"
+    command: bash -c "npm start"
     environment:
       - PORT=80
       - DATABASE_URL=mysql://admin:Passw0rd@db/waitinglistdb
