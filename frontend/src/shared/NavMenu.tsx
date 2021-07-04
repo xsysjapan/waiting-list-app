@@ -9,6 +9,7 @@ export type NavMenuProps = {
 
 export const NavMenu = (props: NavMenuProps) => {
   const { user, onLogoutClick } = props;
+  const [isOpen, setOpen] = React.useState(false);
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
@@ -20,15 +21,13 @@ export const NavMenu = (props: NavMenuProps) => {
             <button
               className="navbar-toggler"
               type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarToggler"
-              aria-controls="navbarToggler"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
+              onClick={() => setOpen(!isOpen)}
             >
               <span className="navbar-toggler-icon"></span>
             </button>
-            <div className="collapse navbar-collapse" id="navbarToggler">
+            <div
+              className={"collapse navbar-collapse" + (isOpen ? " show" : "")}
+            >
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
                   <NavLink
