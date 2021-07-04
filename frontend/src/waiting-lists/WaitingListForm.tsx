@@ -1,17 +1,20 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
+import { OperationState } from "../shared/types";
 
 interface WaitingListFormValues {
   name: string;
 }
 
 export type WaitingListFormProps = {
+  state: OperationState;
   error: string | undefined;
   onSubmit: (values: WaitingListFormValues) => void;
+  onCancel: () => void;
 };
 
 export const WaitingListForm = (props: WaitingListFormProps) => {
-  const { error, onSubmit } = props;
+  const { state, error, onSubmit, onCancel } = props;
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -45,9 +48,26 @@ export const WaitingListForm = (props: WaitingListFormProps) => {
         <div className="invalid-feedback">{formik.errors.name}</div>
       </div>
       <div className="mb-3">
-        <button type="submit" className="btn btn-primary btn-block">
-          登録
-        </button>
+        <div className="row">
+          <div className="col-auto">
+            <button
+              type="submit"
+              className="btn btn-primary btn-block"
+              disabled={state === "LOADING" || !formik.isValid}
+            >
+              登録
+            </button>
+          </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="btn btn-secodnary btn-block"
+              onClick={() => onCancel()}
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
       </div>
     </form>
   );

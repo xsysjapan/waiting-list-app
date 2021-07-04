@@ -41,8 +41,10 @@ export const CreateWaitingListPage = (props: CreateWaitingListPageProps) => {
     <Layout>
       <h1>新規作成</h1>
       <WaitingListForm
+        state={formState.state}
         error={formState.error}
         onSubmit={(values) => dispatch(createWaitingList(values))}
+        onCancel={() => router.push(`/waiting-lists`)}
       />
     </Layout>
   );

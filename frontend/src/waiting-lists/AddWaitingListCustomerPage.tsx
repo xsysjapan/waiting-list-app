@@ -20,6 +20,9 @@ export const AddWaitingListCustomerPage = (
         onComplete={() => {
           router.push(`/waiting-lists/${id}`);
         }}
+        onCancel={() => {
+          router.push(`/waiting-lists/${id}`);
+        }}
       />
     </Layout>
   );

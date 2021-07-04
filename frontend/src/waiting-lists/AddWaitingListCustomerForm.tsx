@@ -10,12 +10,13 @@ import { useAppDispatch, useAppSelector } from "../shared/hooks";
 export type AddWaitingListCustomerFormProps = {
   id: string;
   onComplete: () => void;
+  onCancel: () => void;
 };
 
 export const AddWaitingListCustomerForm = (
   props: AddWaitingListCustomerFormProps
 ) => {
-  const { id, onComplete } = props;
+  const { id, onComplete, onCancel } = props;
   const dispatch = useAppDispatch();
   const formState = useAppSelector(
     (state) => state.waitingLists.addWaitingListCustomerFormState[id]
@@ -47,6 +48,7 @@ export const AddWaitingListCustomerForm = (
       onSubmit={(values) =>
         dispatch(createWaitingListCustomer({ ...values, id }))
       }
+      onCancel={onCancel}
     />
   );
 };

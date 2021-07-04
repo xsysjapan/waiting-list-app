@@ -11,12 +11,13 @@ export type WaitingListCustomerFormProps = {
   state: OperationState;
   error: string | undefined;
   onSubmit: (values: WaitingListCustomerFormValues) => void;
+  onCancel: () => void;
 };
 
 export const WaitingListCustomerForm = (
   props: WaitingListCustomerFormProps
 ) => {
-  const { state: status, error, onSubmit } = props;
+  const { state, error, onSubmit, onCancel } = props;
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -78,13 +79,26 @@ export const WaitingListCustomerForm = (
         <div className="invalid-feedback">{formik.errors.phoneNumber}</div>
       </div>
       <div className="mb-3">
-        <button
-          type="submit"
-          className="btn btn-primary btn-block"
-          disabled={status === "LOADING" || !formik.isValid}
-        >
-          登録
-        </button>
+        <div className="row">
+          <div className="col-auto">
+            <button
+              type="submit"
+              className="btn btn-primary btn-block"
+              disabled={state === "LOADING" || !formik.isValid}
+            >
+              登録
+            </button>
+          </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="btn btn-secodnary btn-block"
+              onClick={() => onCancel()}
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
       </div>
     </form>
   );
