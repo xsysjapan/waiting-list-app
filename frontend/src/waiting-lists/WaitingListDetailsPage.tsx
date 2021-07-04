@@ -87,17 +87,19 @@ export const WaitingListDetailsPageView = (
           </div>
           <div className="col-auto">
             <Link
-              to={`/waiting-lists/${waitingList.id}/addCustomer`}
+              to={`/waiting-lists/${waitingList.id}/edit`}
               className="btn btn-outline-dark"
             >
-              追加
+              編集
             </Link>
           </div>
         </div>
       </div>
       {callingCustomers.length > 0 ? (
         <div className="my-3">
-          <h5>呼出中</h5>
+          <div className="mb-2">
+            <h5>呼出中</h5>
+          </div>
           <WaitingListCustomerList
             customers={callingCustomers}
             activeIds={activeIds}
@@ -108,7 +110,19 @@ export const WaitingListDetailsPageView = (
         </div>
       ) : null}
       <div className="my-3">
-        <h5>待ち</h5>
+        <div className="mb-2 d-flex justify-content-between">
+          <h5>待ち</h5>
+          <div className="row">
+            <div className="col-auto">
+              <Link
+                to={`/waiting-lists/${waitingList.id}/customers/create`}
+                className="btn btn-outline-dark"
+              >
+                追加
+              </Link>
+            </div>
+          </div>
+        </div>
         {waitingCustomers.length > 0 ? (
           <WaitingListCustomerList
             customers={waitingCustomers}
@@ -123,7 +137,9 @@ export const WaitingListDetailsPageView = (
       </div>
       {arrivedCustomers.length > 0 ? (
         <div className="my-3">
-          <h5>受付済</h5>
+          <div className="mb-2">
+            <h5>受付済</h5>
+          </div>
           <WaitingListCustomerList
             customers={arrivedCustomers}
             activeIds={activeIds}

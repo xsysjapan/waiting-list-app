@@ -5,6 +5,7 @@ import {
   PostWaitingListCustomerCallRequest,
   PostWaitingListCustomerOrderRequest,
   PostWaitingListCustomerRequest,
+  PutWaitingListCustomerRequest,
   PutWaitingListCustomerStatusRequest,
 } from "../shared/api/generated";
 import {
@@ -30,6 +31,26 @@ export const createWaitingList = createAsyncThunk(
   }
 );
 
+export const editWaitingListName = createAsyncThunk(
+  "waitingLists/editWaitingListNameStatus",
+  (param: { id: string; name: string }) => {
+    return api.putWaitingList({
+      id: param.id,
+      waitingListModificationParams: { name: param.name },
+    });
+  }
+);
+
+export const editWaitingListActive = createAsyncThunk(
+  "waitingLists/editWaitingListNameStatus",
+  (param: { id: string; active: boolean }) => {
+    return api.putWaitingList({
+      id: param.id,
+      waitingListModificationParams: { active: param.active },
+    });
+  }
+);
+
 export const createWaitingListCustomer = createAsyncThunk(
   "waitingLists/createWaitingListCustomerStatus",
   (
@@ -40,6 +61,22 @@ export const createWaitingListCustomer = createAsyncThunk(
     return api.postWaitingListCustomer({
       id: param.id,
       waitingListCustomerCreationParams: param,
+    });
+  }
+);
+
+export const editWaitingListCustomer = createAsyncThunk(
+  "waitingLists/editWaitingListCustomerStatus",
+  (
+    param: {
+      id: string;
+      customerId: string;
+    } & PutWaitingListCustomerRequest["waitingListCustomerModificationParams"]
+  ) => {
+    return api.putWaitingListCustomer({
+      id: param.id,
+      customerId: param.customerId,
+      waitingListCustomerModificationParams: param,
     });
   }
 );
@@ -126,7 +163,17 @@ interface CreateWaitingListFormState {
   state: OperationState;
 }
 
+interface EditWaitingListFormState {
+  error?: string;
+  state: OperationState;
+}
+
 interface AddWaitingListCustomerFormState {
+  error?: string;
+  state: OperationState;
+}
+
+interface EditWaitingListCustomerFormState {
   error?: string;
   state: OperationState;
 }
@@ -138,8 +185,14 @@ interface WaitingListState {
   deleteWaitingListState: { [id: string]: OperationState };
   waitingListDetailsPageState: { [id: string]: WaitingListDetailsPageState };
   createWaitingListFormState?: CreateWaitingListFormState;
+  editWaitingListFormState: {
+    [id: string]: EditWaitingListFormState;
+  };
   addWaitingListCustomerFormState: {
     [id: string]: AddWaitingListCustomerFormState;
+  };
+  editWaitingListCustomerFormState: {
+    [id: string]: EditWaitingListCustomerFormState;
   };
 }
 
@@ -148,7 +201,9 @@ const initialState: WaitingListState = {
   waitingLists: [],
   deleteWaitingListState: {},
   waitingListDetailsPageState: {},
+  editWaitingListFormState: {},
   addWaitingListCustomerFormState: {},
+  editWaitingListCustomerFormState: {},
 };
 
 const waitingListSlice = createSlice({
@@ -176,6 +231,14 @@ const waitingListSlice = createSlice({
     createWaitingListFormUnmounted(state) {
       delete state.createWaitingListFormState;
     },
+    editWaitingListFormMounted(state, action: PayloadAction<{ id: string }>) {
+      state.editWaitingListFormState[action.payload.id] = {
+        state: "UNSUBMITTED",
+      };
+    },
+    editWaitingListFormUnmounted(state, action: PayloadAction<{ id: string }>) {
+      delete state.editWaitingListFormState[action.payload.id];
+    },
     addWaitingListCustomerFormMounted(
       state,
       action: PayloadAction<{ id: string }>
@@ -189,6 +252,24 @@ const waitingListSlice = createSlice({
       action: PayloadAction<{ id: string }>
     ) {
       delete state.addWaitingListCustomerFormState[action.payload.id];
+    },
+    editWaitingListCustomerFormMounted(
+      state,
+      action: PayloadAction<{ id: string; customerId: string }>
+    ) {
+      state.editWaitingListCustomerFormState[
+        `${action.payload.id}:${action.payload.customerId}`
+      ] = {
+        state: "UNSUBMITTED",
+      };
+    },
+    editWaitingListCustomerFormUnmounted(
+      state,
+      action: PayloadAction<{ id: string; customerId: string }>
+    ) {
+      delete state.editWaitingListCustomerFormState[
+        `${action.payload.id}:${action.payload.customerId}`
+      ];
     },
   },
   extraReducers: (builder) => {
@@ -248,6 +329,31 @@ const waitingListSlice = createSlice({
       state.createWaitingListFormState!.state = "FAILED";
     });
 
+    // 待ちリスト名の編集
+    builder.addCase(editWaitingListName.pending, (state, action) => {
+      delete state.editWaitingListFormState[action.meta.arg.id].error;
+      state.editWaitingListFormState[action.meta.arg.id].state = "LOADING";
+    });
+    builder.addCase(editWaitingListName.fulfilled, (state, action) => {
+      state.editWaitingListFormState[action.meta.arg.id].state = "SUCCEEDED";
+    });
+    builder.addCase(editWaitingListName.rejected, (state, action) => {
+      state.editWaitingListFormState[action.meta.arg.id].error =
+        "登録に失敗しました。";
+      state.editWaitingListFormState[action.meta.arg.id].state = "FAILED";
+    });
+
+    // 待ちリストの削除
+    builder.addCase(deleteWaitingList.fulfilled, (state, action) => {
+      state.deleteWaitingListState[action.meta.arg.id] = "SUCCEEDED";
+      state.waitingLists = state.waitingLists.filter(
+        (e) => e.id !== action.meta.arg.id
+      );
+    });
+    builder.addCase(deleteWaitingList.rejected, (state, action) => {
+      state.deleteWaitingListState[action.meta.arg.id] = "FAILED";
+    });
+
     // 顧客の追加
     builder.addCase(createWaitingListCustomer.pending, (state, action) => {
       delete state.addWaitingListCustomerFormState[action.meta.arg.id].error;
@@ -265,15 +371,28 @@ const waitingListSlice = createSlice({
         "FAILED";
     });
 
-    // 待ちリストの削除
-    builder.addCase(deleteWaitingList.fulfilled, (state, action) => {
-      state.deleteWaitingListState[action.meta.arg.id] = "SUCCEEDED";
-      state.waitingLists = state.waitingLists.filter(
-        (e) => e.id !== action.meta.arg.id
-      );
+    // 顧客の編集
+    builder.addCase(editWaitingListCustomer.pending, (state, action) => {
+      delete state.editWaitingListCustomerFormState[
+        `${action.meta.arg.id}:${action.meta.arg.customerId}`
+      ].error;
+      state.editWaitingListCustomerFormState[
+        `${action.meta.arg.id}:${action.meta.arg.customerId}`
+      ].state = "LOADING";
     });
-    builder.addCase(deleteWaitingList.rejected, (state, action) => {
-      state.deleteWaitingListState[action.meta.arg.id] = "FAILED";
+    builder.addCase(editWaitingListCustomer.fulfilled, (state, action) => {
+      state.editWaitingListCustomerFormState[
+        `${action.meta.arg.id}:${action.meta.arg.customerId}`
+      ].state = "SUCCEEDED";
+    });
+    builder.addCase(editWaitingListCustomer.rejected, (state, action) => {
+      state.editWaitingListCustomerFormState[
+        `${action.meta.arg.id}:${action.meta.arg.customerId}`
+      ].state = "FAILED";
+      state.editWaitingListCustomerFormState[
+        `${action.meta.arg.id}:${action.meta.arg.customerId}`
+      ].error = "登録に失敗しました。";
+      state.editWaitingListFormState[action.meta.arg.id].state = "FAILED";
     });
 
     // 顧客の削除
@@ -406,7 +525,11 @@ export const {
   waitingListDetailsPageUnmounted,
   createWaitingListFormMounted,
   createWaitingListFormUnmounted,
+  editWaitingListFormMounted,
+  editWaitingListFormUnmounted,
   addWaitingListCustomerFormMounted,
   addWaitingListCustomerFormUnmounted,
+  editWaitingListCustomerFormMounted,
+  editWaitingListCustomerFormUnmounted,
 } = waitingListSlice.actions;
 export default waitingListSlice.reducer;

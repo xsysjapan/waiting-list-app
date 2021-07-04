@@ -9,14 +9,15 @@ interface WaitingListFormValues {
 export type WaitingListFormProps = {
   state: OperationState;
   error: string | undefined;
+  initialValue?: WaitingListFormValues;
   onSubmit: (values: WaitingListFormValues) => void;
   onCancel: () => void;
 };
 
 export const WaitingListForm = (props: WaitingListFormProps) => {
-  const { state, error, onSubmit, onCancel } = props;
+  const { state, error, initialValue, onSubmit, onCancel } = props;
   const formik = useFormik({
-    initialValues: {
+    initialValues: initialValue || {
       name: "",
     },
     validate: (value) => {
@@ -36,7 +37,10 @@ export const WaitingListForm = (props: WaitingListFormProps) => {
           表示名
         </label>
         <input
-          className={"form-control " + (formik.errors.name ? "is-invalid" : "")}
+          className={
+            "form-control " +
+            (formik.touched.name && formik.errors.name ? "is-invalid" : "")
+          }
           type="text"
           name="name"
           id="name"
