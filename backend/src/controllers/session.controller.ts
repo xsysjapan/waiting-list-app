@@ -1,3 +1,4 @@
+import { Request as ExRequest } from "express";
 import cookie from "cookie";
 import {
   Body,
@@ -5,6 +6,7 @@ import {
   Delete,
   Get,
   Post,
+  Request,
   Response,
   Route,
   SuccessResponse,
@@ -25,15 +27,15 @@ export class SessionsController extends Controller {
     @Body() requestBody: SessionCreationParams
   ): Promise<SessionResponse> {
     const user = await new UsersService().login(requestBody);
-    this.setHeader("Set-Cookie", `JSESSIONID=${user.id}; Path=/; HttpOnly`);
+    this.setHeader("Set-Cookie", `token=${user.id}; Path=/; HttpOnly`);
     return {
       user,
     };
   }
 
   @Get()
-  public async getSession(): Promise<SessionResponse> {
-    const userId = this.getUserId();
+  public async getSession(@Request() req: ExRequest): Promise<SessionResponse> {
+    const userId = this.getUserId(req);
     if (!userId) {
       return {};
     }
@@ -45,27 +47,29 @@ export class SessionsController extends Controller {
 
   @Delete()
   @SuccessResponse("204", "No Content")
-  public async deleteSession(): Promise<void> {
-    const userId = this.getUserId();
+  public async deleteSession(@Request() req: ExRequest): Promise<void> {
+    const userId = this.getUserId(req);
     if (!userId) {
       return;
     }
     this.setHeader(
       "Set-Cookie",
-      `JSESSIONID=deleted; Path=/; Expires=Thu, Jan 01 1970 00:00:00 UTC`
+      `token=deleted; Path=/; Expires=Thu, Jan 01 1970 00:00:00 UTC`
     );
   }
 
-  getUserId() {
-    const cookieHeaders = this.getHeader("Cookie");
+  getUserId(req: ExRequest) {
+    const cookieHeaders = req.headers["cookie"];
     if (!cookieHeaders) {
       return undefined;
     }
-    const cookieHeader = cookieHeaders[0];
+    const cookieHeader = Array.isArray(cookieHeaders)
+      ? cookieHeaders[0]
+      : cookieHeaders;
     if (!cookieHeader) {
       return undefined;
     }
     const cookieValues = cookie.parse(cookieHeader);
-    return cookieValues["JSESSIONID"];
+    return cookieValues["token"];
   }
 }

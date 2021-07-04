@@ -11,7 +11,7 @@ export const Layout = (props: LayoutProps) => {
   const dispatch = useAppDispatch();
   return (
     <div>
-      <NavMenu user={user} onLogoutClick={() => dispatch(logout)} />
+      <NavMenu user={user} onLogoutClick={() => dispatch(logout())} />
       <div className="container">
         <div className="my-3">{children}</div>
       </div>

@@ -59,6 +59,9 @@ export class WaitingListsService {
     }
     const entities = await client.waitingList.findMany({
       where: where,
+      orderBy: {
+        name: "asc",
+      },
     });
     return entities.map((e) => ({
       id: e.id,
