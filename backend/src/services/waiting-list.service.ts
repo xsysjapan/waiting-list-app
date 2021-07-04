@@ -8,14 +8,17 @@ const client = new PrismaClient();
 
 export type WaitingListSearchParams = {
   name?: string;
+  active?: boolean;
 };
 
 export type WaitingListCreationParams = {
   name: string;
+  active?: boolean;
 };
 
 export type WaitingListModificationParams = {
-  name: string;
+  name?: string;
+  active?: boolean;
 };
 
 export type WaitingListCustomerCreationParams = {
@@ -45,10 +48,22 @@ export class WaitingListsService {
   public async search(
     param: WaitingListSearchParams
   ): Promise<WaitingListModel[]> {
-    const entities = await client.waitingList.findMany();
+    const where = {} as any;
+    if (param.name) {
+      where.name = {
+        contains: param.name,
+      };
+    }
+    if (param.active !== undefined) {
+      where.active = param.active;
+    }
+    const entities = await client.waitingList.findMany({
+      where: where,
+    });
     return entities.map((e) => ({
       id: e.id,
       name: e.name,
+      active: e.active,
     }));
   }
 
@@ -63,6 +78,7 @@ export class WaitingListsService {
     return {
       id: entity.id,
       name: entity.name,
+      active: entity.active,
       customers: entity.customers
         .sort((l, r) => l.order - r.order)
         .map((e) => ({
@@ -100,9 +116,6 @@ export class WaitingListsService {
           updatedAt: new Date(),
         },
       });
-      return {
-        id: entity.id,
-      };
     } catch (e) {
       handlePrismaError(e);
       throw e;

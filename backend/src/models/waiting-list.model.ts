@@ -1,6 +1,7 @@
 export interface WaitingListModel {
   id: string;
   name: string;
+  active: boolean;
 }
 
 export type CallingStatusEnum = "NOT_CALLED" | "CALLING" | "ARRIVED";

@@ -46,6 +46,7 @@ model WaitingList {
   createdAt                 DateTime                    @default(now())
   updatedAt                 DateTime                    @default(now())
   name                      String
+  active                    Boolean                     @default(false)
   customers                 WaitingListCustomer[]
   WaitingListCallingHistory WaitingListCallingHistory[]
 }

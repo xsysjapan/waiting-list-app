@@ -12,7 +12,7 @@ services:
       - DATABASE_URL=mysql://admin:Passw0rd@db/waitinglistdb
       - AWS_DEFAULT_REGION=ap-northeast-1
     ports:
-      - 8080:80
+      - 8081:80
     depends_on:
       - db
   db:

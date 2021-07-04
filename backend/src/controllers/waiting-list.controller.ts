@@ -10,6 +10,7 @@ import {
   Response,
   Route,
   SuccessResponse,
+  ValidateError,
 } from "tsoa";
 import {
   CreatedResponse,
@@ -34,9 +35,10 @@ import {
 export class WaitingListsController extends Controller {
   @Get()
   public getWaitingLists(
-    @Query("name") name?: string
+    @Query("name") name?: string,
+    @Query("active") active?: boolean
   ): Promise<WaitingListModel[]> {
-    return new WaitingListsService().search({ name });
+    return new WaitingListsService().search({ name, active });
   }
 
   @Get("{id}")
@@ -66,6 +68,23 @@ export class WaitingListsController extends Controller {
     @Path() id: string,
     @Body() requestBody: WaitingListModificationParams
   ): Promise<void> {
+    if (requestBody.active === undefined && requestBody.name === undefined) {
+      throw new ValidateError(
+        {
+          ["name"]: {
+            message: "name or active must specified",
+            value: undefined,
+          },
+          ["active"]: {
+            message: "name or active must specified",
+            value: undefined,
+          },
+        },
+        "Validation Error"
+      );
+      return;
+    }
+
     await new WaitingListsService().update(id, requestBody);
     this.setStatus(204);
     return;

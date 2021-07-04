@@ -2,6 +2,7 @@
   "name": "wait-list-app",
   "version": "0.0.1",
   "description": "wait-list-app.",
+  "private": true,
   "scripts": {
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
