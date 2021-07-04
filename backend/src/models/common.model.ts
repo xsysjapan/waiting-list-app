@@ -1,6 +1,8 @@
-export interface CreatedResponse {
-  id: string;
-}
+export type CreatedResponse<
+  T = {
+    id: string;
+  }
+> = T;
 
 export interface ErrorResponse {
   code: string;
