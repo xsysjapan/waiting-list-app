@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { User } from "./types";
 
 export type NavMenuProps = {
@@ -13,7 +13,7 @@ export const NavMenu = (props: NavMenuProps) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/waiting-lists">
           順番待ちリスト
         </Link>
         {user ? (
@@ -29,7 +29,7 @@ export const NavMenu = (props: NavMenuProps) => {
               className={"collapse navbar-collapse" + (isOpen ? " show" : "")}
             >
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <NavLink
                     className="nav-link"
                     to="/waiting-lists"
@@ -37,7 +37,7 @@ export const NavMenu = (props: NavMenuProps) => {
                   >
                     待ちリスト
                   </NavLink>
-                </li>
+                </li> */}
               </ul>
               <ul className="navbar-nav">
                 <li className="nav-item">

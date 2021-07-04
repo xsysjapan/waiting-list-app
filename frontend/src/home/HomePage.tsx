@@ -1,14 +1,10 @@
 import * as React from "react";
-import Layout from "../shared/Layout";
+import { Redirect } from "react-router";
 
 export type HomePageProps = {};
 
 export const HomePage = (props: HomePageProps) => {
-  return (
-    <Layout>
-      <h1>Home Page</h1>
-    </Layout>
-  );
+  return <Redirect to="/waiting-lists" />;
 };
 
 export default HomePage;

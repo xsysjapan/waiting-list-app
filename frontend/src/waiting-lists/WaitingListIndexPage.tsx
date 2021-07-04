@@ -15,6 +15,14 @@ export const WaitingListIndexPageView = (
   props: WaitingListIndexPageViewProps
 ) => {
   const { waitingListsStatus, waitingLists } = props;
+  const activeWaitingLists = React.useMemo(
+    () => waitingLists!.filter((e) => e.active),
+    [waitingLists]
+  );
+  const inactiveWaitingLists = React.useMemo(
+    () => waitingLists!.filter((e) => !e.active),
+    [waitingLists]
+  );
 
   if (waitingListsStatus !== "SUCCEEDED") {
     return (
@@ -49,7 +57,24 @@ export const WaitingListIndexPageView = (
         </div>
       </div>
       <div className="my-3">
-        <WaitingListList waitingLists={waitingLists!} />
+        <div className="mb-2">
+          <h5>Active</h5>
+        </div>
+        {activeWaitingLists.length > 0 ? (
+          <WaitingListList waitingLists={activeWaitingLists} />
+        ) : (
+          <p>現在Activeな待ちリストはありません。</p>
+        )}
+      </div>
+      <div className="my-3">
+        <div className="mb-2">
+          <h5>Inactive</h5>
+        </div>
+        {inactiveWaitingLists.length > 0 ? (
+          <WaitingListList waitingLists={inactiveWaitingLists} />
+        ) : (
+          <p>現在Inactiveな待ちリストはありません。</p>
+        )}
       </div>
     </Layout>
   );

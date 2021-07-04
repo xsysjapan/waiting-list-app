@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 interface WaitingListItem {
   id: string;
   name: string;
+  active: boolean;
 }
 
 export type WaitingListListProps = {

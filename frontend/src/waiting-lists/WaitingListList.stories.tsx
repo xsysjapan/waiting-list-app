@@ -16,6 +16,7 @@ Default.args = {
     {
       id: "id",
       name: "2021-05-24",
+      active: false,
     },
   ],
 };
@@ -26,10 +27,12 @@ MultipleLines.args = {
     {
       id: "id1",
       name: "2021-05-24 1",
+      active: false,
     },
     {
       id: "id2",
       name: "2021-05-24 2",
+      active: false,
     },
   ],
 };

@@ -29,6 +29,24 @@ Default.args = {
   waitingList: {
     id: "wl1",
     name: "Waiting List Name",
+    active: false,
+    customers: [
+      { ...customer, id: "cust1", name: "Customer Name 1", status: "ARRIVED" },
+      { ...customer, id: "cust2", name: "Customer Name 2", status: "ARRIVED" },
+      { ...customer, id: "cust3", name: "Customer Name 3", status: "CALLING" },
+      { ...customer, id: "cust4", name: "Customer Name 4", status: "CALLING" },
+      { ...customer, id: "cust5", name: "Customer Name 5" },
+      { ...customer, id: "cust6", name: "Customer Name 6" },
+    ],
+  },
+};
+
+export const Active = Template.bind({});
+Active.args = {
+  waitingList: {
+    id: "wl1",
+    name: "Waiting List Name",
+    active: true,
     customers: [
       { ...customer, id: "cust1", name: "Customer Name 1", status: "ARRIVED" },
       { ...customer, id: "cust2", name: "Customer Name 2", status: "ARRIVED" },
@@ -45,6 +63,7 @@ withEmpty.args = {
   waitingList: {
     id: "wl1",
     name: "Waiting List Name",
+    active: false,
     customers: [],
   },
 };
@@ -54,6 +73,7 @@ withWaitingCustomerOnly.args = {
   waitingList: {
     id: "wl1",
     name: "Waiting List Name",
+    active: false,
     customers: [{ ...customer }],
   },
 };
@@ -63,6 +83,7 @@ withCallingCustomerOnly.args = {
   waitingList: {
     id: "wl1",
     name: "Waiting List Name",
+    active: false,
     customers: [{ ...customer, status: "CALLING" }],
   },
 };
@@ -72,6 +93,7 @@ withArrivedCustomerOnly.args = {
   waitingList: {
     id: "wl1",
     name: "Waiting List Name",
+    active: false,
     customers: [{ ...customer, status: "ARRIVED" }],
   },
 };

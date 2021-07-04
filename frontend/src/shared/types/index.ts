@@ -8,11 +8,13 @@ export interface User {
 export interface WaitingListSummary {
   id: string;
   name: string;
+  active: boolean;
 }
 
 export interface WaitingListDetails {
   id: string;
   name: string;
+  active: boolean;
   customers: WaitingListCustomer[];
 }
 

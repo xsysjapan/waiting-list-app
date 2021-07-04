@@ -42,7 +42,7 @@ export const editWaitingListName = createAsyncThunk(
 );
 
 export const editWaitingListActive = createAsyncThunk(
-  "waitingLists/editWaitingListNameStatus",
+  "waitingLists/editWaitingListActiveStatus",
   (param: { id: string; active: boolean }) => {
     return api.putWaitingList({
       id: param.id,
@@ -144,6 +144,7 @@ interface WaitingListDetailsPageState {
   getWaitingListByIdError?: string;
   getWaitingListByIdStatus: OperationState;
   waitingListDetails?: WaitingListDetails;
+  editWaitingListActiveStatus: OperationState;
   deleteWaitingListCustomerStatus: OperationState;
   callWaitingListCustomerStatus: OperationState;
   updateWaitingListCustomerCallingStatusStatus: OperationState;
@@ -152,6 +153,7 @@ interface WaitingListDetailsPageState {
 
 const initialDetailsPageState: WaitingListDetailsPageState = {
   getWaitingListByIdStatus: "UNSUBMITTED",
+  editWaitingListActiveStatus: "UNSUBMITTED",
   deleteWaitingListCustomerStatus: "UNSUBMITTED",
   callWaitingListCustomerStatus: "UNSUBMITTED",
   updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
@@ -327,6 +329,25 @@ const waitingListSlice = createSlice({
     builder.addCase(createWaitingList.rejected, (state) => {
       state.createWaitingListFormState!.error = "登録に失敗しました。";
       state.createWaitingListFormState!.state = "FAILED";
+    });
+
+    // 待ちリストの有効化・無効化
+    builder.addCase(editWaitingListActive.fulfilled, (state, action) => {
+      state.waitingListDetailsPageState[
+        action.meta.arg.id
+      ].editWaitingListActiveStatus = "SUCCEEDED";
+
+      const details =
+        state.waitingListDetailsPageState[action.meta.arg.id]
+          .waitingListDetails;
+      if (details) {
+        details.active = action.meta.arg.active;
+      }
+    });
+    builder.addCase(editWaitingListActive.rejected, (state, action) => {
+      state.waitingListDetailsPageState[
+        action.meta.arg.id
+      ].editWaitingListActiveStatus = "FAILED";
     });
 
     // 待ちリスト名の編集

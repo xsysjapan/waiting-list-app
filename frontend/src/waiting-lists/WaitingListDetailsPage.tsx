@@ -9,6 +9,7 @@ import {
   callWaitingListCustomer,
   deleteWaitingList,
   deleteWaitingListCustomer,
+  editWaitingListActive,
   getWaitingListById,
   moveWaitingListCustomer,
   updateWaitingListCustomerCallingStatus,
@@ -20,23 +21,31 @@ import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../shared/api/ge
 export type WaitingListDetailsPageViewProps = {
   waitingListStatus: OperationState;
   waitingList: WaitingListDetails | undefined;
+  onActivateClick: () => void;
+  onDeactivateClick: () => void;
   onDeleteClick: () => void;
-  onCancelClick: (id: string) => void;
-  onCallClick: (id: string) => void;
-  onCancelCallClick: (id: string) => void;
-  onArriveClick: (id: string) => void;
-  onMoveUpTo: (id: string, before: string) => void;
-  onMoveDownTo: (id: string, after: string) => void;
+  onCancelClick: (customerId: string) => void;
+  onCallClick: (customerId: string) => void;
+  onCancelCallClick: (customerId: string) => void;
+  onArriveClick: (customerId: string) => void;
+  onMoveUpTo: (customerId: string, before: string) => void;
+  onMoveDownTo: (customerId: string, after: string) => void;
 };
 
 export const WaitingListDetailsPageView = (
   props: WaitingListDetailsPageViewProps
 ) => {
   const [activeIds, setActiveIds] = React.useState([] as string[]);
-  const { waitingList, onDeleteClick, ...handlers } = props;
-  const onActivate = (id: string) => setActiveIds([id]);
-  const onDeactivate = (id: string) =>
-    setActiveIds(activeIds.filter((e) => e !== id));
+  const {
+    waitingList,
+    onActivateClick,
+    onDeactivateClick,
+    onDeleteClick,
+    ...handlers
+  } = props;
+  const onActivateCustomer = (customerId: string) => setActiveIds([customerId]);
+  const onDeactivateCustomer = (customerId: string) =>
+    setActiveIds(activeIds.filter((e) => e !== customerId));
   const callingCustomers = React.useMemo(
     () =>
       waitingList
@@ -73,17 +82,36 @@ export const WaitingListDetailsPageView = (
 
   return (
     <Layout>
+      <div>
+        {waitingList.active ? (
+          <>
+            <span className="badge bg-primary">Active</span>{" "}
+          </>
+        ) : (
+          <>
+            <span className="badge bg-secondary">Inactive</span>{" "}
+          </>
+        )}
+      </div>
       <div className="d-flex justify-content-between">
         <h1>{waitingList.name}</h1>
         <div className="row">
           <div className="col-auto">
-            <button
-              className="btn btn-outline-danger"
-              onClick={onDeleteClick}
-              disabled={waitingList.customers.length > 0}
-            >
-              削除
-            </button>
+            {waitingList.active ? (
+              <button
+                className="btn btn-outline-dark"
+                onClick={() => onDeactivateClick()}
+              >
+                無効化
+              </button>
+            ) : (
+              <button
+                className="btn btn-outline-primary"
+                onClick={() => onActivateClick()}
+              >
+                有効化
+              </button>
+            )}
           </div>
           <div className="col-auto">
             <Link
@@ -92,6 +120,15 @@ export const WaitingListDetailsPageView = (
             >
               編集
             </Link>
+          </div>
+          <div className="col-auto">
+            <button
+              className="btn btn-outline-danger"
+              onClick={onDeleteClick}
+              disabled={waitingList.customers.length > 0}
+            >
+              削除
+            </button>
           </div>
         </div>
       </div>
@@ -103,8 +140,8 @@ export const WaitingListDetailsPageView = (
           <WaitingListCustomerList
             customers={callingCustomers}
             activeIds={activeIds}
-            onActivate={onActivate}
-            onDeactivate={onDeactivate}
+            onActivate={onActivateCustomer}
+            onDeactivate={onDeactivateCustomer}
             {...handlers}
           />
         </div>
@@ -127,8 +164,8 @@ export const WaitingListDetailsPageView = (
           <WaitingListCustomerList
             customers={waitingCustomers}
             activeIds={activeIds}
-            onActivate={onActivate}
-            onDeactivate={onDeactivate}
+            onActivate={onActivateCustomer}
+            onDeactivate={onDeactivateCustomer}
             {...handlers}
           />
         ) : (
@@ -143,8 +180,8 @@ export const WaitingListDetailsPageView = (
           <WaitingListCustomerList
             customers={arrivedCustomers}
             activeIds={activeIds}
-            onActivate={onActivate}
-            onDeactivate={onDeactivate}
+            onActivate={onActivateCustomer}
+            onDeactivate={onDeactivateCustomer}
             {...handlers}
           />
         </div>
@@ -188,6 +225,12 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
         "UNSUBMITTED"
       }
       waitingList={waitingListDetailsPageState[id]?.waitingListDetails}
+      onActivateClick={() => {
+        dispatch(editWaitingListActive({ id, active: true }));
+      }}
+      onDeactivateClick={() => {
+        dispatch(editWaitingListActive({ id, active: false }));
+      }}
       onDeleteClick={() => {
         dispatch(deleteWaitingList({ id }));
       }}
