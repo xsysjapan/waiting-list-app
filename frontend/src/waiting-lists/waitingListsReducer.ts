@@ -20,7 +20,7 @@ export const getWaitingLists = createAsyncThunk(
 
 export const getWaitingListById = createAsyncThunk(
   "waitingLists/getWaitingListByIdStatus",
-  (id: string) => api.getWaitingList({ id })
+  (param: { id: string }) => api.getWaitingList(param)
 );
 
 export const createWaitingList = createAsyncThunk(
@@ -104,11 +104,22 @@ export const moveWaitingListCustomer = createAsyncThunk(
 );
 
 interface WaitingListDetailsPageState {
+  getWaitingListByIdError?: string;
+  getWaitingListByIdStatus: OperationState;
+  waitingListDetails?: WaitingListDetails;
   deleteWaitingListCustomerStatus: OperationState;
   callWaitingListCustomerStatus: OperationState;
   updateWaitingListCustomerCallingStatusStatus: OperationState;
   moveWaitingListCustomerStatus: OperationState;
 }
+
+const initialDetailsPageState: WaitingListDetailsPageState = {
+  getWaitingListByIdStatus: "UNSUBMITTED",
+  deleteWaitingListCustomerStatus: "UNSUBMITTED",
+  callWaitingListCustomerStatus: "UNSUBMITTED",
+  updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
+  moveWaitingListCustomerStatus: "UNSUBMITTED",
+};
 
 interface CreateWaitingListFormState {
   error?: string;
@@ -123,10 +134,7 @@ interface AddWaitingListCustomerFormState {
 interface WaitingListState {
   getWaitingListsError?: string;
   getWaitingListsStatus: OperationState;
-  getWaitingListByIdError?: string;
-  getWaitingListByIdStatus: OperationState;
   waitingLists: WaitingListSummary[];
-  waitingListDetails: { [id: string]: WaitingListDetails };
   deleteWaitingListState: { [id: string]: OperationState };
   waitingListDetailsPageState: { [id: string]: WaitingListDetailsPageState };
   createWaitingListFormState?: CreateWaitingListFormState;
@@ -137,9 +145,7 @@ interface WaitingListState {
 
 const initialState: WaitingListState = {
   getWaitingListsStatus: "UNSUBMITTED",
-  getWaitingListByIdStatus: "UNSUBMITTED",
   waitingLists: [],
-  waitingListDetails: {},
   deleteWaitingListState: {},
   waitingListDetailsPageState: {},
   addWaitingListCustomerFormState: {},
@@ -153,12 +159,8 @@ const waitingListSlice = createSlice({
       state,
       action: PayloadAction<{ id: string }>
     ) {
-      state.waitingListDetailsPageState[action.payload.id] = {
-        deleteWaitingListCustomerStatus: "UNSUBMITTED",
-        callWaitingListCustomerStatus: "UNSUBMITTED",
-        updateWaitingListCustomerCallingStatusStatus: "UNSUBMITTED",
-        moveWaitingListCustomerStatus: "UNSUBMITTED",
-      };
+      state.waitingListDetailsPageState[action.payload.id] =
+        initialDetailsPageState;
     },
     waitingListDetailsPageUnmounted(
       state,
@@ -203,16 +205,34 @@ const waitingListSlice = createSlice({
       state.getWaitingListsStatus = "FAILED";
     });
     // 待ちリストの取得
-    builder.addCase(getWaitingListById.pending, (state) => {
-      state.getWaitingListByIdStatus = "LOADING";
+    builder.addCase(getWaitingListById.pending, (state, action) => {
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        delete state.waitingListDetailsPageState[action.meta.arg.id]
+          .waitingListDetails;
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].getWaitingListByIdStatus = "LOADING";
+      }
     });
     builder.addCase(getWaitingListById.fulfilled, (state, action) => {
-      state.getWaitingListByIdStatus = "SUCCEEDED";
-      state.waitingListDetails[action.meta.arg] = action.payload as any;
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].getWaitingListByIdStatus = "SUCCEEDED";
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].waitingListDetails = action.payload as any;
+      }
     });
-    builder.addCase(getWaitingListById.rejected, (state) => {
-      state.getWaitingListByIdError = "検索に失敗しました。";
-      state.getWaitingListByIdStatus = "FAILED";
+    builder.addCase(getWaitingListById.rejected, (state, action) => {
+      if (state.waitingListDetailsPageState[action.meta.arg.id]) {
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].getWaitingListByIdError = "検索に失敗しました。";
+        state.waitingListDetailsPageState[
+          action.meta.arg.id
+        ].getWaitingListByIdStatus = "FAILED";
+      }
     });
 
     // 待ちリストの作成
@@ -248,9 +268,6 @@ const waitingListSlice = createSlice({
     // 待ちリストの削除
     builder.addCase(deleteWaitingList.fulfilled, (state, action) => {
       state.deleteWaitingListState[action.meta.arg.id] = "SUCCEEDED";
-      if (state.waitingListDetails[action.meta.arg.id]) {
-        delete state.waitingListDetails[action.meta.arg.id];
-      }
       state.waitingLists = state.waitingLists.filter(
         (e) => e.id !== action.meta.arg.id
       );
@@ -266,7 +283,9 @@ const waitingListSlice = createSlice({
           action.meta.arg.id
         ].deleteWaitingListCustomerStatus = "SUCCEEDED";
       }
-      const details = state.waitingListDetails[action.meta.arg.id];
+      const details =
+        state.waitingListDetailsPageState[action.meta.arg.id]
+          .waitingListDetails;
       if (details) {
         details.customers = details.customers.filter(
           (e) => e.id !== action.meta.arg.customerId
@@ -288,7 +307,9 @@ const waitingListSlice = createSlice({
           action.meta.arg.id
         ].callWaitingListCustomerStatus = "SUCCEEDED";
       }
-      const details = state.waitingListDetails[action.meta.arg.id];
+      const details =
+        state.waitingListDetailsPageState[action.meta.arg.id]
+          .waitingListDetails;
       if (details) {
         const customer = details.customers.filter(
           (e) => e.id === action.meta.arg.customerId
@@ -315,7 +336,9 @@ const waitingListSlice = createSlice({
             action.meta.arg.id
           ].updateWaitingListCustomerCallingStatusStatus = "SUCCEEDED";
         }
-        const details = state.waitingListDetails[action.meta.arg.id];
+        const details =
+          state.waitingListDetailsPageState[action.meta.arg.id]
+            .waitingListDetails;
         if (details) {
           const customer = details.customers.filter(
             (e) => e.id === action.meta.arg.customerId
@@ -344,7 +367,9 @@ const waitingListSlice = createSlice({
           action.meta.arg.id
         ].moveWaitingListCustomerStatus = "SUCCEEDED";
       }
-      const details = state.waitingListDetails[action.meta.arg.id];
+      const details =
+        state.waitingListDetailsPageState[action.meta.arg.id]
+          .waitingListDetails;
       if (details) {
         const customers = details.customers;
         const { customerId, before, after } = action.meta.arg;
