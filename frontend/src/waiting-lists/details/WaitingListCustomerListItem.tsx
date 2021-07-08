@@ -86,11 +86,13 @@ export const WaitingListCustomerListItem = (
         ) : null}
       </div>
       {remarks.length > 0 ? (
-        active ? (
-          remarks.map((line, i) => <div key={i}>{line}</div>)
-        ) : (
-          <div className="text-truncate">{remarks[0]}</div>
-        )
+        <div onClick={() => (active ? onDeactivate(e.id) : onActivate(e.id))}>
+          {active ? (
+            remarks.map((line, i) => <div key={i}>{line || <br />}</div>)
+          ) : (
+            <div className="text-truncate">{remarks[0]}</div>
+          )}
+        </div>
       ) : null}
       {active ? (
         <div className="row">

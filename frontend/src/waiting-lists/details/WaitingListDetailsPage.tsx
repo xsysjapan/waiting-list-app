@@ -153,7 +153,7 @@ export const WaitingListDetailsPageView = (
           <div className="row">
             <div className="col-auto">
               <Link
-                to={`/waiting-lists/${waitingList.id}/customers/create`}
+                to={`/waiting-lists/${waitingList.id}/customers/add`}
                 className="btn btn-outline-dark"
               >
                 追加

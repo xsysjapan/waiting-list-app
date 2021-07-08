@@ -24,6 +24,7 @@ export type WaitingListModificationParams = {
 export type WaitingListCustomerCreationParams = {
   name: string;
   phoneNumber: string;
+  remarks?: string;
 };
 
 export type WaitingListCustomerModificationParams = {
