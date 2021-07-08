@@ -1,8 +1,10 @@
 import * as React from "react";
 import { WaitingListCustomer } from "../../shared/types";
+import PassedTimeLabel from "./PassedTimeLabel";
 
 export type WaitingListCustomerListItemProps = {
   customer: WaitingListCustomer;
+  remaining?: number;
   active: boolean;
   isFirst: boolean;
   isLast: boolean;
@@ -21,6 +23,7 @@ export const WaitingListCustomerListItem = (
 ) => {
   const {
     customer: e,
+    remaining,
     active,
     isFirst,
     isLast,
@@ -40,18 +43,32 @@ export const WaitingListCustomerListItem = (
         active ? " active" : ""
       }`}
     >
-      <p
-        className="my-0"
+      <div
+        className="d-flex w-100 justify-content-between"
         onClick={() => (active ? onDeactivate(e.id) : onActivate(e.id))}
       >
-        {e.name}
+        <h6 className="my-1">
+          {e.name}
+          {e.status === "CALLING" ? (
+            <>
+              {" "}
+              <span className="ml-3 badge bg-warning text-dark">呼出中</span>
+            </>
+          ) : null}
+        </h6>
+        {e.status === "NOT_CALLED" ? (
+          <>
+            {" "}
+            <small>{remaining === 1 ? "次" : `残り ${remaining}`}</small>
+          </>
+        ) : null}
         {e.status === "CALLING" ? (
           <>
             {" "}
-            <span className="ml-3 badge bg-warning text-dark">呼出中</span>
+            <PassedTimeLabel diffInSeconds={0} />
           </>
         ) : null}
-      </p>
+      </div>
       {active ? (
         <div className="row mt-3">
           {e.status === "NOT_CALLED" ? (
@@ -148,55 +165,4 @@ export const WaitingListCustomerListItem = (
   );
 };
 
-export type WaitingListCustomerListProps = {
-  customers: WaitingListCustomer[];
-  activeIds: string[];
-  onActivate: WaitingListCustomerListItemProps["onActivate"];
-  onDeactivate: WaitingListCustomerListItemProps["onDeactivate"];
-  onCancelClick: WaitingListCustomerListItemProps["onCancelClick"];
-  onCallClick: WaitingListCustomerListItemProps["onCallClick"];
-  onCancelCallClick: WaitingListCustomerListItemProps["onCancelCallClick"];
-  onArriveClick: WaitingListCustomerListItemProps["onArriveClick"];
-  onMoveUpTo: (id: string, before: string) => void;
-  onMoveDownTo: (id: string, after: string) => void;
-};
-
-export const WaitingListCustomerList = (
-  props: WaitingListCustomerListProps
-) => {
-  const {
-    customers,
-    activeIds,
-    onActivate,
-    onDeactivate,
-    onCancelClick,
-    onCallClick,
-    onCancelCallClick,
-    onArriveClick,
-    onMoveUpTo,
-    onMoveDownTo,
-  } = props;
-  return (
-    <div className="list-group">
-      {customers.map((e, i) => (
-        <WaitingListCustomerListItem
-          key={e.id}
-          customer={e}
-          active={activeIds.includes(e.id)}
-          isFirst={i === 0}
-          isLast={i === customers.length - 1}
-          onActivate={onActivate}
-          onDeactivate={onDeactivate}
-          onCancelClick={onCancelClick}
-          onCallClick={onCallClick}
-          onCancelCallClick={onCancelCallClick}
-          onArriveClick={onArriveClick}
-          onMoveUpClick={() => onMoveUpTo(e.id, customers[i - 1].id)}
-          onMoveDownClick={() => onMoveDownTo(e.id, customers[i + 1].id)}
-        />
-      ))}
-    </div>
-  );
-};
-
-export default WaitingListCustomerList;
+export default WaitingListCustomerListItem;

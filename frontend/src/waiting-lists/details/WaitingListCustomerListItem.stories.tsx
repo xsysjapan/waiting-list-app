@@ -26,6 +26,7 @@ withNormalAndNotCalledState.args = {
     ...defaultCustomer,
     status: "NOT_CALLED",
   },
+  remaining: 1,
 };
 
 export const withNormalAndCallingState = Template.bind({});
