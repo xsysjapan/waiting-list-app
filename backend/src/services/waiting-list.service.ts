@@ -93,7 +93,7 @@ export class WaitingListsService {
           status: e.status,
           lastCalled: entity.callHistories
             .filter((h) => h.customerId === e.id)
-            .sort((l, r) => l.createdAt.getTime() - r.createdAt.getTime())[0]
+            .sort((l, r) => r.createdAt.getTime() - l.createdAt.getTime())[0]
             ?.createdAt,
         })),
     };
