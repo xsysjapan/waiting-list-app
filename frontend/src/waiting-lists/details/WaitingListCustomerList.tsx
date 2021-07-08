@@ -38,7 +38,7 @@ export const WaitingListCustomerList = (
         <WaitingListCustomerListItem
           key={e.id}
           customer={e}
-          remaining={i + 1}
+          number={i + 1}
           active={activeIds.includes(e.id)}
           isFirst={i === 0}
           isLast={i === customers.length - 1}

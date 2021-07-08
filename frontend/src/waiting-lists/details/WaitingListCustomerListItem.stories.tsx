@@ -26,7 +26,7 @@ withNormalAndNotCalledState.args = {
     ...defaultCustomer,
     status: "NOT_CALLED",
   },
-  remaining: 1,
+  number: 1,
 };
 
 export const withNormalAndCallingState = Template.bind({});
@@ -35,6 +35,7 @@ withNormalAndCallingState.args = {
     ...defaultCustomer,
     status: "CALLING",
   },
+  number: 1000,
 };
 
 export const withNormalAndArrivedState = Template.bind({});
@@ -43,6 +44,7 @@ withNormalAndArrivedState.args = {
     ...defaultCustomer,
     status: "ARRIVED",
   },
+  number: 1,
 };
 
 export const withActiveAndNotCalledState = Template.bind({});
@@ -51,6 +53,7 @@ withActiveAndNotCalledState.args = {
     ...defaultCustomer,
     status: "NOT_CALLED",
   },
+  number: 1,
   active: true,
 };
 
@@ -60,6 +63,7 @@ withActiveAndCallingState.args = {
     ...defaultCustomer,
     status: "CALLING",
   },
+  number: 1,
   active: true,
 };
 
@@ -69,6 +73,7 @@ withActiveAndArrivedState.args = {
     ...defaultCustomer,
     status: "ARRIVED",
   },
+  number: 1,
   active: true,
 };
 
@@ -77,6 +82,7 @@ withActiveAndIsFirst.args = {
   customer: {
     ...defaultCustomer,
   },
+  number: 1,
   active: true,
   isFirst: true,
 };
@@ -86,6 +92,7 @@ withActiveAndIsLast.args = {
   customer: {
     ...defaultCustomer,
   },
+  number: 1,
   active: true,
   isLast: true,
 };
@@ -95,6 +102,7 @@ withActiveAndIsFirstAndLast.args = {
   customer: {
     ...defaultCustomer,
   },
+  number: 1,
   active: true,
   isFirst: true,
   isLast: true,

@@ -93,9 +93,9 @@ export const WaitingListDetailsPageView = (
           </>
         )}
       </div>
-      <div className="d-flex justify-content-between">
-        <h1>{waitingList.name}</h1>
-        <div className="row">
+      <div className="d-md-flex justify-content-between">
+        <h1 className="my-3">{waitingList.name}</h1>
+        <div className="row d-flex justify-content-end my-3">
           <div className="col-auto">
             {waitingList.active ? (
               <button
