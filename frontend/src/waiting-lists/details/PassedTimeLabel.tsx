@@ -34,7 +34,10 @@ export type PassedTimeLabelProps = {
 
 export const PassedTimeLabel = (props: PassedTimeLabelProps) => {
   const { diffInSeconds } = props;
-  const now = React.useMemo(() => Date.now(), [diffInSeconds]);
+  const baseTime = React.useMemo(
+    () => Date.now() - diffInSeconds * 1000,
+    [diffInSeconds]
+  );
   const [currentValue, setCurrentValue] = React.useState(
     convertToPassedTimeString(diffInSeconds)
   );
@@ -45,18 +48,18 @@ export const PassedTimeLabel = (props: PassedTimeLabelProps) => {
     if (currentValue.endsWith("秒前")) {
       const handle = setInterval(() => {
         setCurrentValue(
-          convertToPassedTimeString((Date.now() - now) / 1000 + diffInSeconds)
+          convertToPassedTimeString((Date.now() - baseTime) / 1000)
         );
       }, 1000);
       return () => clearInterval(handle);
     }
     const handle = setInterval(() => {
       setCurrentValue(
-        convertToPassedTimeString((Date.now() - now) / 1000 + diffInSeconds)
+        convertToPassedTimeString((Date.now() - baseTime) / 1000)
       );
     }, 10000);
     return () => clearInterval(handle);
-  }, [diffInSeconds]);
+  }, [currentValue, baseTime]);
   return <>{currentValue}</>;
 };
 

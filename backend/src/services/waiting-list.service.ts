@@ -73,7 +73,7 @@ export class WaitingListsService {
   public async get(id: string): Promise<WaitingListDetailsModel> {
     const entity = await client.waitingList.findFirst({
       where: { id },
-      include: { customers: true },
+      include: { customers: true, callHistories: true },
     });
     if (!entity) {
       throw new NotFoundError();
@@ -90,6 +90,10 @@ export class WaitingListsService {
           phoneNumber: e.phoneNumber,
           remarks: e.remarks || undefined,
           status: e.status,
+          lastCalled: entity.callHistories
+            .filter((h) => h.customerId === e.id)
+            .sort((l, r) => l.createdAt.getTime() - r.createdAt.getTime())[0]
+            ?.createdAt,
         })),
     };
   }
@@ -181,7 +185,7 @@ export class WaitingListsService {
           message
         );
         if (messageId) {
-          await client.waitingListCallingHistory.create({
+          await client.waitingListCallHistory.create({
             data: {
               messageId: messageId,
               message,
@@ -334,7 +338,7 @@ export class WaitingListsService {
   }
   public async delete(id: string) {
     try {
-      await client.waitingListCallingHistory.deleteMany({
+      await client.waitingListCallHistory.deleteMany({
         where: { waitingListId: id },
       });
       await client.waitingList.delete({

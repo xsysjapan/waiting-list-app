@@ -12,6 +12,7 @@ export interface WaitingCustomerModel {
   phoneNumber: string;
   remarks?: string;
   status: CallingStatusEnum;
+  lastCalled?: Date;
 }
 
 export interface WaitingListDetailsModel extends WaitingListModel {

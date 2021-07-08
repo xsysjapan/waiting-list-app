@@ -19,7 +19,7 @@
     "test": "jest --watch"
   },
   "dependencies": {
-    "@prisma/client": "^2.25.0",
+    "@prisma/client": "^2.26.0",
     "@tsoa/runtime": "^3.8.0",
     "aws-sdk": "^2.938.0",
     "cookie": "^0.4.1",

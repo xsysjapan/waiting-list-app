@@ -65,7 +65,11 @@ export const WaitingListCustomerListItem = (
         {e.status === "CALLING" ? (
           <>
             {" "}
-            <PassedTimeLabel diffInSeconds={0} />
+            <PassedTimeLabel
+              diffInSeconds={
+                e.lastCalled ? Date.now() - e.lastCalled.getTime() : 0
+              }
+            />
           </>
         ) : null}
       </div>

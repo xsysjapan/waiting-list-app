@@ -42,13 +42,13 @@ model CustomerPhoneNumber {
 }
 
 model WaitingList {
-  id                        String                      @id @default(uuid())
-  createdAt                 DateTime                    @default(now())
-  updatedAt                 DateTime                    @default(now())
-  name                      String
-  active                    Boolean                     @default(false)
-  customers                 WaitingListCustomer[]
-  WaitingListCallingHistory WaitingListCallingHistory[]
+  id            String                   @id @default(uuid())
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @default(now())
+  name          String
+  active        Boolean                  @default(false)
+  customers     WaitingListCustomer[]
+  callHistories WaitingListCallHistory[]
 }
 
 model WaitingListCustomer {
@@ -70,7 +70,7 @@ enum CallingStatus {
   ARRIVED
 }
 
-model WaitingListCallingHistory {
+model WaitingListCallHistory {
   id            String      @id @default(uuid())
   createdAt     DateTime    @default(now())
   messageId     String

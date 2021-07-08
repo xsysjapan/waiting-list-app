@@ -23,4 +23,5 @@ export interface WaitingListCustomer {
   name: string;
   phoneNumber: string;
   status: "NOT_CALLED" | "CALLING" | "ARRIVED";
+  lastCalled?: Date | undefined;
 }
