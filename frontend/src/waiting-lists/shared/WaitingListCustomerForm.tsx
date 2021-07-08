@@ -5,6 +5,7 @@ import { OperationState } from "../../shared/types";
 interface WaitingListCustomerFormValues {
   name: string;
   phoneNumber: string;
+  remarks: string;
 }
 
 export type WaitingListCustomerFormProps = {
@@ -22,6 +23,7 @@ export const WaitingListCustomerForm = (
     initialValues: {
       name: "",
       phoneNumber: "",
+      remarks: "",
     },
     validate: (value) => {
       const result = {} as FormikErrors<WaitingListCustomerFormValues>;
@@ -77,6 +79,25 @@ export const WaitingListCustomerForm = (
           onChange={formik.handleChange}
         />
         <div className="invalid-feedback">{formik.errors.phoneNumber}</div>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="remarks" className="form-label">
+          備考
+        </label>
+        <textarea
+          className={
+            "form-control " +
+            (formik.touched.remarks && formik.errors.remarks
+              ? "is-invalid"
+              : "")
+          }
+          name="remarks"
+          id="remarks"
+          data-testid="remarks"
+          onBlur={formik.handleBlur}
+          onChange={formik.handleChange}
+        ></textarea>
+        <div className="invalid-feedback">{formik.errors.remarks}</div>
       </div>
       <div className="mb-3">
         <div className="row">
