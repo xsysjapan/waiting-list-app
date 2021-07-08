@@ -6,7 +6,7 @@ import {
 
 export default {
   component: WaitingListCustomerForm,
-  title: "waiting-lists/WaitingListCustomerForm",
+  title: "waiting-lists/shared/WaitingListCustomerForm",
 } as Meta;
 
 const Template: Story<WaitingListCustomerFormProps> = (args) => (

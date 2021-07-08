@@ -6,7 +6,7 @@ import {
 
 export default {
   component: EditWaitingListPage,
-  title: "waiting-lists/EditWaitingListPage",
+  title: "waiting-lists/edit/EditWaitingListPage",
   parameters: {
     layout: "fullscreen",
   },

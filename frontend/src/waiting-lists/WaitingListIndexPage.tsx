@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 import NotFoundPage from "../404/NotFoundPage";
-import WaitingListListPage from "./index/WaitingListListPage";
+import WaitingListListPage from "./list/WaitingListListPage";
 import CreateWaitingListPage from "./create/CreateWaitingListPage";
 import EditWaitingListPage from "./edit/EditWaitingListPage";
 import WaitingListDetailsPage from "./details/WaitingListDetailsPage";
@@ -28,7 +28,7 @@ const WaitingListIndexPage = () => {
         component={EditWaitingListPage}
       />
       <Route
-        path="/waiting-lists/:id/customers/create"
+        path="/waiting-lists/:id/customers/add"
         exact
         component={AddWaitingListCustomerPage}
       />

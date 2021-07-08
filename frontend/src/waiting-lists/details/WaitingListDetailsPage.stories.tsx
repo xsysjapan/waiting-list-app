@@ -6,7 +6,7 @@ import {
 
 export default {
   component: WaitingListDetailsPageView,
-  title: "waiting-lists/WaitingListDetailsPage",
+  title: "waiting-lists/details/WaitingListDetailsPage",
   parameters: {
     layout: "fullscreen",
   },

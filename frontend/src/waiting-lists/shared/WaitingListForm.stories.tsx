@@ -3,7 +3,7 @@ import { WaitingListForm, WaitingListFormProps } from "./WaitingListForm";
 
 export default {
   component: WaitingListForm,
-  title: "waiting-lists/WaitingListForm",
+  title: "waiting-lists/shared/WaitingListForm",
 } as Meta;
 
 const Template: Story<WaitingListFormProps> = (args) => (

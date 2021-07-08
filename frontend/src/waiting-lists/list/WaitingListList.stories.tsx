@@ -3,7 +3,7 @@ import { WaitingListList, WaitingListListProps } from "./WaitingListList";
 
 export default {
   component: WaitingListList,
-  title: "waiting-lists/WaitingListList",
+  title: "waiting-lists/list/WaitingListList",
 } as Meta;
 
 const Template: Story<WaitingListListProps> = (args) => (
