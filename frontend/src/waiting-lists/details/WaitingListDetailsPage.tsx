@@ -30,6 +30,7 @@ export type WaitingListDetailsPageViewProps = {
   onArriveClick: (customerId: string) => void;
   onMoveUpTo: (customerId: string, before: string) => void;
   onMoveDownTo: (customerId: string, after: string) => void;
+  onEditCustomerClick: (customerId: string) => void;
 };
 
 export const WaitingListDetailsPageView = (
@@ -275,6 +276,9 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
             after,
           })
         );
+      }}
+      onEditCustomerClick={(customerId) => {
+        router.push(`/waiting-lists/${id}/customers/${customerId}/edit`);
       }}
     />
   );

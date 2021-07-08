@@ -15,6 +15,7 @@ export type WaitingListCustomerListProps = {
   onArriveClick: WaitingListCustomerListItemProps["onArriveClick"];
   onMoveUpTo: (id: string, before: string) => void;
   onMoveDownTo: (id: string, after: string) => void;
+  onEditCustomerClick: WaitingListCustomerListItemProps["onEditCustomerClick"];
 };
 
 export const WaitingListCustomerList = (
@@ -31,6 +32,7 @@ export const WaitingListCustomerList = (
     onArriveClick,
     onMoveUpTo,
     onMoveDownTo,
+    onEditCustomerClick,
   } = props;
   return (
     <div className="list-group">
@@ -50,6 +52,7 @@ export const WaitingListCustomerList = (
           onArriveClick={onArriveClick}
           onMoveUpClick={() => onMoveUpTo(e.id, customers[i - 1].id)}
           onMoveDownClick={() => onMoveDownTo(e.id, customers[i + 1].id)}
+          onEditCustomerClick={onEditCustomerClick}
         />
       ))}
     </div>

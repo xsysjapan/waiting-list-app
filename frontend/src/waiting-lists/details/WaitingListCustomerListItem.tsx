@@ -16,6 +16,7 @@ export type WaitingListCustomerListItemProps = {
   onArriveClick: (id: string) => void;
   onMoveUpClick: (id: string) => void;
   onMoveDownClick: (id: string) => void;
+  onEditCustomerClick: (id: string) => void;
 };
 
 export const WaitingListCustomerListItem = (
@@ -35,6 +36,7 @@ export const WaitingListCustomerListItem = (
     onArriveClick,
     onMoveUpClick,
     onMoveDownClick,
+    onEditCustomerClick,
   } = props;
   const remarks = React.useMemo(() => {
     if (e.remarks) {
@@ -184,6 +186,14 @@ export const WaitingListCustomerListItem = (
                   disabled={isLast}
                 >
                   ↓ 次へ
+                </button>
+              </div>
+              <div className="col-auto">
+                <button
+                  className="col-auto btn btn-sm btn-outline-light"
+                  onClick={() => onEditCustomerClick(e.id)}
+                >
+                  編集
                 </button>
               </div>
             </div>
