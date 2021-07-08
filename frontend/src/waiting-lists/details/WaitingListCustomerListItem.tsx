@@ -36,6 +36,12 @@ export const WaitingListCustomerListItem = (
     onMoveUpClick,
     onMoveDownClick,
   } = props;
+  const remarks = React.useMemo(() => {
+    if (e.remarks) {
+      return e.remarks.split(/(\r\n|\r|\n)/);
+    }
+    return [];
+  }, [e.remarks]);
   return (
     <div
       key={e.id}
@@ -77,6 +83,13 @@ export const WaitingListCustomerListItem = (
           </>
         ) : null}
       </div>
+      {remarks.length > 0 ? (
+        active ? (
+          remarks.map((line, i) => <div key={i}>{line}</div>)
+        ) : (
+          <div className="text-truncate">{remarks[0]}</div>
+        )
+      ) : null}
       {active ? (
         <div className="row">
           <div className="col-auto">

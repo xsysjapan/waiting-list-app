@@ -29,6 +29,37 @@ withNormalAndNotCalledState.args = {
   number: 1,
 };
 
+export const withRemarks = Template.bind({});
+withRemarks.args = {
+  customer: {
+    ...defaultCustomer,
+    remarks:
+      "あいつは事実現にこういう換言院というのの時に過ぎですな。ほとんど事実へ演説方はたといその解剖ないただけにするからいるますがも講演生れなかっませから、こうにもするないですんなら。そのうち岡田さんを関係自己当然希望でいうある先生その党派あなたか講演でといったお話ただましたで、その事実は何か日本人手伝いが足りから、大森君のものに国家のそれに至極ご啓発ときからそれ家来がお通用に使いようにどうもご立脚が進んたですて、しかるにすでに意味をするないているでのに知れですです。",
+  },
+  number: 1,
+};
+
+export const withRemarksActive = Template.bind({});
+withRemarksActive.args = {
+  ...withRemarks.args,
+  active: true,
+};
+
+export const withRemarksWithLF = Template.bind({});
+withRemarksWithLF.args = {
+  customer: {
+    ...defaultCustomer,
+    remarks: "line 1\nline2\rline3\r\nline4",
+  },
+  number: 1,
+};
+
+export const withRemarksWithLFActive = Template.bind({});
+withRemarksWithLFActive.args = {
+  ...withRemarksWithLF.args,
+  active: true,
+};
+
 export const withNormalAndCallingState = Template.bind({});
 withNormalAndCallingState.args = {
   customer: {
