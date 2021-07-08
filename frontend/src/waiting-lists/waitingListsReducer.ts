@@ -456,6 +456,7 @@ const waitingListSlice = createSlice({
         )[0];
         if (customer) {
           customer.status = "CALLING";
+          customer.lastCalled = new Date();
         }
       }
     });

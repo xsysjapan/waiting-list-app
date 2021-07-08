@@ -78,7 +78,9 @@ export const WaitingListCustomerListItem = (
             <small>
               <PassedTimeLabel
                 diffInSeconds={
-                  e.lastCalled ? Date.now() - e.lastCalled.getTime() : 0
+                  e.lastCalled
+                    ? (Date.now() - e.lastCalled.getTime()) / 1000
+                    : 0
                 }
               />
             </small>

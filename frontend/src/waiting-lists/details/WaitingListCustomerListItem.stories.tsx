@@ -65,6 +65,7 @@ withNormalAndCallingState.args = {
   customer: {
     ...defaultCustomer,
     status: "CALLING",
+    lastCalled: new Date("2021-07-08T14:01:28.561Z"),
   },
   number: 1000,
 };
