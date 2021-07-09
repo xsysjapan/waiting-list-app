@@ -38,6 +38,30 @@ const customer3 = {
   name: "Customer Name 3",
 };
 
+const customer4 = {
+  ...defaultCustomer,
+  id: "id4",
+  name: "Customer Name 4",
+};
+
+const customer5 = {
+  ...defaultCustomer,
+  id: "id5",
+  name: "Customer Name 5",
+};
+
+const customer6 = {
+  ...defaultCustomer,
+  id: "id6",
+  name: "Customer Name 6",
+};
+
+const customer7 = {
+  ...defaultCustomer,
+  id: "id7",
+  name: "Customer Name 7",
+};
+
 export const SingleLine = Template.bind({});
 SingleLine.args = {
   customers: [defaultCustomer],
@@ -72,4 +96,30 @@ export const MultipleLinesWithActiveState3 = Template.bind({});
 MultipleLinesWithActiveState3.args = {
   ...MultipleLines.args,
   activeIds: ["id3"],
+};
+
+export const MultipleLines5 = Template.bind({});
+MultipleLines5.args = {
+  customers: [customer1, customer2, customer3, customer4, customer5],
+  activeIds: [],
+};
+
+export const MultipleLines6 = Template.bind({});
+MultipleLines6.args = {
+  customers: [customer1, customer2, customer3, customer4, customer5, customer6],
+  activeIds: [],
+};
+
+export const MultipleLines7 = Template.bind({});
+MultipleLines7.args = {
+  customers: [
+    customer1,
+    customer2,
+    customer3,
+    customer4,
+    customer5,
+    customer6,
+    customer7,
+  ],
+  activeIds: [],
 };

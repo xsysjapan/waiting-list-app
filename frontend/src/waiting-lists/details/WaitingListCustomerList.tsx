@@ -34,9 +34,15 @@ export const WaitingListCustomerList = (
     onMoveDownTo,
     onEditCustomerClick,
   } = props;
+  const [expand, setExpand] = React.useState(false);
+  let customerlist = customers;
+  const shouldTruncate = !(expand || customers.length < 7);
+  if (shouldTruncate) {
+    customerlist = customerlist.filter((_, i) => i < 5);
+  }
   return (
     <div className="list-group">
-      {customers.map((e, i) => (
+      {customerlist.map((e, i) => (
         <WaitingListCustomerListItem
           key={e.id}
           customer={e}
@@ -55,6 +61,14 @@ export const WaitingListCustomerList = (
           onEditCustomerClick={onEditCustomerClick}
         />
       ))}
+      {shouldTruncate ? (
+        <div
+          className="list-group-item list-group-item-action text-center text-primary"
+          onClick={() => setExpand(true)}
+        >
+          ...
+        </div>
+      ) : null}
     </div>
   );
 };
