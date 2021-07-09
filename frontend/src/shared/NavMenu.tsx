@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { User } from "./types";
 
 export type NavMenuProps = {
@@ -41,8 +41,17 @@ export const NavMenu = (props: NavMenuProps) => {
               </ul>
               <ul className="navbar-nav">
                 <li className="nav-item">
+                  <NavLink
+                    className="btn btn-link d-inline-block nav-link"
+                    to="/settings"
+                    activeClassName="active"
+                  >
+                    設定
+                  </NavLink>
+                </li>
+                <li className="nav-item">
                   <button
-                    className="btn btn-link p-0 nav-link active"
+                    className="btn btn-link nav-link"
                     onClick={onLogoutClick}
                   >
                     ログアウト

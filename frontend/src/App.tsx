@@ -13,6 +13,7 @@ import HomePage from "./home/HomePage";
 import LoginPage from "./login/LoginPage";
 import NotFoundPage from "./404/NotFoundPage";
 import WaitingListIndexPage from "./waiting-lists/WaitingListIndexPage";
+import SettingsPage from "./settings/SettingsPage";
 
 type ProtectedRouteProps = RouteProps<string>;
 
@@ -52,6 +53,7 @@ const App = () => {
           path="/waiting-lists"
           component={WaitingListIndexPage}
         />
+        <ProtectedRoute path="/settings" component={SettingsPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="*" exact component={NotFoundPage} />
       </Switch>

@@ -180,7 +180,14 @@ export class WaitingListsService {
         where: { id: customerId },
       });
       if (customer) {
-        const message = param.message || "順番になりました。";
+        const messageConfig = await client.configuration.findFirst({
+          where: {
+            key: "sms.messages.nextAnnouncement",
+          },
+        });
+
+        const message =
+          (messageConfig && messageConfig.value) || "順番になりました。";
         const messageId = await new SmsService().sendMessage(
           customer.phoneNumber,
           message
