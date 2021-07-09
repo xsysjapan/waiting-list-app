@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "./api";
 import { CreateSessionRequest } from "./api/generated";
-import { User } from "./types";
+import { OperationState, User } from "./types";
 
 export const login = createAsyncThunk(
   "auth/loginStatus",
@@ -19,13 +19,13 @@ export const logout = createAsyncThunk("auth/logoutStatus", async () => {
 });
 
 interface AuthState {
-  state: "INITIALIZING" | "LOADING" | "LOADED";
+  state: OperationState;
   error?: string;
   user?: User;
 }
 
 const initialState: AuthState = {
-  state: "INITIALIZING",
+  state: "UNSUBMITTED",
 };
 
 const authSlice = createSlice({
@@ -38,26 +38,26 @@ const authSlice = createSlice({
       state.state = "LOADING";
     });
     builder.addCase(session.fulfilled, (state, action) => {
-      state.state = "LOADED";
+      state.state = "SUCCEEDED";
       state.user = action.payload.user;
     });
     builder.addCase(session.rejected, (state) => {
-      state.state = "LOADED";
+      state.state = "SUCCEEDED";
     });
     builder.addCase(login.pending, (state) => {
       state.state = "LOADING";
     });
     builder.addCase(login.fulfilled, (state, action) => {
-      state.state = "LOADED";
+      state.state = "SUCCEEDED";
       state.user = action.payload.user;
     });
     builder.addCase(login.rejected, (state, action) => {
-      state.state = "LOADED";
+      state.state = "FAILED";
       state.error = (action.payload as any)?.message || "ログインできません";
     });
     builder.addCase(logout.fulfilled, (state) => {
       delete state.user;
-      state.state = "LOADED";
+      state.state = "SUCCEEDED";
     });
   },
 });

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
+import { OperationState } from "../shared/types";
 
 export interface LoginFormValues {
   username: string;
@@ -7,12 +8,13 @@ export interface LoginFormValues {
 }
 
 export type LoginFormProps = {
+  state: OperationState;
   error: string | undefined;
   onSubmit: (values: LoginFormValues) => void;
 };
 
 export const LoginForm = (props: LoginFormProps) => {
-  const { error, onSubmit } = props;
+  const { state, error, onSubmit } = props;
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -39,7 +41,10 @@ export const LoginForm = (props: LoginFormProps) => {
         </label>
         <input
           className={
-            "form-control " + (formik.errors.username ? "is-invalid" : "")
+            "form-control " +
+            (formik.touched.username && formik.errors.username
+              ? "is-invalid"
+              : "")
           }
           type="text"
           name="username"
@@ -57,7 +62,10 @@ export const LoginForm = (props: LoginFormProps) => {
         </label>
         <input
           className={
-            "form-control " + (formik.errors.password ? "is-invalid" : "")
+            "form-control " +
+            (formik.touched.password && formik.errors.password
+              ? "is-invalid"
+              : "")
           }
           type="password"
           name="password"
@@ -70,7 +78,11 @@ export const LoginForm = (props: LoginFormProps) => {
         <div className="invalid-feedback">{formik.errors.password}</div>
       </div>
       <div className="mb-3">
-        <button type="submit" className="btn btn-primary btn-block">
+        <button
+          type="submit"
+          className="btn btn-primary btn-block"
+          disabled={state === "LOADING" || !formik.isValid}
+        >
           ログイン
         </button>
       </div>
