@@ -4,7 +4,7 @@ import { OperationState } from "../shared/types";
 
 export const getSmsMessageTemplate = createAsyncThunk(
   "settings/getSmsMessageTemplateStatus",
-  () => api.getConfiguration({ key: "message.sms" })
+  () => api.getConfiguration({ key: "sms.messages.nextAnnouncement" })
 );
 
 export const putSmsMessageTemplate = createAsyncThunk(
