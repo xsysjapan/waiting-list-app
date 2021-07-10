@@ -7,6 +7,9 @@ import {
   editWaitingListName,
   editWaitingListFormMounted,
   editWaitingListFormUnmounted,
+  getWaitingListById,
+  waitingListDetailsPageMounted,
+  waitingListDetailsPageUnmounted,
 } from "../waitingListsReducer";
 
 export type EditWaitingListPageProps = {};
@@ -17,15 +20,17 @@ export const EditWaitingListPage = (props: EditWaitingListPageProps) => {
   const formState = useAppSelector(
     (state) => state.waitingLists.editWaitingListFormState[id]
   );
-  const waitingListDetails = useAppSelector(
-    (state) =>
-      state.waitingLists.waitingListDetailsPageState[id]?.waitingListDetails
+  const pageState = useAppSelector(
+    (state) => state.waitingLists.waitingListDetailsPageState[id]
   );
 
   const router = useHistory();
   React.useEffect(() => {
     dispatch(editWaitingListFormMounted({ id }));
+    dispatch(waitingListDetailsPageMounted({ id }));
+    dispatch(getWaitingListById({ id }));
     return () => {
+      dispatch(waitingListDetailsPageUnmounted({ id }));
       dispatch(editWaitingListFormUnmounted({ id }));
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,8 +43,16 @@ export const EditWaitingListPage = (props: EditWaitingListPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState]);
 
-  if (!formState) {
-    return null;
+  if (!formState || !pageState || !pageState.waitingListDetails) {
+    return (
+      <Layout>
+        <div className="d-flex justify-content-center">
+          <div className="spinner-grow text-primary" role="status">
+            <span className="visually-hidden">読み込み中...</span>
+          </div>
+        </div>
+      </Layout>
+    );
   }
 
   return (
@@ -48,7 +61,9 @@ export const EditWaitingListPage = (props: EditWaitingListPageProps) => {
       <WaitingListForm
         status={formState.status}
         error={formState.error}
-        initialValue={waitingListDetails && { name: waitingListDetails.name }}
+        initialValue={
+          pageState && { name: pageState.waitingListDetails.name }
+        }
         onSubmit={(values) => dispatch(editWaitingListName({ ...values, id }))}
         onCancel={() => router.push(`/waiting-lists/${id}`)}
       />
