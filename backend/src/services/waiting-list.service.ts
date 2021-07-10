@@ -99,6 +99,29 @@ export class WaitingListsService {
     };
   }
 
+  public async getDefaultName(preferedName: string): Promise<string> {
+    const entities = await client.waitingList.findMany({
+      where: {
+        name: {
+          startsWith: preferedName,
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    if (entities.filter((e) => e.name === preferedName).length === 0) {
+      return preferedName;
+    }
+    for (let i = 2; i <= entities.length + 2; i++) {
+      const name = `${preferedName} (${i})`;
+      if (entities.filter((e) => e.name === name).length === 0) {
+        return name;
+      }
+    }
+    return `${preferedName} (2)`;
+  }
+
   public async create(
     param: WaitingListCreationParams
   ): Promise<{ id: string }> {

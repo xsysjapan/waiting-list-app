@@ -41,6 +41,13 @@ export class WaitingListsController extends Controller {
     return new WaitingListsService().search({ name, active });
   }
 
+  @Get("defaultname")
+  public getDefaultWaitingListName(
+    @Query("preferedName") preferedName: string
+  ): Promise<string> {
+    return new WaitingListsService().getDefaultName(preferedName);
+  }
+
   @Get("{id}")
   @Response<NotFoundResponse>(404, "Not Found")
   public getWaitingList(@Path() id: string): Promise<WaitingListDetailsModel> {
@@ -82,7 +89,6 @@ export class WaitingListsController extends Controller {
         },
         "Validation Error"
       );
-      return;
     }
 
     await new WaitingListsService().update(id, requestBody);

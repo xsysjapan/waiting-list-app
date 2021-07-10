@@ -9,11 +9,6 @@ export type ConfigurationSearchParams = {
   key?: string;
 };
 
-export type ConfigurationCreationParams = {
-  key: string;
-  value: string;
-};
-
 export type ConfigurationModificationParams = {
   value: string;
 };
@@ -48,19 +43,20 @@ export class ConfigurationsService {
     };
   }
 
-  public async create(
-    param: ConfigurationCreationParams
-  ): Promise<{ key: string }> {
-    try {
-      var entity = await client.configuration.create({
-        data: param,
+  public async batchUpdate(param: ConfigurationModel[]): Promise<void> {
+    for (const prop of param) {
+      await client.configuration.upsert({
+        where: {
+          key: prop.key,
+        },
+        create: {
+          key: prop.key,
+          value: prop.value,
+        },
+        update: {
+          value: prop.value,
+        },
       });
-      return {
-        key: entity.key,
-      };
-    } catch (e) {
-      handlePrismaError(e);
-      throw e;
     }
   }
 
@@ -84,6 +80,7 @@ export class ConfigurationsService {
       throw e;
     }
   }
+
   public async delete(key: string) {
     try {
       await client.configuration.delete({

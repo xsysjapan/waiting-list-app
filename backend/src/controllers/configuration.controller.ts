@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Path,
-  Post,
   Put,
   Query,
   Response,
@@ -12,7 +11,6 @@ import {
   SuccessResponse,
 } from "tsoa";
 import {
-  CreatedResponse,
   ConfigurationModel,
   ErrorResponse,
   NotFoundResponse,
@@ -20,7 +18,6 @@ import {
 } from "../models";
 import {
   ConfigurationsService,
-  ConfigurationCreationParams,
   ConfigurationModificationParams,
 } from "../services/configuration.service";
 
@@ -31,6 +28,17 @@ export class ConfigurationsController extends Controller {
     @Query("key") key?: string
   ): Promise<ConfigurationModel[]> {
     return new ConfigurationsService().search({ key });
+  }
+
+  @Put()
+  @SuccessResponse("204", "No Content")
+  @Response<ErrorResponse>(400, "Bad Request")
+  @Response<NotFoundResponse>(404, "Not Found")
+  @Response<ValidationErrorResponse>(422, "Validation Failed")
+  public async putConfigurations(
+    @Body() requestBody: ConfigurationModel[]
+  ): Promise<void> {
+      return new ConfigurationsService().batchUpdate(requestBody);
   }
 
   @Get("{key}")
