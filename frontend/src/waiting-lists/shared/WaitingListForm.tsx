@@ -1,13 +1,13 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import { OperationState } from "../../shared/types";
+import { OperationStatus } from "../../shared/types";
 
 interface WaitingListFormValues {
   name: string;
 }
 
 export type WaitingListFormProps = {
-  state: OperationState;
+  status: OperationStatus;
   error: string | undefined;
   initialValue?: WaitingListFormValues;
   onSubmit: (values: WaitingListFormValues) => void;
@@ -15,7 +15,7 @@ export type WaitingListFormProps = {
 };
 
 export const WaitingListForm = (props: WaitingListFormProps) => {
-  const { state, error, initialValue, onSubmit, onCancel } = props;
+  const { status, error, initialValue, onSubmit, onCancel } = props;
   const formik = useFormik({
     initialValues: initialValue || {
       name: "",
@@ -46,6 +46,7 @@ export const WaitingListForm = (props: WaitingListFormProps) => {
           id="name"
           autoComplete="name"
           data-testid="name"
+          value={formik.values.name}
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
         />
@@ -57,7 +58,7 @@ export const WaitingListForm = (props: WaitingListFormProps) => {
             <button
               type="submit"
               className="btn btn-primary btn-block"
-              disabled={state === "LOADING" || !formik.isValid}
+              disabled={status === "LOADING" || !formik.isValid}
             >
               登録
             </button>

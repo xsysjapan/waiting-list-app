@@ -19,5 +19,5 @@ withError.args = {
 
 export const withLoading = Template.bind({});
 withLoading.args = {
-  state: "LOADING",
+  status: "LOADING",
 };

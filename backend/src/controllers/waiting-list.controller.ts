@@ -19,6 +19,7 @@ import {
   ValidationErrorResponse,
   WaitingListModel,
   WaitingListDetailsModel,
+  DefaultWaitingListNameModel,
 } from "../models";
 import {
   WaitingListsService,
@@ -44,7 +45,7 @@ export class WaitingListsController extends Controller {
   @Get("defaultname")
   public getDefaultWaitingListName(
     @Query("preferedName") preferedName: string
-  ): Promise<string> {
+  ): Promise<DefaultWaitingListNameModel> {
     return new WaitingListsService().getDefaultName(preferedName);
   }
 

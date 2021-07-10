@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import { OperationState } from "../../shared/types";
+import { OperationStatus } from "../../shared/types";
 
 interface WaitingListCustomerFormValues {
   name: string;
@@ -9,7 +9,7 @@ interface WaitingListCustomerFormValues {
 }
 
 export type WaitingListCustomerFormProps = {
-  state: OperationState;
+  status: OperationStatus;
   error: string | undefined;
   onSubmit: (values: WaitingListCustomerFormValues) => void;
   onCancel: () => void;
@@ -18,7 +18,7 @@ export type WaitingListCustomerFormProps = {
 export const WaitingListCustomerForm = (
   props: WaitingListCustomerFormProps
 ) => {
-  const { state, error, onSubmit, onCancel } = props;
+  const { status, error, onSubmit, onCancel } = props;
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -105,7 +105,7 @@ export const WaitingListCustomerForm = (
             <button
               type="submit"
               className="btn btn-primary btn-block"
-              disabled={state === "LOADING" || !formik.isValid}
+              disabled={status === "LOADING" || !formik.isValid}
             >
               登録
             </button>

@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { OperationState, WaitingListSummary } from "../../shared/types";
+import { OperationStatus, WaitingListSummary } from "../../shared/types";
 import Layout from "../../shared/Layout";
 import WaitingListList from "./WaitingListList";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 import { getWaitingLists } from "../waitingListsReducer";
 
 export type WaitingListListPageViewProps = {
-  waitingListsStatus: OperationState;
+  waitingListsStatus: OperationStatus;
   waitingLists: WaitingListSummary[] | undefined;
 };
 

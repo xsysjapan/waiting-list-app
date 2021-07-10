@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { OperationState, WaitingListDetails } from "../../shared/types";
+import { OperationStatus, WaitingListDetails } from "../../shared/types";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 import Layout from "../../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
@@ -19,7 +19,7 @@ import {
 import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../../shared/api/generated";
 
 export type WaitingListDetailsPageViewProps = {
-  waitingListStatus: OperationState;
+  waitingListStatus: OperationStatus;
   waitingList: WaitingListDetails | undefined;
   onActivateClick: () => void;
   onDeactivateClick: () => void;

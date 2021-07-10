@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../shared/api";
-import { OperationState } from "../shared/types";
+import { OperationStatus } from "../shared/types";
 
 export const getSmsMessageTemplate = createAsyncThunk(
   "settings/getSmsMessageTemplateStatus",
@@ -18,9 +18,9 @@ export const putSmsMessageTemplate = createAsyncThunk(
 
 interface SettingsState {
   getSmsMessageTemplateError?: string;
-  getSmsMessageTemplateStatus: OperationState;
+  getSmsMessageTemplateStatus: OperationStatus;
   putSmsMessageTemplateError?: string;
-  putSmsMessageTemplateStatus: OperationState;
+  putSmsMessageTemplateStatus: OperationStatus;
   values: { smsMessageTemplate: string };
 }
 

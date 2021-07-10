@@ -15,6 +15,10 @@ export interface WaitingCustomerModel {
   lastCalled?: Date;
 }
 
+export interface DefaultWaitingListNameModel {
+  value: string;
+}
+
 export interface WaitingListDetailsModel extends WaitingListModel {
   customers: WaitingCustomerModel[];
 }

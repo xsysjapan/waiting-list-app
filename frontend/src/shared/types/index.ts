@@ -1,4 +1,4 @@
-export type OperationState = "UNSUBMITTED" | "LOADING" | "SUCCEEDED" | "FAILED";
+export type OperationStatus = "UNSUBMITTED" | "LOADING" | "SUCCEEDED" | "FAILED";
 
 export interface User {
   username: string;

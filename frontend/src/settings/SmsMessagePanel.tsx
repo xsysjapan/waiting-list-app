@@ -1,13 +1,13 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import { OperationState } from "../shared/types";
+import { OperationStatus } from "../shared/types";
 
 export interface SmsMessagePanelValues {
   smsMessageTemplate: string;
 }
 
 export type SmsMessagePanelProps = {
-  state: OperationState;
+  state: OperationStatus;
   error: string | undefined;
   initialValue: SmsMessagePanelValues;
   onSubmit: (values: SmsMessagePanelValues) => void;

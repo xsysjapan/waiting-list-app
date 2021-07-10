@@ -31,7 +31,7 @@ export const AddWaitingListCustomerForm = (
   }, []);
 
   React.useEffect(() => {
-    if (formState && formState.state === "SUCCEEDED") {
+    if (formState && formState.status === "SUCCEEDED") {
       onComplete();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,7 +43,7 @@ export const AddWaitingListCustomerForm = (
 
   return (
     <WaitingListCustomerForm
-      state={formState.state}
+      status={formState.status}
       error={formState.error}
       onSubmit={(values) =>
         dispatch(createWaitingListCustomer({ ...values, id }))

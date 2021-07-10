@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import { OperationState } from "../shared/types";
+import { OperationStatus } from "../shared/types";
 
 export interface LoginFormValues {
   username: string;
@@ -8,13 +8,13 @@ export interface LoginFormValues {
 }
 
 export type LoginFormProps = {
-  state: OperationState;
+  status: OperationStatus;
   error: string | undefined;
   onSubmit: (values: LoginFormValues) => void;
 };
 
 export const LoginForm = (props: LoginFormProps) => {
-  const { state, error, onSubmit } = props;
+  const { status, error, onSubmit } = props;
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -81,7 +81,7 @@ export const LoginForm = (props: LoginFormProps) => {
         <button
           type="submit"
           className="btn btn-primary btn-block"
-          disabled={state === "LOADING" || !formik.isValid}
+          disabled={status === "LOADING" || !formik.isValid}
         >
           ログイン
         </button>

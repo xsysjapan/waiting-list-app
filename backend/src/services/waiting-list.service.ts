@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { InvalidOperationError, NotFoundError } from "../errors";
-import { WaitingListModel, WaitingListDetailsModel } from "../models";
+import {
+  WaitingListModel,
+  WaitingListDetailsModel,
+  DefaultWaitingListNameModel,
+} from "../models";
 import { handlePrismaError } from "../utils/prisma";
 import { SmsService } from "./sms.service";
 
@@ -99,7 +103,9 @@ export class WaitingListsService {
     };
   }
 
-  public async getDefaultName(preferedName: string): Promise<string> {
+  public async getDefaultName(
+    preferedName: string
+  ): Promise<DefaultWaitingListNameModel> {
     const entities = await client.waitingList.findMany({
       where: {
         name: {
@@ -111,15 +117,15 @@ export class WaitingListsService {
       },
     });
     if (entities.filter((e) => e.name === preferedName).length === 0) {
-      return preferedName;
+      return { value: preferedName };
     }
     for (let i = 2; i <= entities.length + 2; i++) {
       const name = `${preferedName} (${i})`;
       if (entities.filter((e) => e.name === name).length === 0) {
-        return name;
+        return { value: name };
       }
     }
-    return `${preferedName} (2)`;
+    return { value: `${preferedName} (2)` };
   }
 
   public async create(

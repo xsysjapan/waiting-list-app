@@ -9,7 +9,7 @@ export type LoginPageProps = {} & RouterProps;
 
 export const LoginPage = (props: LoginPageProps) => {
   const dispatch = useAppDispatch();
-  const { state, error, user } = useAppSelector((state) => state.auth);
+  const { status, error, user } = useAppSelector((state) => state.auth);
 
   if (user) {
     const search = props.history.location.search;
@@ -23,7 +23,7 @@ export const LoginPage = (props: LoginPageProps) => {
     <Layout>
       <h1>ログイン</h1>
       <LoginForm
-        state={state}
+        status={status}
         error={error}
         onSubmit={(values) => dispatch(login(values))}
       />
