@@ -3,10 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import NotFoundPage from "../404/NotFoundPage";
 import WaitingListListPage from "./list/WaitingListListPage";
 import CreateWaitingListPage from "./create/CreateWaitingListPage";
-import EditWaitingListPage from "./edit/EditWaitingListPage";
 import WaitingListDetailsPage from "./details/WaitingListDetailsPage";
-import AddWaitingListCustomerPage from "./add-customer/AddWaitingListCustomerPage";
-import EditWaitingListCustomerPage from "./edit-customer/EditWaitingListCustomerPage";
 
 const WaitingListIndexPage = () => {
   return (
@@ -19,23 +16,7 @@ const WaitingListIndexPage = () => {
       />
       <Route
         path="/waiting-lists/:id"
-        exact
         component={WaitingListDetailsPage}
-      />
-      <Route
-        path="/waiting-lists/:id/edit"
-        exact
-        component={EditWaitingListPage}
-      />
-      <Route
-        path="/waiting-lists/:id/customers/add"
-        exact
-        component={AddWaitingListCustomerPage}
-      />
-      <Route
-        path="/waiting-lists/:id/customers/:customerId/edit"
-        exact
-        component={EditWaitingListCustomerPage}
       />
       <Route path="*" exact component={NotFoundPage} />
     </Switch>

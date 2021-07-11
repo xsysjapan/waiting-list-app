@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useHistory, useParams } from "react-router";
-import Layout from "../../shared/Layout";
+import Layout from "../../../shared/Layout";
 import EditWaitingListCustomerForm from "./EditWaitingListCustomerForm";
 
 export type EditWaitingListCustomerPageProps = {};

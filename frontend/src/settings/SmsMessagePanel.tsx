@@ -16,7 +16,9 @@ export type SmsMessagePanelProps = {
 export const SmsMessagePanel = (props: SmsMessagePanelProps) => {
   const { state, initialValue, error, onSubmit } = props;
   const formik = useFormik({
-    initialValues: initialValue,
+    initialValues: initialValue || {
+      smsMessageTemplate: "",
+    },
     validate: (value) => {
       const result = {} as FormikErrors<SmsMessagePanelValues>;
       if (!value.smsMessageTemplate) {

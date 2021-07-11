@@ -1,5 +1,5 @@
 import * as React from "react";
-import Layout from "../../shared/Layout";
+import Layout from "../../../shared/Layout";
 import AddWaitingListCustomerForm from "./AddWaitingListCustomerForm";
 import { useHistory, useParams } from "react-router";
 
