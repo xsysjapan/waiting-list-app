@@ -4,7 +4,7 @@ import WaitingListDetailsPage from "./WaitingListDetailsPage";
 
 export default {
   component: WaitingListDetailsPage,
-  title: "waiting-lists/WaitingListDetailsPage",
+  title: "waiting-lists/details/WaitingListDetailsPage",
 } as Meta;
 
 const Template: Story = (args) => <WaitingListDetailsPage {...args} />;

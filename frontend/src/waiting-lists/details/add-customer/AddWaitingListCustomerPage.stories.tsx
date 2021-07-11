@@ -17,10 +17,3 @@ const Template: Story<AddWaitingListCustomerPageProps> = (args) => (
 );
 
 export const Default = Template.bind({});
-Default.args = {
-  match: {
-    params: {
-      id: "id",
-    },
-  } as any,
-};

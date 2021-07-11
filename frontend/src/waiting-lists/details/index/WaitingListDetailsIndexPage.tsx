@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import { OperationStatus, WaitingListDetails } from "../../../shared/types";
+import { WaitingListDetails } from "../../../shared/types";
 import { useAppDispatch, useAppSelector } from "../../../shared/hooks";
 import Layout from "../../../shared/Layout";
 import WaitingListCustomerList from "./WaitingListCustomerList";
@@ -10,17 +10,13 @@ import {
   deleteWaitingList,
   deleteWaitingListCustomer,
   editWaitingListActive,
-  getWaitingListById,
   moveWaitingListCustomer,
   updateWaitingListCustomerCallingStatus,
-  waitingListDetailsPageMounted,
-  waitingListDetailsPageUnmounted,
 } from "../../waitingListsReducer";
 import { WaitingListUpdateCallingStatusParamsStatusEnum } from "../../../shared/api/generated";
 
-export type WaitingListDetailsPageViewProps = {
-  waitingListStatus: OperationStatus;
-  waitingList: WaitingListDetails | undefined;
+export type WaitingListDetailsIndexPageViewProps = {
+  waitingList: WaitingListDetails;
   onActivateClick: () => void;
   onDeactivateClick: () => void;
   onDeleteClick: () => void;
@@ -33,8 +29,8 @@ export type WaitingListDetailsPageViewProps = {
   onEditCustomerClick: (customerId: string) => void;
 };
 
-export const WaitingListDetailsPageView = (
-  props: WaitingListDetailsPageViewProps
+export const WaitingListDetailsIndexPageView = (
+  props: WaitingListDetailsIndexPageViewProps
 ) => {
   const [activeIds, setActiveIds] = React.useState([] as string[]);
   const {
@@ -68,18 +64,6 @@ export const WaitingListDetailsPageView = (
         : [],
     [waitingList]
   );
-
-  if (!waitingList) {
-    return (
-      <Layout>
-        <div className="d-flex justify-content-center">
-          <div className="spinner-grow text-primary" role="status">
-            <span className="visually-hidden">読み込み中...</span>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
 
   return (
     <Layout>
@@ -191,23 +175,17 @@ export const WaitingListDetailsPageView = (
   );
 };
 
-export type WaitingListDetailsPageProps = {};
+export type WaitingListDetailsIndexPageProps = {
+  id: string;
+  waitingList: WaitingListDetails;
+};
 
-export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
-  const params = useParams<{ id: string }>();
-  const id = params.id;
-  const { waitingListDetailsPageState, deleteWaitingListState } =
-    useAppSelector((state) => state.waitingLists);
+export const WaitingListDetailsIndexPage = (props: WaitingListDetailsIndexPageProps) => {
+  const { id, waitingList } = props;
   const dispatch = useAppDispatch();
-  const onInitialize = () => {
-    dispatch(waitingListDetailsPageMounted({ id }));
-    dispatch(getWaitingListById({ id }));
-    return () => {
-      dispatch(waitingListDetailsPageUnmounted({ id }));
-    };
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(onInitialize, []);
+  const { deleteWaitingListState } = useAppSelector(
+    (state) => state.waitingLists
+  );
 
   const router = useHistory();
   const onDeleteStatusChange = () => {
@@ -220,12 +198,8 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   React.useEffect(onDeleteStatusChange, [deleteWaitingListState]);
 
   return (
-    <WaitingListDetailsPageView
-      waitingListStatus={
-        waitingListDetailsPageState[id]?.getWaitingListByIdStatus ||
-        "UNSUBMITTED"
-      }
-      waitingList={waitingListDetailsPageState[id]?.waitingListDetails}
+    <WaitingListDetailsIndexPageView
+      waitingList={waitingList}
       onActivateClick={() => {
         dispatch(editWaitingListActive({ id, active: true }));
       }}
@@ -284,4 +258,4 @@ export const WaitingListDetailsPage = (props: WaitingListDetailsPageProps) => {
   );
 };
 
-export default WaitingListDetailsPage;
+export default WaitingListDetailsIndexPage;

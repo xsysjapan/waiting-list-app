@@ -11,6 +11,7 @@ interface WaitingListCustomerFormValues {
 export type WaitingListCustomerFormProps = {
   status: OperationStatus;
   error: string | undefined;
+  initialValue?: WaitingListCustomerFormValues;
   onSubmit: (values: WaitingListCustomerFormValues) => void;
   onCancel: () => void;
 };
@@ -18,9 +19,9 @@ export type WaitingListCustomerFormProps = {
 export const WaitingListCustomerForm = (
   props: WaitingListCustomerFormProps
 ) => {
-  const { status, error, onSubmit, onCancel } = props;
+  const { status, initialValue, error, onSubmit, onCancel } = props;
   const formik = useFormik({
-    initialValues: {
+    initialValues: initialValue || {
       name: "",
       phoneNumber: "",
       remarks: "",
@@ -55,6 +56,7 @@ export const WaitingListCustomerForm = (
           name="name"
           id="name"
           data-testid="name"
+          value={formik.values.name}
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
         />
@@ -75,6 +77,7 @@ export const WaitingListCustomerForm = (
           name="phoneNumber"
           id="phoneNumber"
           data-testid="phoneNumber"
+          value={formik.values.phoneNumber}
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
         />
@@ -94,6 +97,8 @@ export const WaitingListCustomerForm = (
           name="remarks"
           id="remarks"
           data-testid="remarks"
+          rows={5}
+          value={formik.values.remarks}
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
         ></textarea>

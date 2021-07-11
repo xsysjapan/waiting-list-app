@@ -3,6 +3,7 @@ import {
   EditWaitingListPage,
   EditWaitingListPageProps,
 } from "./EditWaitingListPage";
+import { Default as WaitingListDetailsDefault } from "../index/WaitingListDetailsIndexPage.stories";
 
 export default {
   component: EditWaitingListPage,
@@ -17,3 +18,7 @@ const Template: Story<EditWaitingListPageProps> = (args) => (
 );
 
 export const Default = Template.bind({});
+Default.args = {
+  ...WaitingListDetailsDefault.args,
+  id: "wl1",
+};

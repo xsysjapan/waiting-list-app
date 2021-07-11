@@ -1,5 +1,7 @@
 import * as React from "react";
-import WaitingListCustomerForm from "../../shared/WaitingListCustomerForm";
+import WaitingListCustomerForm, {
+  WaitingListCustomerFormProps,
+} from "../../shared/WaitingListCustomerForm";
 import {
   editWaitingListCustomer,
   editWaitingListCustomerFormMounted,
@@ -10,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../shared/hooks";
 export type EditWaitingListCustomerFormProps = {
   id: string;
   customerId: string;
+  initialValue: WaitingListCustomerFormProps["initialValue"];
   onComplete: () => void;
   onCancel: () => void;
 };
@@ -17,7 +20,7 @@ export type EditWaitingListCustomerFormProps = {
 export const EditWaitingListCustomerForm = (
   props: EditWaitingListCustomerFormProps
 ) => {
-  const { id, customerId, onComplete, onCancel } = props;
+  const { id, customerId, initialValue, onComplete, onCancel } = props;
   const dispatch = useAppDispatch();
   const formState = useAppSelector(
     (state) =>
@@ -47,6 +50,7 @@ export const EditWaitingListCustomerForm = (
     <WaitingListCustomerForm
       status={formState.status}
       error={formState.error}
+      initialValue={initialValue}
       onSubmit={(values) =>
         dispatch(editWaitingListCustomer({ ...values, id, customerId }))
       }

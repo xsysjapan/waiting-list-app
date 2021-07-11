@@ -1,19 +1,19 @@
 import { Story, Meta } from "@storybook/react";
 import {
-  WaitingListDetailsPageView,
-  WaitingListDetailsPageViewProps,
-} from "./WaitingListDetailsPage";
+  WaitingListDetailsIndexPageView,
+  WaitingListDetailsIndexPageViewProps,
+} from "./WaitingListDetailsIndexPage";
 
 export default {
-  component: WaitingListDetailsPageView,
-  title: "waiting-lists/details/WaitingListDetailsPage",
+  component: WaitingListDetailsIndexPageView,
+  title: "waiting-lists/details/WaitingListDetailsIndexPage",
   parameters: {
     layout: "fullscreen",
   },
 } as Meta;
 
-const Template: Story<WaitingListDetailsPageViewProps> = (args) => (
-  <WaitingListDetailsPageView {...args} />
+const Template: Story<WaitingListDetailsIndexPageViewProps> = (args) => (
+  <WaitingListDetailsIndexPageView {...args} />
 );
 
 const customer = {

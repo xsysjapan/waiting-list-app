@@ -1,15 +1,18 @@
 import * as React from "react";
+import { WaitingListDetails } from "../../../shared/types";
+import { useHistory } from "react-router";
 import Layout from "../../../shared/Layout";
 import AddWaitingListCustomerForm from "./AddWaitingListCustomerForm";
-import { useHistory, useParams } from "react-router";
 
-export type AddWaitingListCustomerPageProps = {};
+export type AddWaitingListCustomerPageProps = {
+  id: string;
+  waitingList: WaitingListDetails;
+};
 
 export const AddWaitingListCustomerPage = (
   props: AddWaitingListCustomerPageProps
 ) => {
-  const params = useParams<{ id: string }>();
-  const id = params.id;
+  const { id } = props;
   const router = useHistory();
 
   return (
