@@ -11,13 +11,14 @@ import {
 } from "../shared/api/generated";
 import {
   OperationStatus,
+  PagedList,
   WaitingListDetails,
   WaitingListSummary,
 } from "../shared/types";
 
 export const getWaitingLists = createAsyncThunk(
   "waitingLists/getWaitingListsStatus",
-  () => api.getWaitingLists({})
+  (param: { page: number; perPage: number }) => api.getWaitingLists(param)
 );
 
 export const getWaitingListById = createAsyncThunk(
@@ -195,7 +196,7 @@ interface WaitingListState {
   getWaitingListsStatus: OperationStatus;
   getDefaultWaitingListNameStatus: OperationStatus;
   defautlWaitingListName?: string;
-  waitingLists: WaitingListSummary[];
+  pagedWaitingList?: PagedList<WaitingListSummary>;
   deleteWaitingListState: { [id: string]: OperationStatus };
   waitingListDetailsPageState: { [id: string]: WaitingListDetailsPageState };
   createWaitingListFormState?: CreateWaitingListFormState;
@@ -213,7 +214,6 @@ interface WaitingListState {
 const initialState: WaitingListState = {
   getWaitingListsStatus: "UNSUBMITTED",
   getDefaultWaitingListNameStatus: "UNSUBMITTED",
-  waitingLists: [],
   deleteWaitingListState: {},
   waitingListDetailsPageState: {},
   editWaitingListFormState: {},
@@ -294,7 +294,7 @@ const waitingListSlice = createSlice({
     });
     builder.addCase(getWaitingLists.fulfilled, (state, action) => {
       state.getWaitingListsStatus = "SUCCEEDED";
-      state.waitingLists = action.payload;
+      state.pagedWaitingList = action.payload;
     });
     builder.addCase(getWaitingLists.rejected, (state) => {
       state.getWaitingListsError = "検索に失敗しました。";
@@ -392,9 +392,11 @@ const waitingListSlice = createSlice({
     // 待ちリストの削除
     builder.addCase(deleteWaitingList.fulfilled, (state, action) => {
       state.deleteWaitingListState[action.meta.arg.id] = "SUCCEEDED";
-      state.waitingLists = state.waitingLists.filter(
-        (e) => e.id !== action.meta.arg.id
-      );
+      if (state.pagedWaitingList) {
+        state.pagedWaitingList.list = state.pagedWaitingList.list.filter(
+          (e) => e.id !== action.meta.arg.id
+        );
+      }
     });
     builder.addCase(deleteWaitingList.rejected, (state, action) => {
       state.deleteWaitingListState[action.meta.arg.id] = "FAILED";

@@ -42,7 +42,7 @@ export const NavMenu = (props: NavMenuProps) => {
               <ul className="navbar-nav">
                 <li className="nav-item">
                   <NavLink
-                    className="btn btn-link nav-link d-block"
+                    className="btn btn-link nav-link d-block text-start"
                     to="/settings"
                     activeClassName="active"
                   >
@@ -51,7 +51,7 @@ export const NavMenu = (props: NavMenuProps) => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="btn btn-link nav-link"
+                    className="btn btn-link nav-link d-block text-start"
                     onClick={onLogoutClick}
                   >
                     ログアウト

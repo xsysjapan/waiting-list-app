@@ -1,6 +1,10 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { OperationStatus, WaitingListSummary } from "../shared/types";
+import {
+  OperationStatus,
+  PagedList,
+  WaitingListSummary,
+} from "../shared/types";
 import Layout from "../shared/Layout";
 import WaitingListList from "./WaitingListList";
 import { useAppDispatch, useAppSelector } from "../shared/hooks";
@@ -8,7 +12,7 @@ import { getWaitingLists } from "./homeReducer";
 
 export type HomePageViewProps = {
   waitingListsStatus: OperationStatus;
-  waitingLists: WaitingListSummary[];
+  waitingLists: PagedList<WaitingListSummary> | undefined;
 };
 
 export const HomePageView = (props: HomePageViewProps) => {
@@ -47,16 +51,14 @@ export const HomePageView = (props: HomePageViewProps) => {
         </div>
       </div>
       <div className="my-3">
-        {waitingLists.length > 0 ? (
-          <WaitingListList waitingLists={waitingLists} />
+        {waitingLists.totalCount > 0 ? (
+          <WaitingListList waitingLists={waitingLists.list} />
         ) : (
-          <div>
-            <p>現在Activeな待ちリストはありません。</p>
-            <div>
-              <Link to="/waiting-lists">待ちリスト一覧へ</Link>
-            </div>
-          </div>
+          <p>現在Activeな待ちリストはありません。</p>
         )}
+      </div>
+      <div>
+        <Link to="/waiting-lists">待ちリスト一覧へ</Link>
       </div>
     </Layout>
   );
@@ -66,21 +68,15 @@ export type HomePageProps = {};
 
 export const HomePage = (props: HomePageProps) => {
   const { getWaitingListsStatus, waitingLists } = useAppSelector(
-    (state) => state.waitingLists
+    (state) => state.home
   );
   const dispatch = useAppDispatch();
-  let isInited = false;
   const onInitialize = () => {
     dispatch(getWaitingLists());
-    // eslint-disable-next-line
-    isInited = true;
     return;
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(onInitialize, []);
-  if (isInited) {
-    return null;
-  }
   return (
     <HomePageView
       waitingListsStatus={getWaitingListsStatus}

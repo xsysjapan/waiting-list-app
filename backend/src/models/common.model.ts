@@ -1,3 +1,10 @@
+export type PagedResponse<T> = {
+  page: number;
+  perPage: number;
+  totalCount: number;
+  list: T[];
+};
+
 export type CreatedResponse<
   T = {
     id: string;

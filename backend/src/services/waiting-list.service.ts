@@ -75,6 +75,47 @@ export class WaitingListsService {
     }));
   }
 
+  public async searchPaged(
+    param: WaitingListSearchParams,
+    page: number,
+    perPage: number
+  ): Promise<import("../models").PagedResponse<WaitingListModel>> {
+    const where = {} as any;
+    if (param.name) {
+      where.name = {
+        contains: param.name,
+      };
+    }
+    if (param.active !== undefined) {
+      where.active = param.active;
+    }
+    const totalCount = await client.waitingList.count({
+      where: where,
+    });
+    const entities = await client.waitingList.findMany({
+      where: where,
+      skip: perPage
+        ? page < 1
+          ? 0
+          : Math.floor((page - 1) * perPage)
+        : undefined,
+      take: perPage ? perPage : undefined,
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return {
+      page,
+      perPage,
+      totalCount,
+      list: entities.map((e) => ({
+        id: e.id,
+        name: e.name,
+        active: e.active,
+      })),
+    };
+  }
+
   public async get(id: string): Promise<WaitingListDetailsModel> {
     const entity = await client.waitingList.findFirst({
       where: { id },

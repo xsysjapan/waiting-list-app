@@ -1,5 +1,15 @@
-export type OperationStatus = "UNSUBMITTED" | "LOADING" | "SUCCEEDED" | "FAILED";
+export type OperationStatus =
+  | "UNSUBMITTED"
+  | "LOADING"
+  | "SUCCEEDED"
+  | "FAILED";
 
+export interface PagedList<T> {
+  page: number;
+  perPage: number;
+  totalCount: number;
+  list: T[];
+}
 export interface User {
   username: string;
   name: string;

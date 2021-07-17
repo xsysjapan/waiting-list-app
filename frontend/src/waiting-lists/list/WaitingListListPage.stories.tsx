@@ -26,21 +26,35 @@ const waitingList = {
 export const Empty = Template.bind({});
 Empty.args = {
   waitingListsStatus: "SUCCEEDED",
-  waitingLists: [],
+  waitingLists: {
+    page: 1,
+    perPage: 10,
+    totalCount: 0,
+    list: [],
+  },
 };
 
 export const withActiveInactive = Template.bind({});
 withActiveInactive.args = {
   waitingListsStatus: "SUCCEEDED",
-  waitingLists: [
-    { ...waitingList, id: "id1", active: false },
-    { ...waitingList, id: "id2", active: true },
-  ],
+  waitingLists: {
+    page: 1,
+    perPage: 10,
+    totalCount: 2,
+    list: [
+      { ...waitingList, id: "id1", active: false },
+      { ...waitingList, id: "id2", active: true },
+    ],
+  },
 };
 
 export const withLoading = Template.bind({});
 withLoading.args = {
   waitingListsStatus: "LOADING",
-  waitingLists: [waitingList],
+  waitingLists: {
+    page: 1,
+    perPage: 10,
+    totalCount: 1,
+    list: [waitingList],
+  },
 };
-

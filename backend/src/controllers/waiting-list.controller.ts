@@ -20,6 +20,7 @@ import {
   WaitingListModel,
   WaitingListDetailsModel,
   DefaultWaitingListNameModel,
+  PagedResponse,
 } from "../models";
 import {
   WaitingListsService,
@@ -37,9 +38,15 @@ export class WaitingListsController extends Controller {
   @Get()
   public getWaitingLists(
     @Query("name") name?: string,
-    @Query("active") active?: boolean
-  ): Promise<WaitingListModel[]> {
-    return new WaitingListsService().search({ name, active });
+    @Query("active") active?: boolean,
+    @Query("page") page: number = 1,
+    @Query("perPage") perPage: number = 10
+  ): Promise<PagedResponse<WaitingListModel>> {
+    return new WaitingListsService().searchPaged(
+      { name, active },
+      page,
+      perPage
+    );
   }
 
   @Get("defaultname")

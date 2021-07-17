@@ -1,21 +1,30 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../shared/api";
-import { OperationStatus, WaitingListSummary } from "../shared/types";
+import {
+  OperationStatus,
+  PagedList,
+  WaitingListSummary,
+} from "../shared/types";
 
 export const getWaitingLists = createAsyncThunk(
   "waitingLists/getWaitingListsStatus",
-  () => api.getWaitingLists({ active: true })
+  () => api.getWaitingLists({ active: true, perPage: 0 })
 );
 
 interface HomeState {
   getWaitingListsError?: string;
   getWaitingListsStatus: OperationStatus;
-  waitingLists: WaitingListSummary[];
+  waitingLists: PagedList<WaitingListSummary>;
 }
 
 const initialState: HomeState = {
   getWaitingListsStatus: "UNSUBMITTED",
-  waitingLists: [],
+  waitingLists: {
+    page: 1,
+    perPage: 10,
+    totalCount: 0,
+    list: [],
+  },
 };
 
 const homeSlice = createSlice({

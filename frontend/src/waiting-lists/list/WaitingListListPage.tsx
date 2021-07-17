@@ -1,30 +1,27 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
-import { OperationStatus, WaitingListSummary } from "../../shared/types";
-import Layout from "../../shared/Layout";
-import WaitingListList from "./WaitingListList";
+import { Link, useHistory } from "react-router-dom";
+import {
+  OperationStatus,
+  PagedList,
+  WaitingListSummary,
+} from "../../shared/types";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 import { getWaitingLists } from "../waitingListsReducer";
+import Layout from "../../shared/Layout";
+import WaitingListList from "./WaitingListList";
+import Pager from "../../shared/Pager";
 
 export type WaitingListListPageViewProps = {
   waitingListsStatus: OperationStatus;
-  waitingLists: WaitingListSummary[] | undefined;
+  waitingLists: PagedList<WaitingListSummary> | undefined;
 };
 
 export const WaitingListListPageView = (
   props: WaitingListListPageViewProps
 ) => {
   const { waitingListsStatus, waitingLists } = props;
-  const activeWaitingLists = React.useMemo(
-    () => waitingLists!.filter((e) => e.active),
-    [waitingLists]
-  );
-  const inactiveWaitingLists = React.useMemo(
-    () => waitingLists!.filter((e) => !e.active),
-    [waitingLists]
-  );
 
-  if (waitingListsStatus !== "SUCCEEDED") {
+  if (waitingListsStatus !== "SUCCEEDED" || !waitingLists) {
     return (
       <Layout>
         <div className="d-flex justify-content-between">
@@ -57,23 +54,20 @@ export const WaitingListListPageView = (
         </div>
       </div>
       <div className="my-3">
-        <div className="mb-2">
-          <h5>Active</h5>
-        </div>
-        {activeWaitingLists.length > 0 ? (
-          <WaitingListList waitingLists={activeWaitingLists} />
+        {waitingLists.list.length > 0 ? (
+          <div>
+            <div className="my-3">
+              <WaitingListList waitingLists={waitingLists.list} />
+            </div>
+            <Pager
+              url="/waiting-lists"
+              totalCount={waitingLists.totalCount}
+              page={waitingLists.page}
+              perPage={waitingLists.perPage}
+            />
+          </div>
         ) : (
-          <p>現在Activeな待ちリストはありません。</p>
-        )}
-      </div>
-      <div className="my-3">
-        <div className="mb-2">
-          <h5>Inactive</h5>
-        </div>
-        {inactiveWaitingLists.length > 0 ? (
-          <WaitingListList waitingLists={inactiveWaitingLists} />
-        ) : (
-          <p>現在Inactiveな待ちリストはありません。</p>
+          <p>待ちリストはありません。</p>
         )}
       </div>
     </Layout>
@@ -83,26 +77,38 @@ export const WaitingListListPageView = (
 export type WaitingListListPageProps = {};
 
 export const WaitingListListPage = (props: WaitingListListPageProps) => {
-  const { getWaitingListsStatus, waitingLists } = useAppSelector(
+  const router = useHistory();
+  const { page, perPage } = React.useMemo(() => {
+    if (router && router.location && router.location.search) {
+      console.log(router.location);
+      const params = new URLSearchParams(router.location.search);
+      const page = Number(params.get("page"));
+      const perPage = Number(params.get("perPage"));
+      return {
+        page: page || 1,
+        perPage: perPage || 10,
+      };
+    }
+    return {
+      page: 1,
+      perPage: 10,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router?.location?.search]);
+
+  const { getWaitingListsStatus, pagedWaitingList } = useAppSelector(
     (state) => state.waitingLists
   );
   const dispatch = useAppDispatch();
-  let isInited = false;
   const onInitialize = () => {
-    dispatch(getWaitingLists());
-    // eslint-disable-next-line
-    isInited = true;
-    return;
+    dispatch(getWaitingLists({ page, perPage }));
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(onInitialize, []);
-  if (isInited) {
-    return null;
-  }
+  React.useEffect(onInitialize, [page, perPage]);
   return (
     <WaitingListListPageView
       waitingListsStatus={getWaitingListsStatus}
-      waitingLists={waitingLists}
+      waitingLists={pagedWaitingList}
     />
   );
 };
