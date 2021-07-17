@@ -34,7 +34,7 @@ export const EditWaitingListPage = (props: EditWaitingListPageProps) => {
 
   React.useEffect(() => {
     if (formState && formState.status === "SUCCEEDED") {
-      router.push(`/waiting-lists`);
+      router.push(`/waiting-lists/${id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState]);

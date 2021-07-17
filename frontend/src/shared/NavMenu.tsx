@@ -13,7 +13,7 @@ export const NavMenu = (props: NavMenuProps) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link className="navbar-brand" to="/waiting-lists">
+        <Link className="navbar-brand" to="/">
           順番待ちリスト
         </Link>
         {user ? (
@@ -29,20 +29,20 @@ export const NavMenu = (props: NavMenuProps) => {
               className={"collapse navbar-collapse" + (isOpen ? " show" : "")}
             >
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                {/* <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
+                <li className="nav-item">
+                  {/* <NavLink
+                    className="btn btn-link nav-link d-block"
                     to="/waiting-lists"
                     activeClassName="active"
                   >
-                    待ちリスト
-                  </NavLink>
-                </li> */}
+                    一覧
+                  </NavLink> */}
+                </li>
               </ul>
               <ul className="navbar-nav">
                 <li className="nav-item">
                   <NavLink
-                    className="btn btn-link d-inline-block nav-link"
+                    className="btn btn-link nav-link d-block"
                     to="/settings"
                     activeClassName="active"
                   >

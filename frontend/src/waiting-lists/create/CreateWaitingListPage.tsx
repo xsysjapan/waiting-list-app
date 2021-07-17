@@ -1,5 +1,6 @@
 import * as React from "react";
 import Layout from "../../shared/Layout";
+import LoadingPage from "../details/LoadingPage";
 import WaitingListForm from "../shared/WaitingListForm";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 import {
@@ -32,7 +33,7 @@ export const CreateWaitingListPage = (props: CreateWaitingListPageProps) => {
 
   React.useEffect(() => {
     if (formState && formState.status === "SUCCEEDED") {
-      router.push(`/waiting-lists`);
+      router.push(`/waiting-lists/${formState.id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState]);
@@ -42,15 +43,7 @@ export const CreateWaitingListPage = (props: CreateWaitingListPageProps) => {
     getDefaultWaitingListNameStatus === "UNSUBMITTED" ||
     getDefaultWaitingListNameStatus === "LOADING"
   ) {
-    return (
-      <Layout>
-        <div className="d-flex justify-content-center">
-          <div className="spinner-grow text-primary" role="status">
-            <span className="visually-hidden">読み込み中...</span>
-          </div>
-        </div>
-      </Layout>
-    );
+    return <LoadingPage />;
   }
 
   return (
@@ -61,7 +54,7 @@ export const CreateWaitingListPage = (props: CreateWaitingListPageProps) => {
         initialValue={{ name: defautlWaitingListName || "" }}
         error={formState.error}
         onSubmit={(values) => dispatch(createWaitingList(values))}
-        onCancel={() => router.push(`/waiting-lists`)}
+        onCancel={() => router.push(`/`)}
       />
     </Layout>
   );

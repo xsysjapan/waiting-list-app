@@ -180,7 +180,9 @@ export type WaitingListDetailsIndexPageProps = {
   waitingList: WaitingListDetails;
 };
 
-export const WaitingListDetailsIndexPage = (props: WaitingListDetailsIndexPageProps) => {
+export const WaitingListDetailsIndexPage = (
+  props: WaitingListDetailsIndexPageProps
+) => {
   const { id, waitingList } = props;
   const dispatch = useAppDispatch();
   const { deleteWaitingListState } = useAppSelector(
@@ -190,7 +192,7 @@ export const WaitingListDetailsIndexPage = (props: WaitingListDetailsIndexPagePr
   const router = useHistory();
   const onDeleteStatusChange = () => {
     if (deleteWaitingListState[id] === "SUCCEEDED") {
-      router.push("/waiting-lists");
+      router.push("/");
     }
   };
 

@@ -133,7 +133,7 @@ export class WaitingListsService {
   ): Promise<{ id: string }> {
     try {
       const entity = await client.waitingList.create({
-        data: param,
+        data: { ...param, active: param.active || true },
       });
       return {
         id: entity.id,

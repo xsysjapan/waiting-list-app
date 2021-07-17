@@ -172,6 +172,7 @@ const initialDetailsPageState: WaitingListDetailsPageState = {
 interface CreateWaitingListFormState {
   error?: string;
   status: OperationStatus;
+  id?: string;
 }
 
 interface EditWaitingListFormState {
@@ -342,12 +343,13 @@ const waitingListSlice = createSlice({
     });
 
     // 待ちリストの作成
-    builder.addCase(createWaitingList.pending, (state, action) => {
+    builder.addCase(createWaitingList.pending, (state) => {
       delete state.createWaitingListFormState!.error;
       state.createWaitingListFormState!.status = "LOADING";
     });
-    builder.addCase(createWaitingList.fulfilled, (state) => {
+    builder.addCase(createWaitingList.fulfilled, (state, action) => {
       state.createWaitingListFormState!.status = "SUCCEEDED";
+      state.createWaitingListFormState!.id = action.payload.id;
     });
     builder.addCase(createWaitingList.rejected, (state) => {
       state.createWaitingListFormState!.error = "登録に失敗しました。";
