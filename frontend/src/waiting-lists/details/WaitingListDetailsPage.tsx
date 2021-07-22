@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, Switch, useParams } from "react-router-dom";
+import { Route, Switch, useHistory, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks";
 import {
   getWaitingListById,
@@ -19,6 +19,11 @@ const RoutePage = () => {
   const { waitingListDetailsPageState } = useAppSelector(
     (state) => state.waitingLists
   );
+  const router = useHistory();
+  React.useEffect(() => {
+    return router.listen(() => dispatch(getWaitingListById({ id })));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const dispatch = useAppDispatch();
   const onInitialize = () => {
