@@ -1,5 +1,6 @@
 import { Request as ExRequest } from "express";
-import cookie from "cookie";
+import * as cookie from "cookie";
+import * as jwt from "jsonwebtoken";
 import {
   Body,
   Controller,
@@ -9,6 +10,7 @@ import {
   Request,
   Response,
   Route,
+  Security,
   SuccessResponse,
 } from "tsoa";
 import { ErrorResponse, UserModel, ValidationErrorResponse } from "../models";
@@ -27,49 +29,28 @@ export class SessionsController extends Controller {
     @Body() requestBody: SessionCreationParams
   ): Promise<SessionResponse> {
     const user = await new UsersService().login(requestBody);
-    this.setHeader("Set-Cookie", `token=${user.id}; Path=/; HttpOnly`);
+    const token = jwt.sign(JSON.stringify(user), "[secret]");
+    this.setHeader("Set-Cookie", `token=${token}; Path=/; HttpOnly`);
     return {
       user,
     };
   }
 
   @Get()
-  public async getSession(@Request() req: ExRequest): Promise<SessionResponse> {
-    const userId = this.getUserId(req);
-    if (!userId) {
-      return {};
-    }
-    const user = await new UsersService().get(userId);
-    return {
-      user,
-    };
+  @Security("cookieAuth")
+  public async getSession(
+    @Request() req: ExRequest & { user: UserModel }
+  ): Promise<SessionResponse> {
+    return Promise.resolve({ user: req.user });
   }
 
   @Delete()
   @SuccessResponse("204", "No Content")
-  public async deleteSession(@Request() req: ExRequest): Promise<void> {
-    const userId = this.getUserId(req);
-    if (!userId) {
-      return;
-    }
+  @Security("cookieAuth")
+  public async deleteSession(): Promise<void> {
     this.setHeader(
       "Set-Cookie",
       `token=deleted; Path=/; Expires=Thu, Jan 01 1970 00:00:00 UTC`
     );
-  }
-
-  getUserId(req: ExRequest) {
-    const cookieHeaders = req.headers["cookie"];
-    if (!cookieHeaders) {
-      return undefined;
-    }
-    const cookieHeader = Array.isArray(cookieHeaders)
-      ? cookieHeaders[0]
-      : cookieHeaders;
-    if (!cookieHeader) {
-      return undefined;
-    }
-    const cookieValues = cookie.parse(cookieHeader);
-    return cookieValues["token"];
   }
 }
